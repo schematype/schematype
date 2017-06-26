@@ -9,6 +9,7 @@ JSON and more
 This is a meta repository for the SchemaType project. It has the following
 resources:
 
+* [Core Types Definitions](https://github.com/schematype/schematype/tree/schematype)
 * [SchemaType Wiki](https://github.com/schematype/schematype/wiki)
 * [SchemaType Issue Tracker](https://github.com/schematype/schematype/issues)
 
