@@ -36,6 +36,11 @@
   -type: +num
   -like: /^[\+\-][0-9]+$/
 
++whole:
+  -desc: Any integer, zero or greater
+  -type: +int
+  -mini: 0
+
 +real:
   -desc: Any floating point number
   -type: +num
