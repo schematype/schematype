@@ -34,7 +34,7 @@
 +int:
   -desc: Any integer, unbounded in size
   -type: +num
-  -like: /^[\+\-][0-9]+$/
+  -like: // {sign}? {digit}+ //
 
 +whole:
   -desc: Any integer, zero or greater
@@ -44,8 +44,7 @@
 +real:
   -desc: Any floating point number
   -type: +num
-  -like: /^[\+\-]?[0-9]+(\.[0-9]+)?$/
-
+  -like: // {sign}? {digit}+ ( {dot} {digit}+ )? //
 
 +long:
   -desc: Alias for int64
@@ -74,3 +73,18 @@
   -type: +int
   -mini: 0
   -maxi: 18446744073709551615
+
+-vars:
+  beg: / \A /
+  bs: / \\ /
+  dash: / - /
+  dot: / \. /
+  end: / \z /
+  eol: / \r?\n /
+  lc: / [a-z] /
+  nl: / \n /
+  sign: / [ \- \+ ] /
+  sp: / \  /
+  uc: / [A-Z] /
+  w: / [ _ a-z A-Z 0-9 ] /
+  wc: / [a-z A-Z 0-9] /
