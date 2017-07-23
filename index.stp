@@ -10,23 +10,23 @@
 # the SchemaType Spec.
 +str:
   -desc: A sequence or zero or more unicode characters
-  -core: String
+  -kind: string
 
 +bool:
   -desc: The set of values containing exactly 'true' and 'false'
-  -core: Boolean
+  -kind: boolean
 
 +num:
   -desc: Any real number, unbounded in size and precision
-  -core: Number
+  -kind: number
 
 +null:
   -desc: The 'null' value. Sometimes called 'nil', 'none' or 'undef'
-  -core: Null
+  -kind: null
 
 +any:
   -desc: Any scalar or collection type is valid
-  -core: Any
+  -kind: any
 
 # The following types are all the single word types defined by SchemaType.
 # You are encouraged to fork and extend or fix these types in your own domain.
