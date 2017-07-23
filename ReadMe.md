@@ -10,10 +10,10 @@ https://github.com/schematype/schematype/tree/schematype. You can use it in
 your `.schema` files like this:
 ```yaml
 -from:
-  +core/: github:schematype/schematype#schematype
+  +core: github:schematype/schematype#schematype
 
 name: +core/str
-age: +core/int
+age: +core/int 1..99
 ```
 
 or more commonly:
@@ -21,7 +21,7 @@ or more commonly:
 -from: github:schematype
 
 name: +str
-age: +int
+age: +int 1..99
 ```
 
 This repo is intended to have 1000s of useful types for you to use, but you do
