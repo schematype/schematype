@@ -1,0 +1,9 @@
+#!/usr/bin/env testml
+
+validate-json(*stp, *json) == "OK"
+
+=== Test 1
+--- stp
+{}
+--- json
+{}
