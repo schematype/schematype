@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+main() {
+  file=$1
+  name=${1##*/}
+  name=${name%.*}
+
+  date=$(date +'%B %Y')
+
+  export name date
+
+  pandoc -s --wrap=none -f markdown -t man "$file" |
+    perl -p0e '
+      my ($date, $file) = @ARGV;
+      s/^\.TH .*/.TH "$ENV{name}" 1 "$ENV{date}" "" ""/m;
+    '
+}
+
+[[ $0 != "${BASH_SOURCE[0]}" ]] || main "$@"
