@@ -1,0 +1,5 @@
+SchemaType 0.1.0
+
+foo := Str // xxx | yyy //
+
+bar := Str [ foo bar baz ]
