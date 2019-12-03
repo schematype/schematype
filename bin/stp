@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+
+GETOPT_SPEC="\
+  $(basename "$0") <options...> [<argument>...]
+
+See 'man stp' for more help.
+
+Common commands:
+
+  stp --compile foo.stp
+  stp --compile --print foo.stp > foo.stx
+  stp --validate foo.stp foo1.json foo2.yaml
+  stp --generate=jsonschema foo.stp > foo.jsonschema
+
+Options:
+--
+ 
+c,compile   Compile and link a SchemaType stp file
+l,link      Link a SchemaType compiled stc file
+L,no-link   Don't link after compile
+g,generate= Generate various kinds of code from an stp
+v,validate  Validate data files with an atp file
+version     Print SchemaType version
+h,help      Show the command summary
+ 
+clear-cache Remove old cached assets
+ 
+x,debug     Print lots of debugging info
+"
+
+main() (
+  setup
+
+  get-opts "$@"
+
+  "cmd:$cmd" "${arguments[@]}"
+)
+
+#------------------------------------------------------------------------------
+cmd:compile() {
+  [[ $# -gt 0 ]] ||
+    error "stp --compile requires one or more file arguments"
+
+  for file; do
+    if [[ $file == '-' ]]; then
+      file=$(mktemp -d)/STDIN
+      cat <&0 > "$file"
+    fi
+
+    compile-stp "$file" /dev/stdout
+  done
+}
+
+#------------------------------------------------------------------------------
+compile-stp() {
+  file=$1
+  out=$2
+
+  compiler=$(get-compiler)
+
+  option_no_link=true   # XXX
+
+  if $option_no_link; then
+    "$compiler" "$file" > "$out"
+  else
+    "$compiler" | link-stp > "$out"
+  fi
+}
+
+get-compiler() {
+  compiler_dir=$SCHEMATYPE_ROOT/compiler
+  compiler=$compiler_dir/build/bin/schematype-compiler
+
+  [[ -d $compiler_dir ]] ||
+    run-cmd make -C "$SCHEMATYPE_ROOT" compiler
+
+  [[ -f $compiler ]] ||
+    run-cmd make -C "$compiler_dir" build
+
+  echo $compiler
+}
+
+run-cmd() {
+  rc=0
+  "$@" &>/dev/null || rc=$?
+  [[ $rc -eq 0 ]] || "$@"
+}
+
+#------------------------------------------------------------------------------
+setup() {
+  if ! [[ $SCHEMATYPE_ROOT ]]; then
+    SCHEMATYPE_ROOT=$(cd "$(dirname "$0")/../.." && pwd) || {
+      echo "Can't determine 'SCHEMATYPE_ROOT'"
+      echo
+      echo "See: https://github.com/schematype/schematype/wiki/SchemaType-Setup"
+      exit 1
+    }
+  fi
+
+  export SCHEMATYPE_ROOT
+
+  PATH=$SCHEMATYPE_ROOT/stp/lib:$PATH
+
+  source stdlib.bash || {
+    echo "Can't source stdlib.bash"
+    exit 1
+  }
+
+  check-bash-version
+}
+
+get-opts() {
+  source getopt.bash
+
+  GETOPT_ARGS='@arguments' \
+    getopt "$@"
+
+  $option_debug && set -x
+
+  $option_compile && cmd=compile
+  $option_link && cmd=link
+
+  true
+}
+
+[[ $0 != "${BASH_SOURCE[0]}" ]] || main "$@"
+
+# vim: set ft=sh lisp:
