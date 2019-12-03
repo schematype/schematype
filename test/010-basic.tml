@@ -1,0 +1,10 @@
+#!/usr/bin/env testml
+
+*stp.generate == *jsc
+
+=== Test 1
+--- stp
+SchemaType 0.1.0
+--- jsc
+{
+}
