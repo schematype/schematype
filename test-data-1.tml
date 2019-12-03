@@ -1,0 +1,53 @@
+=== Test Data 1
+--- stp
+SchemaType 0.1.0
+test := Map(
+  + foo => 10..100
+  + bar => / x .* y /
+  + baz => [ apple banana carrot ]
+)
+--- stc
+{
+  "SchemaType": {"spec": "0.1.0"},
+  "from": {
+    "name": "test.stp",
+    "time": "1234567890123",
+    "mark": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  },
+  "show": ["!test"],
+  "type": {
+    "test": {
+      "kind": "Map",
+      "pair": [
+        ["foo", {"xtoy": ["10", "100"]}, true],
+        ["bar", {"like": "x.*y"}, true],
+        ["baz", {"enum": ["apple", "banana", "carrot"]}, true]
+      ]
+    }
+  }
+}
+--- stx
+{
+  "SchemaType": {"spec": "0.1.0"},
+  "from": {
+    "name": "test.stp",
+    "time": "1234567890123",
+    "mark": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  },
+  "show": ["!test"],
+  "type": {
+    "test": {
+      "kind": "Map",
+      "pair": [
+        ["foo", "!Int-1", true],
+        ["bar", "!Str-2", true],
+        ["baz", "!Str-3", true]
+      ]
+    },
+    "Int-1": {"kind": "Int", "xtoy": ["10", "100"]},
+    "Str-2": {"kind": "Str", "like": "x.*y"},
+    "Str-3": {"kind": "Str", "enum": ["apple", "banana", "carrot"]}
+  }
+}
+--- json-ok
+{"foo":21,"bar":"xyzzy","baz":banana"}
