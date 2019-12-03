@@ -1,0 +1,16 @@
+#!/usr/bin/env testml
+
+
+*stp.compile == *stx
+
+
+=== Test 1 - Just SchemaType directive
+--- stp
+SchemaType 0.1.0
+
+--- stx
+{
+  "schematype": {
+    "spec": "0.1.0"
+  }
+}
