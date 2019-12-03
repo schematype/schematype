@@ -1,0 +1,22 @@
+#!/usr/bin/env testml
+
+
+*stc.link == *stx
+
+
+=== Test 1 - Just SchemaType directive
+--- stc
+{
+  "SchemaType": {"spec": "0.1.0"},
+  "from": {
+    "name": "test.stp",
+    "time": "1234567890123",
+    "mark": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  }
+}
+
+--- stx
+xyzzy
+
+
+# vim: set ft=testml sw=2:

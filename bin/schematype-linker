@@ -1,0 +1,32 @@
+#!/usr/bin/env coffee
+
+module.paths.unshift "#{require('path').dirname(__dirname)}/lib"
+
+require 'ingy-prelude'
+require 'schematype-linker/linker'
+
+argv = process.argv[2..]
+
+if argv.length != 1
+  die "schematype-linker <schematype-stc-file> | - | --version"
+
+if argv[0] == '--version'
+  say "SchemaType version '#{SchemaTypeLinker.VERSION}'"
+  exit 0
+else if argv[0].match /^-./
+  die "Unknown argument '#{argv[0]}'"
+
+input_file = argv[0]
+
+throw "usage: schematype-linker <input-stc-file>" \
+  unless input_file?
+throw "Input file does not exist: '#{input_file}'" \
+  unless input_file == '-' or file_exists input_file
+
+input_text = file_read input_file
+
+linker = new SchemaTypeLinker.Linker
+
+out linker.link input_text, input_file
+
+# vim: sw=2:
