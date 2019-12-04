@@ -21,7 +21,7 @@ The `master` branch only has a `ReadMe` and a `Makefile`.
 * `grammar` - Parser grammar for the `stp` language
 * `node_modules` - NodeJS dependencies
 * `perl5` - Perl5 dependencies
-* `test-compiler` - Compiler test suite
+* `test.compiler` - Compiler test suite
 
 ## Makefile Rules
 

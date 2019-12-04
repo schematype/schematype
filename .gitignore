@@ -3,7 +3,7 @@
 /grammar/
 /node_modules/
 /perl5/
-/test/compiler/
+/test.compiler/
 /testml/
 
 /package-lock.json
