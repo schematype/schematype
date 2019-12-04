@@ -1,6 +1,7 @@
 SHELL := bash
 ROOT := $(shell cd .. && pwd)
 
+BUILD := $(ROOT)/compiler/build
 GRAMMAR := $(ROOT)/grammar
 NODE_MODULES := $(ROOT)/node_modules
 PERL5 := $(ROOT)/perl5
@@ -10,7 +11,7 @@ GRAMMAR_COFFEE := lib/schematype-compiler/grammar.coffee
 COFFEE_FILES := $(shell find lib -type f)
 JS_FILES := $(COFFEE_FILES:%.coffee=build/%.js)
 
-export PATH := $(PWD)/bin:$(NODE_MODULES)/.bin:$(PERL5)/bin:$(PATH)
+export PATH := $(BUILD)/bin:$(NODE_MODULES)/.bin:$(PERL5)/bin:$(PATH)
 export TESTML_RUN := perl5
 
 test := test/*.tml
@@ -19,7 +20,7 @@ j := 1
 default:
 
 .PHONY: test
-test: build
+test: build $(TESTML)
 	(source $(TESTML)/.rc && prove -v -j$(j) $(test))
 
 .PHONY: build
