@@ -41,7 +41,7 @@ realclean: clean
 
 #------------------------------------------------------------------------------
 status:
-	@for d in $(WORK_DIRS); do \
+	@for d in $(WORK_BRANCHES); do \
 	    [ -d $$d ] || continue; \
 	    ( \
 	      echo "=== $$d"; \
