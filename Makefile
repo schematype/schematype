@@ -15,19 +15,25 @@ JS_FILES := $(COFFEE_FILES:%.coffee=build/%.js)
 
 export PATH := $(BUILD)/bin:$(NODE_MODULES)/.bin:$(PERL5)/bin:$(PATH)
 export TESTML_RUN := perl5
+export PERL5LIB := $(PERL5LIB)
 
 test := test/*.tml
 j := 1
 
+#------------------------------------------------------------------------------
 default:
 
 .PHONY: test
 test: build $(TESTML) $(TEST_COMPILER)
-	(source $(TESTML)/.rc && PERL5LIB=$(PERL5LIB) prove -v -j$(j) $(test))
+	(source $(TESTML)/.rc && prove -v -j$(j) $(test))
 
 .PHONY: build
-build: $(JS_FILES) build/bin/schematype-compiler
+build: dep-perl dep-node $(JS_FILES) build/bin/schematype-compiler
 
+clean:
+	rm -fr build/ test/.testml/ $(TEST_COMPILER)/.testml/
+
+#------------------------------------------------------------------------------
 build/bin/schematype-compiler: bin/schematype-compiler
 	@mkdir -p build/bin
 	echo '#!/usr/bin/env node' > $@
@@ -52,5 +58,14 @@ $(GRAMMAR)/schematype.pgx.json: $(GRAMMAR)
 $(GRAMMAR) $(NODE_MODULES) $(PERL5) $(TEST_COMPILER) $(TESTML):
 	make -C $(ROOT) $(@:$(ROOT)/%=%)
 
-clean:
-	rm -fr build/ test/.testml/ $(TEST_COMPILER)/.testml/
+#------------------------------------------------------------------------------
+dep-node:
+	@command -v node || { \
+	    echo "ERROR: Action requires 'node' (NodeJS) to be installed."; \
+	    exit 1; \
+	}
+dep-perl:
+	@command -v perl || { \
+	    echo "ERROR: Action requires 'perl' (Perl 5) to be installed."; \
+	    exit 1; \
+	}
