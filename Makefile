@@ -6,6 +6,7 @@ GRAMMAR := $(ROOT)/grammar
 NODE_MODULES := $(ROOT)/node_modules
 PERL5 := $(ROOT)/perl5
 PERL5LIB := $(PERL5)/lib/perl5
+TEST_COMPILER := $(ROOT)/test.compiler
 TESTML := $(ROOT)/testml
 
 GRAMMAR_COFFEE := lib/schematype-compiler/grammar.coffee
@@ -21,7 +22,7 @@ j := 1
 default:
 
 .PHONY: test
-test: build $(TESTML)
+test: build $(TESTML) $(TEST_COMPILER)
 	(source $(TESTML)/.rc && PERL5LIB=$(PERL5LIB) prove -v -j$(j) $(test))
 
 .PHONY: build
@@ -48,8 +49,8 @@ lib/schematype-compiler/grammar.coffee: $(GRAMMAR)/schematype.pgx.json
 $(GRAMMAR)/schematype.pgx.json: $(GRAMMAR)
 	make -C $< build
 
-$(GRAMMAR) $(NODE_MODULES) $(PERL5) $(TESTML):
+$(GRAMMAR) $(NODE_MODULES) $(PERL5) $(TEST_COMPILER) $(TESTML):
 	make -C $(ROOT) $(@:$(ROOT)/%=%)
 
 clean:
-	rm -fr build test/.testml
+	rm -fr build/ test/.testml/ $(TEST_COMPILER)/.testml/
