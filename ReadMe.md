@@ -20,6 +20,7 @@ The `master` branch only has a `ReadMe` and a `Makefile`.
 * `docker` - Support for testing in clean Docker environment
 * `grammar` - Parser grammar for the `stp` language
 * `node_modules` - NodeJS dependencies
+* `note` - Notes about the SchemaType project
 * `perl5` - Perl5 dependencies
 * `test.compiler` - Compiler test suite
 

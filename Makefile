@@ -5,6 +5,7 @@ WORK_BRANCHES := \
     docker \
     grammar \
     node_modules \
+    note \
     test.compiler \
     perl5 \
 

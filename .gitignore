@@ -2,6 +2,7 @@
 /docker/
 /grammar/
 /node_modules/
+/note/
 /perl5/
 /test.compiler/
 /testml/
