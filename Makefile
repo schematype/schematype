@@ -25,7 +25,7 @@ $(WORK_BRANCHES):
 	git worktree add -f $@ $@
 
 testml:
-	git clone git@github.com:testml-lang/testml $@
+	git clone https://github.com/testml-lang/testml $@
 
 clean:
 	rm -f package-lock.json
