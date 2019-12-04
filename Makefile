@@ -8,3 +8,6 @@ test: build
 
 shell: build
 	docker run -it --rm --entrypoint=/bin/bash $(NAME)
+
+clean:
+	docker rmi $(NAME)
