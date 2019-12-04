@@ -165,9 +165,9 @@ sub to_yaml {
 }
 
 sub to_json {
-    require JSON::XS;
+    require JSON::PP;
     my $self = shift;
-    return JSON::XS->new->utf8->canonical->pretty->encode($self->tree);
+    return JSON::PP->new->utf8->canonical->pretty->encode($self->tree);
 }
 
 sub to_perl {
