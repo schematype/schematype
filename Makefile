@@ -5,6 +5,7 @@ BUILD := $(ROOT)/compiler/build
 GRAMMAR := $(ROOT)/grammar
 NODE_MODULES := $(ROOT)/node_modules
 PERL5 := $(ROOT)/perl5
+PERL5LIB := $(PERL5)/lib/perl5
 TESTML := $(ROOT)/testml
 
 GRAMMAR_COFFEE := lib/schematype-compiler/grammar.coffee
@@ -21,7 +22,7 @@ default:
 
 .PHONY: test
 test: build $(TESTML)
-	(source $(TESTML)/.rc && prove -v -j$(j) $(test))
+	(source $(TESTML)/.rc && PERL5LIB=$(PERL5LIB) prove -v -j$(j) $(test))
 
 .PHONY: build
 build: $(JS_FILES) build/bin/schematype-compiler
