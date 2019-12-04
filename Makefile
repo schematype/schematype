@@ -30,6 +30,11 @@ testml:
 
 clean:
 	rm -f package-lock.json
+	@for d in $(WORK_BRANCHES); do \
+	    if [[ -f $$d/Makefile ]]; then \
+		make -C $$d clean; \
+	    fi; \
+	done
 
 realclean: clean
 	rm -fr $(WORK_DIRS) test
@@ -44,6 +49,7 @@ status:
 	      output=$$( \
 		git status | grep -Ev '(^On branch|up.to.date|nothing to commit)'; \
 		git log --graph --decorate --pretty=oneline --abbrev-commit -10 | grep wip; \
+		git clean -dxn; \
 	      ); \
 	      [ -z "$$output" ] || echo "$$output"; \
 	    ); \
