@@ -28,7 +28,7 @@ test: build $(TESTML) $(TEST_COMPILER)
 	(source $(TESTML)/.rc && prove -v -j$(j) $(test))
 
 .PHONY: build
-build: dep-perl dep-node $(JS_FILES) build/bin/schematype-compiler
+build: dep-perl dep-node $(NODE_MODULES) $(JS_FILES) build/bin/schematype-compiler
 
 clean:
 	rm -fr build/ test/.testml/ $(TEST_COMPILER)/.testml/
