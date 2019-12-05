@@ -19,6 +19,7 @@ export PERL5LIB := $(PERL5LIB)
 
 test := test/*.tml
 j := 1
+export SCHEMATYPE_COMPILER_DEBUG := $(debug)
 
 #------------------------------------------------------------------------------
 default:

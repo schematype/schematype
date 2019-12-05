@@ -4,8 +4,11 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
   make_tree: ->
     {
        "+toprule" : "schema",
+       "XXX" : {
+          ".rgx" : "XXX"
+       },
        "cl" : {
-          ".rgx" : "(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\\z))"
+          ".rgx" : "(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$))"
        },
        "definition" : {
           ".any" : [
@@ -38,7 +41,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ]
        },
        "desc_value" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "directives" : {
           ".all" : [
@@ -56,10 +59,10 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ]
        },
        "end" : {
-          ".rgx" : "[\\ \\t]*(?:;|\\r?\\n|\\z)(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\\z))*"
+          ".rgx" : "(?:[\\ \\t]*(?:;[\\ \\t]*|\\r?\\n|\$|(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$)))(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$))*)"
        },
        "enum_expr" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "import_directive" : {
           ".any" : [
@@ -81,15 +84,35 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                 ".ref" : "cl"
              },
              {
+                "+min" : 0,
+                ".ref" : "s"
+             },
+             {
                 ".all" : [
                    {
                       ".ref" : "import_target"
                    },
                    {
+                      "+min" : 0,
+                      "-flat" : 1,
+                      ".all" : [
+                         {
+                            ".ref" : "import_sep"
+                         },
+                         {
+                            ".ref" : "import_target"
+                         }
+                      ]
+                   },
+                   {
                       "+max" : 1,
-                      ".ref" : "end"
+                      ".ref" : "import_sep"
                    }
                 ]
+             },
+             {
+                "+min" : 0,
+                ".ref" : "s"
              },
              {
                 ".rgx" : "\\)"
@@ -116,10 +139,16 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
              }
           ]
        },
+       "import_sep" : {
+          ".rgx" : "(?:[\\ \\t]*(?:;[\\ \\t]*|\\r?\\n|\$|(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$)))(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$))*)[\\ \\t]*"
+       },
        "import_target" : {
           ".any" : [
              {
                 ".ref" : "import_target_core"
+             },
+             {
+                ".ref" : "import_target_git"
              },
              {
                 ".ref" : "import_target_github"
@@ -130,46 +159,49 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ]
        },
        "import_target_core" : {
-          ".rgx" : "Core\\ +[0-9]+\\.[0-9]+\\.[0-9]+"
+          ".rgx" : "Core[\\ \\t]+([0-9]+\\.[0-9]+\\.[0-9]+)"
+       },
+       "import_target_git" : {
+          ".rgx" : "git:([^\\s;\\)]+)[\\ \\t]+([^\\s;\\)]+)"
        },
        "import_target_github" : {
-          ".ref" : "xxx"
+          ".rgx" : "github:(\\w+)/(\\w+)[\\ \\t]+([^\\s;\\)]+)"
        },
        "import_target_http" : {
-          ".ref" : "xxx"
+          ".rgx" : "(https?://[^\\s;\\)]+)"
        },
        "like_definition" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "like_expr" : {
           ".rgx" : "(//?)([^/]+)(//?)"
        },
        "list_definition" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "list_properties" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "must_definition" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "must_expr" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "op_assign" : {
           ".rgx" : ":?="
        },
        "pair_definition" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "pair_set" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "range_expr" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "s" : {
-          ".rgx" : "\\ "
+          ".rgx" : "[\\ \\t]"
        },
        "schema" : {
           ".all" : [
@@ -182,13 +214,13 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ]
        },
        "schematype_directive" : {
-          ".rgx" : "SchemaType\\ +([0-9]+\\.[0-9]+\\.[0-9]+)[\\ \\t]*(?:;|\\r?\\n|\\z)(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\\z))*"
+          ".rgx" : "SchemaType[\\ \\t]+([0-9]+\\.[0-9]+\\.[0-9]+)(?:[\\ \\t]+\\+([0-9]+\\.[0-9]+\\.[0-9]+))?(?:[\\ \\t]*(?:;[\\ \\t]*|\\r?\\n|\$|(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$)))(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$))*)"
        },
        "size_expr" : {
-          ".ref" : "xxx"
+          ".ref" : "XXX"
        },
        "type_base" : {
-          ".rgx" : "(?:(?:Str|Int|Bool)|![a-z][\\-a-z0-9]*)"
+          ".rgx" : "(?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*)"
        },
        "type_definition" : {
           ".any" : [
@@ -326,8 +358,5 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                 ".ref" : "desc_value"
              }
           ]
-       },
-       "xxx" : {
-          ".rgx" : "XXX"
        }
     }

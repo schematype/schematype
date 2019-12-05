@@ -4,6 +4,8 @@ require '../schematype-compiler/ast'
 
 require('pegex').require 'parser'
 
+json_stringify = require 'json-stringify-pretty-compact'
+
 parse_schematype = (schematype_input, schematype_file)->
   parser = new Pegex.Parser
     grammar: new SchemaTypeCompiler.Grammar
@@ -28,5 +30,5 @@ class SchemaTypeCompiler.Compiler
     @ast_to_json parse_schematype schematype_input, schematype_file
 
   ast_to_json: (ast)->
-    json = JSON.stringify ast, null, 2
+    json = json_stringify ast, {}
     json + "\n"
