@@ -17,6 +17,17 @@ WORK_DIRS := \
     $(WORK_REPOS) \
 
 #------------------------------------------------------------------------------
+.PHONY: test
+test: test-compiler
+
+test-compiler: compiler
+	make -C $< test
+
+#------------------------------------------------------------------------------
+docker-build docker-shell docker-test: docker
+	make -C $< $(@:docker-%=%)
+
+#------------------------------------------------------------------------------
 default:
 
 work: $(WORK_DIRS)
@@ -40,9 +51,21 @@ realclean: clean
 	rm -fr $(WORK_DIRS) test
 
 #------------------------------------------------------------------------------
+pull: work
+	@for d in $(WORK_BRANCHES); do \
+	    [[ -d $$d ]] || continue; \
+	    ( \
+	      echo "=== $$d"; \
+	      cd $$d; \
+	      git pull --rebase; \
+	    ); \
+	done
+	@echo "=== $$(git rev-parse --abbrev-ref HEAD)"
+	@git pull --rebase
+
 status:
 	@for d in $(WORK_BRANCHES); do \
-	    [ -d $$d ] || continue; \
+	    [[ -d $$d ]] || continue; \
 	    ( \
 	      echo "=== $$d"; \
 	      cd $$d; \
@@ -51,20 +74,9 @@ status:
 		git log --graph --decorate --pretty=oneline --abbrev-commit -10 | grep wip; \
 		git clean -dxn; \
 	      ); \
-	      [ -z "$$output" ] || echo "$$output"; \
+	      [[ -z $$output ]] || echo "$$output"; \
 	    ); \
 	done
 	@echo "=== $$(git rev-parse --abbrev-ref HEAD)"
 	@git status | grep -Ev '(^On branch|up.to.date|nothing to commit)' || true
 	@git log --graph --decorate --pretty=oneline --abbrev-commit -10 | grep wip || true
-
-#------------------------------------------------------------------------------
-.PHONY: test
-test: test-compiler
-
-test-compiler: compiler
-	make -C $< test
-
-#------------------------------------------------------------------------------
-docker-build docker-shell docker-test: docker
-	make -C $< $(@:docker-%=%)
