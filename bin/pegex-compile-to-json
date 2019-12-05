@@ -11,4 +11,10 @@ my $compiler = Pegex::Compiler->new;
 
 $compiler->parse($input)->combinate;
 
-print $compiler->to_json;
+my $json = $compiler->to_json;
+
+# XXX Hack to use Perl Pegex compile with JS.
+# We should be using JS Pegex compiler.
+$json =~ s/\\z/\$/g;
+
+print $json;
