@@ -249,7 +249,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ".rgx" : "SchemaType[\\ \\t]+([0-9]+\\.[0-9]+\\.[0-9]+)(?:[\\ \\t]+\\+([0-9]+\\.[0-9]+\\.[0-9]+))?(?:[\\ \\t]*(?:;[\\ \\t]*|\\r?\\n|\$|(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$)))(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$))*)"
        },
        "size_expr" : {
-          ".ref" : "XXX"
+          ".rgx" : "\\+([1-9][0-9]*)"
        },
        "type_definition" : {
           ".any" : [
@@ -320,36 +320,16 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "type_definition_parens" : {
           ".all" : [
              {
-                ".rgx" : "([a-z][\\-a-z0-9]*)[\\ \\t]*(:?=)[\\ \\t]*((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))\\((?:[\\ \\t]*(?:;[\\ \\t]*|\\r?\\n|\$|(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$)))(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$))*)"
+                ".rgx" : "([a-z][\\-a-z0-9]*)[\\ \\t]*(:?=)[\\ \\t]*((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))\\("
              },
              {
+                "+max" : 1,
                 ".all" : [
                    {
                       ".all" : [
                          {
-                            ".ref" : "type_property"
-                         },
-                         {
                             "+min" : 0,
-                            "-flat" : 1,
-                            ".all" : [
-                               {
-                                  "+min" : 1,
-                                  ".ref" : "s"
-                               },
-                               {
-                                  ".ref" : "type_property"
-                               }
-                            ]
-                         }
-                      ]
-                   },
-                   {
-                      "+min" : 0,
-                      "-flat" : 1,
-                      ".all" : [
-                         {
-                            ".ref" : "end"
+                            ".ref" : "s"
                          },
                          {
                             ".all" : [
@@ -374,8 +354,126 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                       ]
                    },
                    {
+                      "+min" : 0,
+                      "-flat" : 1,
+                      ".all" : [
+                         {
+                            ".ref" : "end"
+                         },
+                         {
+                            ".all" : [
+                               {
+                                  "+min" : 0,
+                                  ".ref" : "s"
+                               },
+                               {
+                                  ".all" : [
+                                     {
+                                        ".ref" : "type_property"
+                                     },
+                                     {
+                                        "+min" : 0,
+                                        "-flat" : 1,
+                                        ".all" : [
+                                           {
+                                              "+min" : 1,
+                                              ".ref" : "s"
+                                           },
+                                           {
+                                              ".ref" : "type_property"
+                                           }
+                                        ]
+                                     }
+                                  ]
+                               }
+                            ]
+                         }
+                      ]
+                   },
+                   {
                       "+max" : 1,
                       ".ref" : "end"
+                   }
+                ]
+             },
+             {
+                "+max" : 1,
+                ".all" : [
+                   {
+                      ".ref" : "end"
+                   },
+                   {
+                      ".all" : [
+                         {
+                            ".all" : [
+                               {
+                                  "+min" : 0,
+                                  ".ref" : "s"
+                               },
+                               {
+                                  ".all" : [
+                                     {
+                                        ".ref" : "type_property"
+                                     },
+                                     {
+                                        "+min" : 0,
+                                        "-flat" : 1,
+                                        ".all" : [
+                                           {
+                                              "+min" : 1,
+                                              ".ref" : "s"
+                                           },
+                                           {
+                                              ".ref" : "type_property"
+                                           }
+                                        ]
+                                     }
+                                  ]
+                               }
+                            ]
+                         },
+                         {
+                            "+min" : 0,
+                            "-flat" : 1,
+                            ".all" : [
+                               {
+                                  ".ref" : "end"
+                               },
+                               {
+                                  ".all" : [
+                                     {
+                                        "+min" : 0,
+                                        ".ref" : "s"
+                                     },
+                                     {
+                                        ".all" : [
+                                           {
+                                              ".ref" : "type_property"
+                                           },
+                                           {
+                                              "+min" : 0,
+                                              "-flat" : 1,
+                                              ".all" : [
+                                                 {
+                                                    "+min" : 1,
+                                                    ".ref" : "s"
+                                                 },
+                                                 {
+                                                    ".ref" : "type_property"
+                                                 }
+                                              ]
+                                           }
+                                        ]
+                                     }
+                                  ]
+                               }
+                            ]
+                         },
+                         {
+                            "+max" : 1,
+                            ".ref" : "end"
+                         }
+                      ]
                    }
                 ]
              },

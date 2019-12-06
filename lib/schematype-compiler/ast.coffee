@@ -83,21 +83,32 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     return
 
   #----------------------------------------------------------------------------
-  got_type_definition: ([[name, op, base], got])->
-    got = _.assign {}, (_.flattenDepth got)...
+  got_type_definition: ([[name, op, base], got...])->
+    got = _.assign {}, (_.flattenDepth got, 9)...
     type = {}
     if base[0] == '!'
       type.base = base
     else
       type.kind = base
-    for k in ['kind', 'type', 'enum']
+    for k in ['kind', 'type', 'enum', 'like', 'size']
       type[k] = got[k] if _.has got, k
     name = '!' + name
     @exports.push name if op == ':='
     @vars[name] = type
 
   got_enum_expr: (got)->
-    enum: _.flattenDepth got, 2
+    enum: _.flattenDepth got, 9
+
+  got_like_expr: (got)->
+    [head, regex, foot] = _.flattenDepth got, 9
+    regex = regex.replace /\(: /g, '(?:'
+    regex = regex.replace /\ /g, ''
+    regex = "\\A#{regex}" if head == '//'
+    regex = "#{regex}\\z" if foot == '//'
+    like: regex
+
+  got_size_expr: (got)->
+    size: Number got
 
   got_wordlet: (got)->
     got
