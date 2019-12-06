@@ -51,18 +51,6 @@ realclean: clean
 	rm -fr $(WORK_DIRS) test
 
 #------------------------------------------------------------------------------
-pull: work
-	@for d in $(WORK_BRANCHES); do \
-	    [[ -d $$d ]] || continue; \
-	    ( \
-	      echo "=== $$d"; \
-	      cd $$d; \
-	      git pull --rebase; \
-	    ); \
-	done
-	@echo "=== $$(git rev-parse --abbrev-ref HEAD)"
-	@git pull --rebase
-
 status:
 	@for d in $(WORK_BRANCHES); do \
 	    [[ -d $$d ]] || continue; \
@@ -80,3 +68,51 @@ status:
 	@echo "=== $$(git rev-parse --abbrev-ref HEAD)"
 	@git status | grep -Ev '(^On branch|up.to.date|nothing to commit)' || true
 	@git log --graph --decorate --pretty=oneline --abbrev-commit -10 | grep wip || true
+
+pull:
+	@for d in $(WORK_BRANCHES); do \
+	    [[ -d $$d ]] || continue; \
+	    ( \
+	      echo "=== $$d"; \
+	      cd $$d; \
+	      git pull --rebase; \
+	    ); \
+	done
+	@echo "=== $$(git rev-parse --abbrev-ref HEAD)"
+	@git pull --rebase
+
+push:
+	@for d in $(WORK_BRANCHES); do \
+	    [[ -d $$d ]] || continue; \
+	    ( \
+	      echo "=== $$d"; \
+	      cd $$d; \
+	      git push; \
+	    ); \
+	done
+	@echo "=== $$(git rev-parse --abbrev-ref HEAD)"
+	@git push
+
+diff:
+	@for d in $(WORK_BRANCHES); do \
+	    [[ -d $$d ]] || continue; \
+	    ( \
+	      echo "=== $$d"; \
+	      cd $$d; \
+	      git diff; \
+	    ); \
+	done
+	@echo "=== $$(git rev-parse --abbrev-ref HEAD)"
+	@git diff
+
+commit:
+	@for d in $(WORK_BRANCHES); do \
+	    [[ -d $$d ]] || continue; \
+	    ( \
+	      echo "=== $$d"; \
+	      cd $$d; \
+	      git add . && git commit -m '$(msg)' || true; \
+	    ); \
+	done
+	@echo "=== $$(git rev-parse --abbrev-ref HEAD)"
+	@git add . && git commit -m '$(msg)' || true
