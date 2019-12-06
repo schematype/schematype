@@ -5,12 +5,6 @@ use base 'TestML::Bridge';
 use File::Temp qw/tempdir/;
 use Capture::Tiny 'capture';
 
-sub undent {
-  my ($self, $text) = @_;
-  $text =~ s/^    //mg;
-  return $text;
-}
-
 sub compile {
   my ($self, $stp) = @_;
 
@@ -31,6 +25,19 @@ sub compile {
   warn $stderr if $stderr;
 
   return $stdout;
+}
+
+sub add_head {
+    my ($self, $stp) = @_;
+    "SchemaType 0.1.0 +0.1.1\n" . $stp;
+}
+
+sub clean {
+    my ($self, $stc) = @_;
+    $stc =~ s/^[{}]\n//mg;
+    $stc =~ s/^  "/"/mg;
+    $stc =~ s/^"(schematype|from)".*\n//mg;
+    $stc;
 }
 
 1;
