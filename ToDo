@@ -3,4 +3,6 @@
 - Write stp CLI command in Bash
   - `stp compile` calls schematype-compiler
   - `stp link` calls schematype-linker
-
+  - `stp show` calls schematype-show
+- Write schematype-linker program
+- Write schematype-show program
