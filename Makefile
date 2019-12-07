@@ -6,8 +6,8 @@ WORK_BRANCHES := \
     grammar \
     node_modules \
     note \
-    test.compiler \
     perl5 \
+    test.compiler \
 
 WORK_REPOS := \
     testml \

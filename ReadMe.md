@@ -3,6 +3,8 @@ SchemaType
 
 SchemaType is a Data Type Definition Language
 
+[![Build Status](https://travis-ci.org/schematype/schematype.svg?branch=master)](https://travis-ci.org/schematype/schematype)
+
 # SchemaType Resources
 
 * [SchemaType Website](http://schematype.org)
