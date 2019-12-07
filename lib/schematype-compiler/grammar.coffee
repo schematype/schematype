@@ -206,7 +206,17 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ".rgx" : "(\\./[^\\s;\\)]+)"
        },
        "like_definition" : {
-          ".ref" : "XXX"
+          ".all" : [
+             {
+                ".rgx" : "([a-z][\\-a-z0-9]*)[\\ \\t]*(:?=)[\\ \\t]*"
+             },
+             {
+                ".ref" : "like_expr"
+             },
+             {
+                ".ref" : "end"
+             }
+          ]
        },
        "like_expr" : {
           ".rgx" : "(//?)([^/]+)(//?)"

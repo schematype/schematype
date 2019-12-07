@@ -7,19 +7,21 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     @exports = []
 
     @vars = {}
-    @type = {}
+    @re = {}
 
   final: ->
-    ast =
+    @ast =
       schematype:
         spec: @schematype.version
 
-    ast.from = @imports if @imports.length > 0
-    ast.show = @exports if @exports.length > 0
+    @ast.from = @imports if @imports.length > 0
+    @ast.show = @exports if @exports.length > 0
 
-    _.assign ast, @vars
+    @regex_interpolation()
 
-    return ast
+    _.assign @ast, @vars
+
+    return @ast
 
   got_schematype_directive: ([version, core_version])->
     @schematype.version = version
@@ -96,13 +98,20 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     @exports.push name if op == ':='
     @vars[name] = type
 
+  got_like_definition: ([[name, op], got...])->
+    got = _.assign {}, (_.flattenDepth got, 9)...
+    regex = got.like
+    @re[name] = regex
+    name = '/' + name
+    @exports.push name if op == ':='
+
   got_enum_expr: (got)->
     enum: _.flattenDepth got, 9
 
   got_like_expr: (got)->
     [head, regex, foot] = _.flattenDepth got, 9
-    regex = regex.replace /\(: /g, '(?:'
-    regex = regex.replace /\ /g, ''
+    regex = regex.replace /\(:/g, '(?:'
+    regex = regex.replace /\s/g, ''
     regex = "\\A#{regex}" if head == '//'
     regex = "#{regex}\\z" if foot == '//'
     like: regex
@@ -112,5 +121,19 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
 
   got_wordlet: (got)->
     got
+
+  #----------------------------------------------------------------------------
+  regex_interpolation: ->
+    for k, v of @vars
+      if k[0] == '!'
+        if v.like?
+          v.like = v.like.replace /\{(\w+)\}/g, (m...)=>
+            if @re[m[1]]?
+              return @re[m[1]]
+            else
+              return m[0]
+
+    for k, v of @re
+      @vars["/#{k}"] = v
 
 # vim: sw=2:
