@@ -1,21 +1,22 @@
 SHELL := bash
 ROOT := $(shell cd .. && pwd)
 
-BUILD := $(ROOT)/compiler/build
+COMPILER := $(ROOT)/compiler
+BUILD := $(COMPILER)/build
 GRAMMAR := $(ROOT)/grammar
 NODE_MODULES := $(ROOT)/node_modules
-PERL5 := $(ROOT)/perl5
-PERL5LIB := $(PERL5)/lib/perl5
 TEST_COMPILER := $(ROOT)/test.compiler
 TESTML := $(ROOT)/testml
 
 GRAMMAR_COFFEE := lib/schematype-compiler/grammar.coffee
-COFFEE_FILES := $(shell find lib -type f)
-JS_FILES := $(COFFEE_FILES:%.coffee=build/%.js)
+COFFEE_FILES := $(shell find bin -type f && find lib -type f)
+JS_FILES := $(COFFEE_FILES:%.coffee=%.js)
+JS_FILES := $(JS_FILES:%=build/%)
+TESTML_RUNNER := $(TESTML)/src/node/lib/testml/run/tap.js
 
-export PATH := $(BUILD)/bin:$(NODE_MODULES)/.bin:$(PERL5)/bin:$(PATH)
-export TESTML_RUN := perl5
-export PERL5LIB := $(PERL5LIB)
+export PATH := $(BUILD)/bin:$(NODE_MODULES)/.bin:$(PATH)
+export TESTML_RUN := node-tap
+export NODE_PATH := $(COMPILER)/build/lib:$(NODE_MODULES)
 
 test := test/*.tml
 j := 1
@@ -25,28 +26,28 @@ export SCHEMATYPE_COMPILER_DEBUG := $(debug)
 default:
 
 .PHONY: test
-test: build $(TESTML) $(TEST_COMPILER)
+test: build $(TESTML_RUNNER) $(TEST_COMPILER) test/testml-bridge.js
 	(source $(TESTML)/.rc && prove -v -j$(j) $(test))
 
 .PHONY: build
-build: dep-perl dep-node $(NODE_MODULES) $(JS_FILES) build/bin/schematype-compiler
+build: dep-node $(NODE_MODULES) $(JS_FILES)
 
 clean:
-	rm -fr build/ test/.testml/ $(TEST_COMPILER)/.testml/
+	rm -fr build/ test/testml-bridge.js test/.testml/ $(TEST_COMPILER)/.testml/
 
 #------------------------------------------------------------------------------
-build/bin/schematype-compiler: bin/schematype-compiler
-	@mkdir -p build/bin
-	echo '#!/usr/bin/env node' > $@
+build/bin/%: bin/%
+	mkdir -p $$(dirname $@)
+	echo '#!/usr/bin/env node' > "$@"
 	coffee -cp $< >> $@
-	chmod +x $@
+	chmod +x "$@"
 
-build/lib/schematype-compiler/%.js: lib/schematype-compiler/%.coffee
-	@mkdir -p build/lib/schematype-compiler
+build/%.js: %.coffee
+	mkdir -p $$(dirname $@)
 	coffee -cp $< > $@
 
 lib/schematype-compiler/grammar.coffee: $(GRAMMAR)/schematype.pgx.json
-	make -C $(ROOT) node_modules perl5
+	make -C $(ROOT) node_modules
 	( \
 	    grep -B99 make_tree $@; \
 	    sed 's/^/    /' < $< \
@@ -56,17 +57,19 @@ lib/schematype-compiler/grammar.coffee: $(GRAMMAR)/schematype.pgx.json
 $(GRAMMAR)/schematype.pgx.json: $(GRAMMAR)
 	make -C $< build
 
-$(GRAMMAR) $(NODE_MODULES) $(PERL5) $(TEST_COMPILER) $(TESTML):
+$(GRAMMAR) $(NODE_MODULES) $(TEST_COMPILER) $(TESTML):
 	make -C $(ROOT) $(@:$(ROOT)/%=%)
+
+test/testml-bridge.js: test/testml-bridge.coffee
+	coffee -cp $< > $@
+
+$(TESTML_RUNNER): $(TESTML)
+	make -C $(TESTML)/src/node build
+	touch $(TESTML_RUNNER)
 
 #------------------------------------------------------------------------------
 dep-node:
-	@command -v node || { \
+	@command -v node >/dev/null || { \
 	    echo "ERROR: Action requires 'node' (NodeJS) to be installed."; \
-	    exit 1; \
-	}
-dep-perl:
-	@command -v perl || { \
-	    echo "ERROR: Action requires 'perl' (Perl 5) to be installed."; \
 	    exit 1; \
 	}
