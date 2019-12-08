@@ -1,17 +1,3 @@
-- Add .travis.yml for compiler testing
-
-- Add enough language features to do JSC generator
-  - Map
-
-- Write schematype-generate-jsonschema
-
-- Write schematype-linker program
-- Write schematype-show program
-
-- Write schematype-validate-json
-- Write schematype-validate-yaml
-- Write schematype-validate-csv
-
 - Write `stp` CLI command in Bash
   - `stp compile` calls schematype-compiler and schematype-linker
     - `stp compile --no-link`
@@ -19,8 +5,29 @@
   - `stp show` calls schematype-show
   - `stp validate --json foo.stp foo1.json`
 
+- Write a .rc file in master for installation
+
+- Switch to new .stc data layout (note/Ideas)
+
+- Write documentation
+
+- Add enough language features to do JSC generator
+  - Map
+
+- Write Core schema
+
+- Write schematype-linker program
+- Write schematype-show program
+
+- Write schematype-generate-jsonschema
+
+- Write schematype-validate-json
+- Write schematype-validate-yaml
+- Write schematype-validate-csv
+
 - Speed up git operations with clone --depth=1 for testml
 
 
 == DONE
 + Use node testml runtime for compilation tests
++ Add .travis.yml for compiler testing
