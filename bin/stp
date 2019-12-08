@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=1091,2034,2154
+
 GETOPT_SPEC="\
   $(basename "$0") <options...> [<argument>...]
 
@@ -77,7 +79,7 @@ get-compiler() {
   [[ -f $compiler ]] ||
     run-cmd make -C "$compiler_dir" build
 
-  echo $compiler
+  echo "$compiler"
 }
 
 run-cmd() {
@@ -118,7 +120,7 @@ get-opts() {
   $option_debug && set -x
 
   $option_compile && cmd=compile
-  $option_link && cmd=link
+  $option_link && cmd='link'
 
   true
 }
