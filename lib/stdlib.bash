@@ -12,14 +12,6 @@ check-bash-version() {
   fi
 }
 
-shasum() {
-  if [[ $OSTYPE == darwin* ]]; then
-    die 'XXX - shasum for mac'
-  else
-    sha256sum | cut -d' ' -f1
-  fi
-}
-
 die() {
   if [[ $* ]]; then
     printf "%s\n" "$@"
