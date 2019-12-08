@@ -2,11 +2,14 @@ SHELL := bash
 
 WORK_BRANCHES := \
     compiler \
+    doc \
     docker \
+    example \
     grammar \
     node_modules \
     note \
     perl5 \
+    stp \
     test.compiler \
 
 WORK_REPOS := \
@@ -20,8 +23,13 @@ WORK_DIRS := \
 .PHONY: test
 test: test-compiler
 
+test-all: test-shellcheck test-compiler
+
 test-compiler: compiler
 	make -C $< test
+
+test-shellcheck:
+	make -C .shell shellcheck
 
 #------------------------------------------------------------------------------
 docker-build docker-shell docker-test: docker
@@ -51,6 +59,8 @@ realclean: clean
 	rm -fr $(WORK_DIRS) test
 
 #------------------------------------------------------------------------------
+s: status
+
 status:
 	@for d in $(WORK_BRANCHES); do \
 	    [[ -d $$d ]] || continue; \

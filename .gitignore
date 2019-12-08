@@ -1,9 +1,12 @@
 /compiler/
+/doc/
 /docker/
+/example/
 /grammar/
 /node_modules/
 /note/
 /perl5/
+/stp/
 /test.compiler/
 /testml/
 

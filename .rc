@@ -1,0 +1,41 @@
+# Enable SchemaType framework for POSIX shells:
+#
+# * Bash
+# * Zsh
+# * Ksh
+# * Dash
+
+# shellcheck shell=bash disable=2128
+
+if test -n "$ZSH_VERSION"; then
+  SCHEMATYPE_ROOT=$0
+elif test -n "$BASH_SOURCE"; then
+  SCHEMATYPE_ROOT=${BASH_SOURCE[0]}
+else
+  echo "Can't enable SchemaType for your shell with the '.rc' file."
+  echo
+  echo "See: https://github.com/schematype/schematype/wiki/SchemaType-Setup"
+
+  return 1
+fi
+
+SCHEMATYPE_ROOT=$(cd "$(dirname "$SCHEMATYPE_ROOT")" && pwd)
+
+"${SCHEMATYPE_BASH:-bash}" "$SCHEMATYPE_ROOT/.shell/check" || {
+  unset SCHEMATYPE_ROOT
+  return 1
+}
+
+if ! [[ -d $SCHEMATYPE_ROOT/stp && -d $SCHEMATYPE_ROOT/doc ]]; then
+  make -C "$SCHEMATYPE_ROOT" stp doc example &>/dev/null || {
+    echo "Failed to enable SchemaType"
+    unset SCHEMATYPE_ROOT
+    return 1
+  }
+fi
+
+export SCHEMATYPE_ROOT
+export PATH=$SCHEMATYPE_ROOT/stp/bin:$PATH
+export MANPATH=$SCHEMATYPE_ROOT/doc/man${MANPATH:+":$MANPATH"}
+
+# vim: set ft=sh:

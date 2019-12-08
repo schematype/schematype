@@ -1,0 +1,35 @@
+# shellcheck shell=bash
+
+# Check for Bash 4.4+
+if ! [[ $(bash --version 2>/dev/null) =~ version\ (4\.4|5) ]]; then
+  cat <<'...'
+Error: Bash 4.4+ is required to use the SchemaType framework.
+
+Note: It just needs to be in your PATH; it doesn't need to be your shell.
+
+See: https://github.com/schematype/schematype/wiki/SchemaType-Requirements
+...
+  return 1
+fi
+
+# Check for GNU Make 4+
+if ! [[ $(make --version 2>/dev/null) =~ ^GNU\ Make\ [4-9] ]]; then
+  cat <<'...'
+Error: GNU Make 4+ is required to use the SchemaType framework.
+
+See: https://github.com/schematype/schematype/wiki/SchemaType-Requirements
+...
+  return 1
+fi
+
+# Check for Git 2.7+
+if ! [[ $(git --version 2>/dev/null) =~ version\ 2\.([7-9]|[1-9][0-9])\. ]]; then
+  cat <<'...'
+Error: Git 2.7+ is required to use the SchemaType framework.
+
+See: https://github.com/schematype/schematype/wiki/SchemaType-Requirements
+...
+  return 1
+fi
+
+# vim: set ft=sh:
