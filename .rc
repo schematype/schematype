@@ -11,6 +11,8 @@ if test -n "$ZSH_VERSION"; then
   SCHEMATYPE_ROOT=$0
 elif test -n "$BASH_SOURCE"; then
   SCHEMATYPE_ROOT=${BASH_SOURCE[0]}
+elif test -n "$SCHEMATYPE_ROOT" && test -d "$SCHEMATYPE_ROOT"; then
+  SCHEMATYPE_ROOT=$SCHEMATYPE_ROOT/.rc
 else
   echo "Can't enable SchemaType for your shell with the '.rc' file."
   echo

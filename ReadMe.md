@@ -27,8 +27,14 @@ git clone https://github.com/schematype/schematype /path/to/schematype
 
 # Add to your Bash or Zsh startup file:
 source /path/to/schematype/.rc
+
 # Or add to your Fish startup file:
 source /path/to/schematype/.rc.fish
+
+# For other POSIX shells:
+SCHEMATYPE=/path/to/schematype
+export SCHEMATYPE
+source /path/to/schematype/.rc
 
 # Test out the `stp` command:
 stp --help
