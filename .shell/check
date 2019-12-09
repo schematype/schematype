@@ -9,7 +9,7 @@ Note: It just needs to be in your PATH; it doesn't need to be your shell.
 
 See: https://github.com/schematype/schematype/wiki/SchemaType-Requirements
 ...
-  return 1
+  exit 1
 fi
 
 # Check for GNU Make 4+
@@ -19,7 +19,7 @@ Error: GNU Make 4+ is required to use the SchemaType framework.
 
 See: https://github.com/schematype/schematype/wiki/SchemaType-Requirements
 ...
-  return 1
+  exit 1
 fi
 
 # Check for Git 2.7+
@@ -29,7 +29,7 @@ Error: Git 2.7+ is required to use the SchemaType framework.
 
 See: https://github.com/schematype/schematype/wiki/SchemaType-Requirements
 ...
-  return 1
+  exit 1
 fi
 
 # vim: set ft=sh:
