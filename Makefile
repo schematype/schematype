@@ -9,7 +9,7 @@ TEST_COMPILER := $(ROOT)/test.compiler
 TESTML := $(ROOT)/testml
 
 GRAMMAR_COFFEE := lib/schematype-compiler/grammar.coffee
-COFFEE_FILES := $(shell find bin -type f && find lib -type f)
+COFFEE_FILES := $(shell find bin -type f && find lib -name '*.coffee')
 JS_FILES := $(COFFEE_FILES:%.coffee=%.js)
 JS_FILES := $(JS_FILES:%=build/%)
 TESTML_RUNNER := $(TESTML)/src/node/lib/testml/run/tap.js

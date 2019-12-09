@@ -11,6 +11,7 @@ parse_schematype = (schematype_input, schematype_file)->
     grammar: new SchemaTypeCompiler.Grammar
     receiver: new SchemaTypeCompiler.AST
       file: schematype_file
+      text: schematype_input
     debug: Boolean SchemaTypeCompiler.env.SCHEMATYPE_COMPILER_DEBUG
 
   parser.parse schematype_input

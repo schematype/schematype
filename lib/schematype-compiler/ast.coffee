@@ -1,25 +1,39 @@
 require('pegex').require 'tree'
+crypto = require 'crypto'
+secret = 'SchemaType 0.1.0'
 
 class SchemaTypeCompiler.AST extends Pegex.Tree
+  constructor: (args)->
+    super args
+    @name = args.file
+    @mark = crypto.createHmac('sha256', secret)
+      .update(args.text)
+      .digest('hex')
+
   initial: ->
     @schematype = {}
     @imports = []
     @exports = []
 
-    @vars = {}
-    @re = {}
+    @type = {}
+    @like = {}
 
   final: ->
     @ast =
-      schematype:
+      SchemaType:
         spec: @schematype.version
+      from:
+        name: @name
+        time: String Math.floor new Date
+        mark: @mark
 
-    @ast.from = @imports if @imports.length > 0
+    @ast.with = @imports if @imports.length > 0
     @ast.show = @exports if @exports.length > 0
 
     @regex_interpolation()
 
-    _.assign @ast, @vars
+    @ast.type = @type if _.keys(@type).length
+    @ast.like = @like if _.keys(@like).length
 
     return @ast
 
@@ -94,16 +108,15 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
       type.kind = base
     for k in ['kind', 'type', 'enum', 'like', 'size']
       type[k] = got[k] if _.has got, k
-    name = '!' + name
-    @exports.push name if op == ':='
-    @vars[name] = type
+    @type[name] = type
+    if op == ':='
+      @exports.push '!' + name
 
   got_like_definition: ([[name, op], got...])->
     got = _.assign {}, (_.flattenDepth got, 9)...
-    regex = got.like
-    @re[name] = regex
-    name = '/' + name
-    @exports.push name if op == ':='
+    @like[name] = got.like
+    if op == ':='
+      @exports.push '/' + name
 
   got_enum_expr: (got)->
     enum: _.flattenDepth got, 9
@@ -124,16 +137,12 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
 
   #----------------------------------------------------------------------------
   regex_interpolation: ->
-    for k, v of @vars
-      if k[0] == '!'
-        if v.like?
-          v.like = v.like.replace /\{(\w+)\}/g, (m...)=>
-            if @re[m[1]]?
-              return @re[m[1]]
-            else
-              return m[0]
-
-    for k, v of @re
-      @vars["/#{k}"] = v
+    for k, v of @type
+      if v.like?
+        v.like = v.like.replace /\{(\w+)\}/g, (m...)=>
+          if @like[m[1]]?
+            return @like[m[1]]
+          else
+            return m[0]
 
 # vim: sw=2:
