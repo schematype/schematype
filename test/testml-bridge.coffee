@@ -21,6 +21,8 @@ class TestMLBridge extends TestML.Bridge
     stc = stc.replace /^"SchemaType".*\n/mg, ''
     stc = stc.replace /^"from":\ \{[\s\S]*?\},?\n/mg, ''
     stc = stc.replace /^"with":\ \[.*\],?\n/mg, ''
+    stc = stc.replace /^\ *[\]\}],?\n/mg, ''
+    stc = stc.replace /,$/mg, ''
 
   clean2: (stc)->
     stc = @clean(stc)
