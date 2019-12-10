@@ -125,8 +125,8 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     like = got.like
     return ['/', like]
 
-  got_pair_def: ([need, got])->
-    pair = @flat got
+  got_pair_expr: ([need, key, [sigil, value]])->
+    pair = [key, value]
     pair.push true if need == '+'
     @pair[@pair.length - 1].push pair
 

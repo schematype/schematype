@@ -10,6 +10,9 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "_" : {
           ".rgx" : "(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*"
        },
+       "__" : {
+          ".rgx" : "(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))+"
+       },
        "close" : {
           ".rgx" : "\\)"
        },
@@ -43,7 +46,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           "+min" : 0,
           ".ref" : "definition"
        },
-       "desc_value" : {
+       "desc_expr" : {
           ".ref" : "XXX"
        },
        "directives" : {
@@ -66,11 +69,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "enum_expr" : {
           ".all" : [
              {
-                ".rgx" : "\\["
-             },
-             {
-                "+min" : 0,
-                ".ref" : "s"
+                ".rgx" : "\\[(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*"
              },
              {
                 ".all" : [
@@ -82,8 +81,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                       "-flat" : 1,
                       ".all" : [
                          {
-                            "+min" : 0,
-                            ".ref" : "s"
+                            ".ref" : "__"
                          },
                          {
                             ".ref" : "wordlet"
@@ -92,8 +90,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                    },
                    {
                       "+max" : 1,
-                      "+min" : 0,
-                      ".ref" : "s"
+                      ".ref" : "__"
                    }
                 ]
              },
@@ -115,10 +112,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "import_directive_group" : {
           ".all" : [
              {
-                ".rgx" : "Import\\("
-             },
-             {
-                ".ref" : "_"
+                ".rgx" : "Import\\((?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*"
              },
              {
                 ".all" : [
@@ -144,10 +138,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                 ]
              },
              {
-                ".ref" : "_"
-             },
-             {
-                ".rgx" : "\\)"
+                ".rgx" : "(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*\\)"
              },
              {
                 ".ref" : "end"
@@ -157,11 +148,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "import_directive_single" : {
           ".all" : [
              {
-                ".rgx" : "Import"
-             },
-             {
-                "+min" : 1,
-                ".ref" : "s"
+                ".rgx" : "Import[\\ \\t]+"
              },
              {
                 ".ref" : "import_target"
@@ -248,41 +235,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ".ref" : "XXX"
        },
        "open" : {
-          ".rgx" : "\\("
-       },
-       "pair_body" : {
-          ".all" : [
-             {
-                ".ref" : "pair_key"
-             },
-             {
-                "+min" : 1,
-                ".ref" : "s"
-             },
-             {
-                ".rgx" : "=\\>"
-             },
-             {
-                "+min" : 1,
-                ".ref" : "s"
-             },
-             {
-                ".ref" : "pair_value"
-             },
-             {
-                ".ref" : "end"
-             }
-          ]
-       },
-       "pair_def" : {
-          ".all" : [
-             {
-                ".ref" : "pair_marker"
-             },
-             {
-                ".ref" : "pair_body"
-             }
-          ]
+          ".rgx" : "\\((?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*"
        },
        "pair_definition" : {
           ".all" : [
@@ -295,83 +248,26 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ]
        },
        "pair_expr" : {
-          ".ref" : "XXX"
-       },
-       "pair_ext" : {
-          ".rgx" : "[&\\|]"
+          ".all" : [
+             {
+                ".ref" : "pair_marker"
+             },
+             {
+                ".ref" : "pair_key"
+             },
+             {
+                ".rgx" : "(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))+=\\>(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))+"
+             },
+             {
+                ".ref" : "type_definition"
+             }
+          ]
        },
        "pair_key" : {
           ".rgx" : "(\\w[\\w\\.\\-]*|\"(?:\\\\\"|[^\"])*\")"
        },
        "pair_marker" : {
-          ".rgx" : "[\\ \\t]*([\\+\\-])[\\ \\t]+"
-       },
-       "pair_set" : {
-          ".all" : [
-             {
-                ".ref" : "_"
-             },
-             {
-                ".all" : [
-                   {
-                      ".all" : [
-                         {
-                            "+min" : 0,
-                            ".ref" : "pair_def"
-                         },
-                         {
-                            "+max" : 1,
-                            ".all" : [
-                               {
-                                  ".ref" : "pair_ext"
-                               },
-                               {
-                                  "+min" : 0,
-                                  "-flat" : 1,
-                                  ".all" : [
-                                     {
-                                        ".ref" : "end"
-                                     },
-                                     {
-                                        ".ref" : "pair_ext"
-                                     }
-                                  ]
-                               },
-                               {
-                                  "+max" : 1,
-                                  ".ref" : "end"
-                               }
-                            ]
-                         }
-                      ]
-                   },
-                   {
-                      "+max" : 1,
-                      ".ref" : "end"
-                   }
-                ]
-             }
-          ]
-       },
-       "pair_value" : {
-          ".all" : [
-             {
-                ".ref" : "type_property"
-             },
-             {
-                "+min" : 0,
-                "-flat" : 1,
-                ".all" : [
-                   {
-                      "+min" : 1,
-                      ".ref" : "s"
-                   },
-                   {
-                      ".ref" : "type_property"
-                   }
-                ]
-             }
-          ]
+          ".rgx" : "(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*([\\+\\-])(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))+"
        },
        "s" : {
           ".rgx" : "[\\ \\t]"
@@ -395,10 +291,10 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "type_definition" : {
           ".any" : [
              {
-                ".ref" : "type_definition_parens"
+                ".ref" : "type_definition_line"
              },
              {
-                ".ref" : "type_definition_line"
+                ".ref" : "type_definition_parens"
              },
              {
                 ".ref" : "type_definition_bare"
@@ -408,7 +304,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "type_definition_bare" : {
           ".all" : [
              {
-                ".rgx" : "((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))"
+                ".rgx" : "((?:(?:Str|Int|Bool|Map|Tuple|List)|![a-z][\\-a-z0-9]*))"
              },
              {
                 "+max" : 1,
@@ -422,11 +318,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "type_definition_line" : {
           ".all" : [
              {
-                ".rgx" : "((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))"
-             },
-             {
-                "+min" : 1,
-                ".ref" : "s"
+                ".rgx" : "((?:(?:Str|Int|Bool|Map|Tuple|List)|![a-z][\\-a-z0-9]*))[\\ \\t]+"
              },
              {
                 "+max" : 1,
@@ -457,167 +349,19 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "type_definition_parens" : {
           ".all" : [
              {
-                ".rgx" : "((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))"
+                ".rgx" : "((?:(?:Str|Int|Bool|Map|Tuple|List)|![a-z][\\-a-z0-9]*))"
              },
              {
                 ".ref" : "open"
              },
              {
-                "+max" : 1,
-                ".ref" : "pair_set"
-             },
-             {
-                "+max" : 1,
+                "+min" : 0,
                 ".all" : [
                    {
-                      ".all" : [
-                         {
-                            "+min" : 0,
-                            ".ref" : "s"
-                         },
-                         {
-                            ".all" : [
-                               {
-                                  ".ref" : "type_property"
-                               },
-                               {
-                                  "+min" : 0,
-                                  "-flat" : 1,
-                                  ".all" : [
-                                     {
-                                        "+min" : 1,
-                                        ".ref" : "s"
-                                     },
-                                     {
-                                        ".ref" : "type_property"
-                                     }
-                                  ]
-                               }
-                            ]
-                         }
-                      ]
+                      ".ref" : "type_property"
                    },
                    {
-                      "+min" : 0,
-                      "-flat" : 1,
-                      ".all" : [
-                         {
-                            ".ref" : "end"
-                         },
-                         {
-                            ".all" : [
-                               {
-                                  "+min" : 0,
-                                  ".ref" : "s"
-                               },
-                               {
-                                  ".all" : [
-                                     {
-                                        ".ref" : "type_property"
-                                     },
-                                     {
-                                        "+min" : 0,
-                                        "-flat" : 1,
-                                        ".all" : [
-                                           {
-                                              "+min" : 1,
-                                              ".ref" : "s"
-                                           },
-                                           {
-                                              ".ref" : "type_property"
-                                           }
-                                        ]
-                                     }
-                                  ]
-                               }
-                            ]
-                         }
-                      ]
-                   },
-                   {
-                      "+max" : 1,
-                      ".ref" : "end"
-                   }
-                ]
-             },
-             {
-                "+max" : 1,
-                ".all" : [
-                   {
-                      ".ref" : "end"
-                   },
-                   {
-                      ".all" : [
-                         {
-                            ".all" : [
-                               {
-                                  "+min" : 0,
-                                  ".ref" : "s"
-                               },
-                               {
-                                  ".all" : [
-                                     {
-                                        ".ref" : "type_property"
-                                     },
-                                     {
-                                        "+min" : 0,
-                                        "-flat" : 1,
-                                        ".all" : [
-                                           {
-                                              "+min" : 1,
-                                              ".ref" : "s"
-                                           },
-                                           {
-                                              ".ref" : "type_property"
-                                           }
-                                        ]
-                                     }
-                                  ]
-                               }
-                            ]
-                         },
-                         {
-                            "+min" : 0,
-                            "-flat" : 1,
-                            ".all" : [
-                               {
-                                  ".ref" : "end"
-                               },
-                               {
-                                  ".all" : [
-                                     {
-                                        "+min" : 0,
-                                        ".ref" : "s"
-                                     },
-                                     {
-                                        ".all" : [
-                                           {
-                                              ".ref" : "type_property"
-                                           },
-                                           {
-                                              "+min" : 0,
-                                              "-flat" : 1,
-                                              ".all" : [
-                                                 {
-                                                    "+min" : 1,
-                                                    ".ref" : "s"
-                                                 },
-                                                 {
-                                                    ".ref" : "type_property"
-                                                 }
-                                              ]
-                                           }
-                                        ]
-                                     }
-                                  ]
-                               }
-                            ]
-                         },
-                         {
-                            "+max" : 1,
-                            ".ref" : "end"
-                         }
-                      ]
+                      ".ref" : "_"
                    }
                 ]
              },
@@ -631,6 +375,9 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        },
        "type_property" : {
           ".any" : [
+             {
+                ".ref" : "pair_expr"
+             },
              {
                 ".ref" : "must_expr"
              },
@@ -647,7 +394,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                 ".ref" : "xtoy_expr"
              },
              {
-                ".ref" : "desc_value"
+                ".ref" : "desc_expr"
              }
           ]
        },
