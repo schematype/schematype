@@ -18,35 +18,27 @@ foo/bar = !foo/bar (. > 10)
 Type := Map(...)
 
 
-# Sample stc/stx format
-SchemaType: 0.1.0
+== Sample stc/stx format
+    SchemaType: 0.1.0
 
-from:
-  name: test.stp (or STDIN)
-  mark: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-  time: utc epoch with milliseconds
-
-with:
-- ["type", "url", ...]
-
-main: foo
-
-show:
-- !foo
-- !bar/baz
-- /like
-- .must
-- @list
-- +pair
-
-type:
-  foo: ...
-  bar/baz: ...
-
-like:
-
-list:
-
-pair:
-
-must:
+    from:
+    name: test.stp (or STDIN)
+    mark: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    time: utc epoch with milliseconds
+    with:
+    - ["type", "url", ...]
+    main: foo
+    show:
+    - !foo
+    - !bar/baz
+    - /like
+    - .must
+    - @list
+    - +pair
+    type:
+    foo: ...
+    bar/baz: ...
+    like:
+    list:
+    pair:
+    must:

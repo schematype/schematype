@@ -1,0 +1,91 @@
+Import ./foo (one two)  # Import the one and two symbols
+Import ./foo (/one !two)  # Import the one and two symbols with explicit markers
+Import ./foo :(one two)  # Import and export the one two symbols
+Import ./foo :./(one two) # Export under the Type name
+Import ./foo :foo/(one two)  # Export under the foo/ prefix
+Import ./foo *
+Import ./foo :*
+Import ./foo :./*
+Import ./foo :foo/*
+
+Type := ...   # Main type based off of <name>.stp file name
+
+var/var := ...  # can define hierarchical vars
+
+# Type syntax
+
+!foo        # end after base means bare def
+!foo 1..10   # space after base means line def
+!foo 1..10 {. % 2 == 0}
+Int 1..10 {. % 2 == 0}
+Int(1..10 {. % 2 == 0})
+Int(
+  1..10
+  {. % 2 == 0}
+)
+Int(1..10
+  {. % 2 == 0})
+Int(
+  1..10 {. % 2 == 0})
+
+!foo[]  # List or !foo
+!Int[] 1..10   # List of contrained Int
+!Int[1..10] 1..10   # COnstrained List of contrained Int
+!List( 1..10 Int(1..10))   # COnstrained List of contrained Int
+
+Tuple[+]( Int, Str|Null )
+Tuple[+] Int Str
+
+List( Tuple(Int Str) 1..10 )
+
+Map + foo => Int + "+bar" => Str - /x|y/ => Bool
+Map(+ foo => Int + "+bar" => Str - /x|y/ => Bool)
+Map(+ foo => Int; + "+bar" => Str; - /x|y/ => Bool)
+Map(+ foo => Int
+  + "+bar" => Str
+  - /x|y/ => Bool)
+Map(
+  + foo => Int
+  + "+bar" => Str
+  - /x|y/ => Bool
+)
+Map(
+  +
+    foo
+    =>
+    Int
+  + "+bar" => Str
+  - /x|y/ => Bool
+)
+
+Map(
+  + (
+    - foo => Int
+    - bar => Str
+  )
+  + baz => Int
+  | boo => Int
+)
+
+Map(
+  + (
+    - foo => Int
+    - bar => Str
+  )+
+  | (
+    - foo => Int
+    - bar => Str
+  )
+  + baz => Int
+  | boo => Int
+)
+
+
+# Regex anchoring
+foo = Str /xxx|yyy/         # Anchored
+foo = Str /(:xxx|yyy)/      # /(: means Not Anchored
+foo = Str / (:xxx|yyy)/     # Anchored
+re1 = /(: ... )/            # Regex vars should be not anchored
+re2 = / ... /               # Could be considered not anchored since it is a regex var
+re3 = // ... //             # Explicitly anchored
+
