@@ -17,6 +17,7 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
 
     @type = {}
     @like = {}
+    @pair = []
 
   final: ->
     @ast =
@@ -99,35 +100,53 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     return
 
   #----------------------------------------------------------------------------
+  got_open: ->
+    @pair.push []
+
+  got_close: ->
+    pair = @pair.pop()
+    if pair.length
+      return pair: pair
+    else
+      return
+
   got_type_definition: ([[name, op, base], got...])->
-    got = _.assign {}, (_.flattenDepth got, 9)...
+    got = _.assign {}, (@flat got)...
     type = {}
     if base[0] == '!'
       type.base = base
     else
       type.kind = base
-    for k in ['kind', 'type', 'enum', 'like', 'size']
+    for k in ['kind', 'pair', 'enum', 'like', 'size', 'xtoy']
       type[k] = got[k] if _.has got, k
     @type[name] = type
     if op == ':='
       @exports.push '!' + name
 
   got_like_definition: ([[name, op], got...])->
-    got = _.assign {}, (_.flattenDepth got, 9)...
+    got = _.assign {}, (@flat got)...
     @like[name] = got.like
     if op == ':='
       @exports.push '/' + name
 
+  got_pair_def: ([need, got])->
+    pair = @flat got
+    pair.push true if need == '+'
+    @pair[@pair.length - 1].push pair
+
   got_enum_expr: (got)->
-    enum: _.flattenDepth got, 9
+    enum: @flat got
 
   got_like_expr: (got)->
-    [head, regex, foot] = _.flattenDepth got, 9
+    [head, regex, foot] = @flat got
     regex = regex.replace /\(:/g, '(?:'
     regex = regex.replace /\s/g, ''
     regex = "\\A#{regex}" if head == '//'
     regex = "#{regex}\\z" if foot == '//'
     like: regex
+
+  got_xtoy_expr: ([x, y])->
+    xtoy: [x, y]
 
   got_size_expr: (got)->
     size: Number got
@@ -136,6 +155,9 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     got
 
   #----------------------------------------------------------------------------
+  flat: (array)->
+    _.flattenDeep array
+
   regex_interpolation: ->
     for k, v of @type
       if v.like?

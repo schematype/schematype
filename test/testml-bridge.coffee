@@ -22,4 +22,9 @@ class TestMLBridge extends TestML.Bridge
     stc = stc.replace /^"from":\ \{[\s\S]*?\},?\n/mg, ''
     stc = stc.replace /^"with":\ \[.*\],?\n/mg, ''
 
+  clean2: (stc)->
+    stc = @clean(stc)
+    stc = stc.replace /^"show":.*\n/mg, ''
+
+
 # vim: sw=2:
