@@ -7,8 +7,8 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "XXX" : {
           ".rgx" : "XXX"
        },
-       "cl" : {
-          ".rgx" : "(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$))"
+       "_" : {
+          ".rgx" : "(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*"
        },
        "close" : {
           ".rgx" : "\\)"
@@ -42,8 +42,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "directives" : {
           ".all" : [
              {
-                "+min" : 0,
-                ".ref" : "cl"
+                ".ref" : "_"
              },
              {
                 ".ref" : "schematype_directive"
@@ -55,7 +54,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ]
        },
        "end" : {
-          ".rgx" : "(?:[\\ \\t]*(?:;[\\ \\t]*|\\r?\\n|\$|(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$)))(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$))*)"
+          ".rgx" : "(?:[\\ \\t]*(?:;|(?:\\r?\\n|\$)|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*)"
        },
        "enum_expr" : {
           ".all" : [
@@ -112,12 +111,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                 ".rgx" : "Import\\("
              },
              {
-                "+min" : 0,
-                ".ref" : "cl"
-             },
-             {
-                "+min" : 0,
-                ".ref" : "s"
+                ".ref" : "_"
              },
              {
                 ".all" : [
@@ -129,7 +123,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                       "-flat" : 1,
                       ".all" : [
                          {
-                            ".ref" : "import_sep"
+                            ".ref" : "end"
                          },
                          {
                             ".ref" : "import_target"
@@ -138,7 +132,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                    },
                    {
                       "+max" : 1,
-                      ".ref" : "import_sep"
+                      ".ref" : "end"
                    }
                 ]
              },
@@ -170,9 +164,6 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                 ".ref" : "end"
              }
           ]
-       },
-       "import_sep" : {
-          ".rgx" : "(?:[\\ \\t]*(?:;[\\ \\t]*|\\r?\\n|\$|(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$)))(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$))*)[\\ \\t]*"
        },
        "import_target" : {
           ".any" : [
@@ -367,7 +358,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ]
        },
        "schematype_directive" : {
-          ".rgx" : "SchemaType[\\ \\t]+([0-9]+\\.[0-9]+\\.[0-9]+)(?:[\\ \\t]+\\+([0-9]+\\.[0-9]+\\.[0-9]+))?(?:[\\ \\t]*(?:;[\\ \\t]*|\\r?\\n|\$|(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$)))(?:[\\ \\t]*(?:\\#.*)?(?:\\r?\\n|\$))*)"
+          ".rgx" : "SchemaType[\\ \\t]+([0-9]+\\.[0-9]+\\.[0-9]+)(?:[\\ \\t]+\\+([0-9]+\\.[0-9]+\\.[0-9]+))?(?:[\\ \\t]*(?:;|(?:\\r?\\n|\$)|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*)"
        },
        "size_expr" : {
           ".rgx" : "\\+([1-9][0-9]*)"
