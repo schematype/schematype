@@ -14,21 +14,28 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ".rgx" : "\\)"
        },
        "definition" : {
-          ".any" : [
+          ".all" : [
              {
-                ".ref" : "type_definition"
+                ".rgx" : "([a-z][\\-a-z0-9]*)[\\ \\t]*(:?=)(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*"
              },
              {
-                ".ref" : "pair_definition"
-             },
-             {
-                ".ref" : "must_definition"
-             },
-             {
-                ".ref" : "like_definition"
-             },
-             {
-                ".ref" : "list_definition"
+                ".any" : [
+                   {
+                      ".ref" : "type_definition"
+                   },
+                   {
+                      ".ref" : "pair_definition"
+                   },
+                   {
+                      ".ref" : "must_definition"
+                   },
+                   {
+                      ".ref" : "like_definition"
+                   },
+                   {
+                      ".ref" : "list_definition"
+                   }
+                ]
              }
           ]
        },
@@ -137,8 +144,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                 ]
              },
              {
-                "+min" : 0,
-                ".ref" : "s"
+                ".ref" : "_"
              },
              {
                 ".rgx" : "\\)"
@@ -202,9 +208,6 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "like_definition" : {
           ".all" : [
              {
-                ".rgx" : "([a-z][\\-a-z0-9]*)[\\ \\t]*(:?=)[\\ \\t]*"
-             },
-             {
                 ".ref" : "like_expr"
              },
              {
@@ -216,13 +219,30 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ".rgx" : "(//?)([^/]+)(//?)"
        },
        "list_definition" : {
+          ".all" : [
+             {
+                ".ref" : "list_expr"
+             },
+             {
+                ".ref" : "end"
+             }
+          ]
+       },
+       "list_expr" : {
           ".ref" : "XXX"
        },
        "list_properties" : {
           ".ref" : "XXX"
        },
        "must_definition" : {
-          ".ref" : "XXX"
+          ".all" : [
+             {
+                ".ref" : "must_expr"
+             },
+             {
+                ".ref" : "end"
+             }
+          ]
        },
        "must_expr" : {
           ".ref" : "XXX"
@@ -265,6 +285,16 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ]
        },
        "pair_definition" : {
+          ".all" : [
+             {
+                ".ref" : "pair_expr"
+             },
+             {
+                ".ref" : "end"
+             }
+          ]
+       },
+       "pair_expr" : {
           ".ref" : "XXX"
        },
        "pair_ext" : {
@@ -279,8 +309,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "pair_set" : {
           ".all" : [
              {
-                "+max" : 1,
-                ".ref" : "end"
+                ".ref" : "_"
              },
              {
                 ".all" : [
@@ -379,7 +408,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "type_definition_bare" : {
           ".all" : [
              {
-                ".rgx" : "([a-z][\\-a-z0-9]*)[\\ \\t]*(:?=)[\\ \\t]*((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))"
+                ".rgx" : "((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))"
              },
              {
                 "+max" : 1,
@@ -393,32 +422,28 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "type_definition_line" : {
           ".all" : [
              {
-                ".rgx" : "([a-z][\\-a-z0-9]*)[\\ \\t]*(:?=)[\\ \\t]*((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))"
+                ".rgx" : "((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))"
              },
              {
+                "+min" : 1,
+                ".ref" : "s"
+             },
+             {
+                "+max" : 1,
                 ".all" : [
                    {
-                      "+min" : 1,
-                      ".ref" : "s"
+                      ".ref" : "type_property"
                    },
                    {
-                      "+max" : 1,
+                      "+min" : 0,
+                      "-flat" : 1,
                       ".all" : [
                          {
-                            ".ref" : "type_property"
+                            "+min" : 1,
+                            ".ref" : "s"
                          },
                          {
-                            "+min" : 0,
-                            "-flat" : 1,
-                            ".all" : [
-                               {
-                                  "+min" : 1,
-                                  ".ref" : "s"
-                               },
-                               {
-                                  ".ref" : "type_property"
-                               }
-                            ]
+                            ".ref" : "type_property"
                          }
                       ]
                    }
@@ -432,7 +457,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "type_definition_parens" : {
           ".all" : [
              {
-                ".rgx" : "([a-z][\\-a-z0-9]*)[\\ \\t]*(:?=)[\\ \\t]*((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))"
+                ".rgx" : "((?:(?:Str|Int|Bool|Map|Tuple)|![a-z][\\-a-z0-9]*))"
              },
              {
                 ".ref" : "open"

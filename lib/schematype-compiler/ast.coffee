@@ -12,8 +12,8 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
 
   initial: ->
     @schematype = {}
-    @imports = []
-    @exports = []
+    @with = []
+    @show = []
 
     @type = {}
     @like = {}
@@ -28,8 +28,8 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
         time: String Math.floor new Date
         mark: @mark
 
-    @ast.with = @imports if @imports.length > 0
-    @ast.show = @exports if @exports.length > 0
+    @ast.with = @with if @with.length > 0
+    @ast.show = @show if @show.length > 0
 
     @regex_interpolation()
 
@@ -45,7 +45,7 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     return
 
   got_import_target_core: (version)->
-    @imports.push [
+    @with.push [
       "github"
       "schematype/schematype"
       "type/" + version
@@ -54,7 +54,7 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     return
 
   got_import_target_github: ([user, repo, ref])->
-    @imports.push [
+    @with.push [
       "github"
       "#{user}/#{repo}"
       ref
@@ -63,7 +63,7 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     return
 
   got_import_target_git: ([repo, ref])->
-    @imports.push [
+    @with.push [
       "git"
       repo
       ref
@@ -78,7 +78,7 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
       m = url.match /.*\/(.*)/ or die()
       file = m[1] + '.stx'
       url = url.replace /(.*\/).*/, "$1"
-    @imports.push [
+    @with.push [
       "http"
       url
       file
@@ -92,7 +92,7 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
       m = path.match /.*\/(.*)/ or die()
       file = m[1] + '.stx'
       path = path.replace /(.*\/).*/, "$1"
-    @imports.push [
+    @with.push [
       "local"
       path
       file
@@ -100,17 +100,16 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     return
 
   #----------------------------------------------------------------------------
-  got_open: ->
-    @pair.push []
+  got_definition: ([[name, op], [sigil, value]])->
+    switch sigil
+      when "!" then @type[name] = value
+      when "/" then @like[name] = value
+      else die 'oops'
 
-  got_close: ->
-    pair = @pair.pop()
-    if pair.length
-      return pair: pair
-    else
-      return
+    if op == ':='
+      @show.push sigil + name
 
-  got_type_definition: ([[name, op, base], got...])->
+  got_type_definition: ([base, got...])->
     got = _.assign {}, (@flat got)...
     type = {}
     if base[0] == '!'
@@ -119,15 +118,12 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
       type.kind = base
     for k in ['kind', 'pair', 'enum', 'like', 'size', 'xtoy']
       type[k] = got[k] if _.has got, k
-    @type[name] = type
-    if op == ':='
-      @exports.push '!' + name
+    return ['!', type]
 
-  got_like_definition: ([[name, op], got...])->
+  got_like_definition: ([got...])->
     got = _.assign {}, (@flat got)...
-    @like[name] = got.like
-    if op == ':='
-      @exports.push '/' + name
+    like = got.like
+    return ['/', like]
 
   got_pair_def: ([need, got])->
     pair = @flat got
@@ -153,6 +149,16 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
 
   got_wordlet: (got)->
     got
+
+  got_open: ->
+    @pair.push []
+
+  got_close: ->
+    pair = @pair.pop()
+    if pair.length
+      return pair: pair
+    else
+      return
 
   #----------------------------------------------------------------------------
   flat: (array)->
