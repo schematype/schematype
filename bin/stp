@@ -58,7 +58,7 @@ compile-stp() {
   file=$1
   out=$2
 
-  compiler=$(get-compiler)
+  compiler=$(get-compiler) || exit
 
   option_no_link=true   # XXX
 
@@ -70,22 +70,22 @@ compile-stp() {
 }
 
 get-compiler() {
-  compiler_dir=$SCHEMATYPE_ROOT/compiler
-  compiler=$compiler_dir/build/bin/schematype-compiler
+  compiler=bin/schematype-compiler
+  compiler_path=$SCHEMATYPE_ROOT/$compiler
 
-  [[ -d $compiler_dir ]] ||
-    run-cmd make -C "$SCHEMATYPE_ROOT" compiler
+  [[ -f $compiler_path ]] ||
+    run-cmd make -C "$SCHEMATYPE_ROOT" "$compiler"
 
-  [[ -f $compiler ]] ||
-    run-cmd make -C "$compiler_dir" build
-
-  echo "$compiler"
+  echo "$compiler_path"
 }
 
 run-cmd() {
   rc=0
   "$@" &>/dev/null || rc=$?
-  [[ $rc -eq 0 ]] || "$@"
+  if [[ $rc -ne 0 ]]; then
+    (set -x; "$@" >&2)
+    die "" "Failed to run: '$*'"
+  fi
 }
 
 #------------------------------------------------------------------------------

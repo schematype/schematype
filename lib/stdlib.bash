@@ -13,11 +13,14 @@ check-bash-version() {
 }
 
 die() {
-  if [[ $* ]]; then
-    printf "%s\n" "$@"
-  else
-    echo Died
-  fi
+  (
+    if [[ $* ]]; then
+      printf "%s\n" "$@"
+    else
+      echo Died
+    fi
+  ) >&2
+
   exit 1
 }
 
