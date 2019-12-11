@@ -19,6 +19,7 @@ test := test/*.tml
 j := 1
 export SCHEMATYPE_VALIDATOR_DEBUG := $(debug)
 
+.DELETE_ON_ERROR:
 #------------------------------------------------------------------------------
 default:
 
