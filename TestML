@@ -1,0 +1,11 @@
+== Error Stack patch
+--- testml/src/node/lib/testml/run.js	2019-12-11 15:48:26.461146992 -0800
++++ /tmp/testml/src/node/lib/testml/run.js	2019-12-10 13:31:06.121271362 -0800
+@@ -290,6 +290,7 @@
+                 this.thrown = null;
+               }
+             } catch (error) {
++              xxx(error);
+               e = error;
+               this.error = this.call_stdlib('Error', [`${e}`]);
+             }
