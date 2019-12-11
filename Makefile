@@ -11,3 +11,5 @@ man: $(ALL_MAN)
 
 man/man1/%.1: %.md
 	./bin/make-man-page $< > $@
+
+clean:
