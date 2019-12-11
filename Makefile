@@ -6,14 +6,11 @@ WORK_BRANCHES := \
     docker \
     example \
     generator-jsonschema \
-    grammar \
     linker \
     node_modules \
     note \
     perl5 \
     stp \
-    test.compiler \
-    test.linker \
     validator \
 
 WORK_REPOS := \
@@ -68,6 +65,9 @@ bin lib:
 man/man1: doc/man/man1
 	mkdir -p $@
 	cp -r $</* $@/
+
+doc/man/man1: doc
+	make -C doc man
 
 #------------------------------------------------------------------------------
 docker-build docker-shell docker-test: docker

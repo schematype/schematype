@@ -95,14 +95,11 @@ Then try `make test`, which will run all the test suites.
 * `docker` - Support for testing in clean Docker environment
 * `example` - Various SchemaType examples
 * `generator-jsonschema` - Generate JSONSchema from SchemaType stp
-* `grammar` - Parser grammar for the `stp` language
 * `linker` - SchemaType linker tool
 * `node_modules` - NodeJS dependencies
 * `note` - Notes about the SchemaType project
 * `perl5` - Perl5 dependencies
 * `stp` - The `stp` commandline tool
-* `test.compiler` - Compiler test suite
-* `test.linker` - Linker test suite
 * `validator` - A SchemaType data validator tool
 
 ## Makefile Rules

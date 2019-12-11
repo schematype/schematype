@@ -3,14 +3,11 @@
 /docker/
 /example/
 /generator-jsonschema/
-/grammar/
 /linker/
 /node_modules/
 /note/
 /perl5/
 /stp/
-/test.compiler/
-/test.linker/
 /testml/
 /validator/
 
