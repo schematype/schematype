@@ -42,34 +42,15 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     @schematype.version = version
     if core_version
       @got_import_target_core core_version
-    return
 
   got_import_target_core: (version)->
-    @with.push [
-      "github"
-      "schematype/schematype"
-      "type/" + version
-      "./core/"
-    ]
-    return
+    @with.push ["github", "schematype/schematype", "type/" + version, "./core/"]
 
   got_import_target_github: ([user, repo, ref])->
-    @with.push [
-      "github"
-      "#{user}/#{repo}"
-      ref
-      "./"
-    ]
-    return
+    @with.push ["github", "#{user}/#{repo}", ref, "./"]
 
   got_import_target_git: ([repo, ref])->
-    @with.push [
-      "git"
-      repo
-      ref
-      "./"
-    ]
-    return
+    @with.push ["git", repo, ref, "./"]
 
   got_import_target_http: (url)->
     if url.match /\/$/
@@ -78,12 +59,7 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
       m = url.match /.*\/(.*)/ or die()
       file = m[1] + '.stx'
       url = url.replace /(.*\/).*/, "$1"
-    @with.push [
-      "http"
-      url
-      file
-    ]
-    return
+    @with.push ["http", url, file]
 
   got_import_target_local: (path)->
     if path.match /\/$/
@@ -92,12 +68,7 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
       m = path.match /.*\/(.*)/ or die()
       file = m[1] + '.stx'
       path = path.replace /(.*\/).*/, "$1"
-    @with.push [
-      "local"
-      path
-      file
-    ]
-    return
+    @with.push ["local", path, file]
 
   #----------------------------------------------------------------------------
   got_definition: ([[name, op], [sigil, value]])->
@@ -110,14 +81,22 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
       @show.push sigil + name
 
   got_type_definition: ([base, got...])->
-    got = _.assign {}, (@flat got)...
+    props = _.assign {}, (@flat got)...
+    @make_type props, base
+
+  got_type_definition_baseless: (got)->
+    props = _.assign {}, (@flat got)...
+    @make_type props
+
+  make_type: (props, base=null)->
     type = {}
-    if base[0] == '!'
-      type.base = base
-    else
-      type.kind = base
-    for k in ['kind', 'pair', 'enum', 'like', 'size', 'xtoy']
-      type[k] = got[k] if _.has got, k
+    if base
+      if base[0] == '!'
+        type.base = base
+      else
+        type.kind = base
+    for k in ['kind', 'pair', 'enum', 'like', 'smin', 'smax', 'xtoy']
+      type[k] = props[k] if _.has props, k
     return ['!', type]
 
   got_like_definition: ([got...])->
@@ -144,8 +123,11 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
   got_xtoy_expr: ([x, y])->
     xtoy: [x, y]
 
-  got_size_expr: (got)->
-    size: Number got
+  got_smin_expr: (got)->
+    smin: Number got
+
+  got_smax_expr: (got)->
+    smax: Number got
 
   got_wordlet: (got)->
     got
@@ -157,8 +139,6 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     pair = @pair.pop()
     if pair.length
       return pair: pair
-    else
-      return
 
   #----------------------------------------------------------------------------
   flat: (array)->

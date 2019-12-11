@@ -259,7 +259,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                 ".rgx" : "(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))+=\\>(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))+"
              },
              {
-                ".ref" : "type_definition"
+                ".ref" : "pair_value"
              }
           ]
        },
@@ -268,6 +268,16 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        },
        "pair_marker" : {
           ".rgx" : "(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*([\\+\\-])(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))+"
+       },
+       "pair_value" : {
+          ".any" : [
+             {
+                ".ref" : "type_definition"
+             },
+             {
+                ".ref" : "type_definition_baseless"
+             }
+          ]
        },
        "s" : {
           ".rgx" : "[\\ \\t]"
@@ -285,8 +295,11 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
        "schematype_directive" : {
           ".rgx" : "SchemaType[\\ \\t]+([0-9]+\\.[0-9]+\\.[0-9]+)(?:[\\ \\t]+\\+([0-9]+\\.[0-9]+\\.[0-9]+))?(?:[\\ \\t]*(?:;|(?:\\r?\\n|\$)|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))(?:[\\ \\t\\n\\r]|(?:[\\ \\t]*\\#.*(?:\\r?\\n|\$)))*)"
        },
-       "size_expr" : {
+       "smax_expr" : {
           ".rgx" : "\\+([1-9][0-9]*)"
+       },
+       "smin_expr" : {
+          ".rgx" : "([1-9][0-9]*)\\+"
        },
        "type_definition" : {
           ".any" : [
@@ -312,6 +325,27 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
              },
              {
                 ".ref" : "end"
+             }
+          ]
+       },
+       "type_definition_baseless" : {
+          "+max" : 1,
+          ".all" : [
+             {
+                ".ref" : "type_property_pairless"
+             },
+             {
+                "+min" : 0,
+                "-flat" : 1,
+                ".all" : [
+                   {
+                      "+min" : 1,
+                      ".ref" : "s"
+                   },
+                   {
+                      ".ref" : "type_property_pairless"
+                   }
+                ]
              }
           ]
        },
@@ -388,7 +422,35 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
                 ".ref" : "enum_expr"
              },
              {
-                ".ref" : "size_expr"
+                ".ref" : "smin_expr"
+             },
+             {
+                ".ref" : "smax_expr"
+             },
+             {
+                ".ref" : "xtoy_expr"
+             },
+             {
+                ".ref" : "desc_expr"
+             }
+          ]
+       },
+       "type_property_pairless" : {
+          ".any" : [
+             {
+                ".ref" : "must_expr"
+             },
+             {
+                ".ref" : "like_expr"
+             },
+             {
+                ".ref" : "enum_expr"
+             },
+             {
+                ".ref" : "smin_expr"
+             },
+             {
+                ".ref" : "smax_expr"
              },
              {
                 ".ref" : "xtoy_expr"
