@@ -13,7 +13,7 @@ SchemaType is a Data Type Definition Language
 # Synopsis
 ```
 stp --validate foo.stp foo1.json foo2.yaml foo3.csv
-stp --generate=jsonschema foo.stp
+stp --generate=jsonschema foo.stp > foo.jsonschema
 stp --generate=sql foo.stp
 ```
 
@@ -94,12 +94,16 @@ Then try `make test`, which will run all the test suites.
 * `doc` - Documentation and man pages
 * `docker` - Support for testing in clean Docker environment
 * `example` - Various SchemaType examples
+* `generator-jsonschema` - Generate JSONSchema from SchemaType stp
 * `grammar` - Parser grammar for the `stp` language
+* `linker` - SchemaType linker tool
 * `node_modules` - NodeJS dependencies
 * `note` - Notes about the SchemaType project
 * `perl5` - Perl5 dependencies
 * `stp` - The `stp` commandline tool
 * `test.compiler` - Compiler test suite
+* `test.linker` - Linker test suite
+* `validator` - A SchemaType data validator tool
 
 ## Makefile Rules
 
@@ -111,6 +115,7 @@ Then try `make test`, which will run all the test suites.
 * `make realclean` - Do `clean` and remove all the work dirs
 
 * `make test` - Run test suite
+* `make test-all` - Run with extra linting tests
 * `make test-compiler` - Run the compiler test suite
 
 * `make docker-test` - Run the test suite in a Docker container

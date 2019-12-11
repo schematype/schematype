@@ -28,16 +28,21 @@ SCHEMATYPE_ROOT=$(cd "$(dirname "$SCHEMATYPE_ROOT")" && pwd)
   return 1
 }
 
-if ! [[ -d $SCHEMATYPE_ROOT/stp && -d $SCHEMATYPE_ROOT/doc ]]; then
-  make -C "$SCHEMATYPE_ROOT" stp doc example &>/dev/null || {
-    echo "Failed to enable SchemaType"
+if ! [[ -d $SCHEMATYPE_ROOT/bin/stp &&
+        -d $SCHEMATYPE_ROOT/man/man1 ]]; then
+  make -C "$SCHEMATYPE_ROOT" bin/stp man/man1 example &>/dev/null || {
+    # If silent make fails, run again to show the problem:
+    ( set -x
+      make -C "$SCHEMATYPE_ROOT" bin/stp man/man1 example
+    ) || true
+    echo "Errors occurred: Failed to enable SchemaType."
     unset SCHEMATYPE_ROOT
     return 1
   }
 fi
 
 export SCHEMATYPE_ROOT
-export PATH=$SCHEMATYPE_ROOT/stp/bin:$PATH
-export MANPATH=$SCHEMATYPE_ROOT/doc/man${MANPATH:+":$MANPATH"}
+export PATH=$SCHEMATYPE_ROOT/bin:$PATH
+export MANPATH=$SCHEMATYPE_ROOT/man${MANPATH:+":$MANPATH"}
 
 # vim: set ft=sh:
