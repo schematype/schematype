@@ -22,6 +22,7 @@ test := test/*.tml
 j := 1
 export SCHEMATYPE_COMPILER_DEBUG := $(debug)
 
+.DELETE_ON_ERROR:
 #------------------------------------------------------------------------------
 default:
 
