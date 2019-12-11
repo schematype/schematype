@@ -12,5 +12,7 @@ test: build
 shell: build
 	docker run -it --rm $(NAME) bash
 
-clean:
+rmi:
 	docker rmi $(NAME)
+
+clean:
