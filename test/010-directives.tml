@@ -1,1 +1,159 @@
-../../test.compiler/010-directives.tml
+#!/usr/bin/env testml
+
+
+*stp.compile == *stc
+
+
+=== Test 1 - Just SchemaType directive
+--- stp
+SchemaType 0.1.0
+
+--- stc
+{
+  "SchemaType": {"spec": "0.1.0"},
+  "from": {
+    "name": "test.stp",
+    "time": "1234567890123",
+    "mark": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  }
+}
+
+
+=== Test 2 - Import Core directive
+--- stp
+SchemaType 0.1.0
+
+Import Core 0.1.1
+
+--- stc
+{
+  "SchemaType": {"spec": "0.1.0"},
+  "from": {
+    "name": "test.stp",
+    "time": "1234567890123",
+    "mark": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  },
+  "with": [["github", "schematype/schematype", "type/0.1.1", "./core/"]]
+}
+
+
+=== Test 3 - Comments everywhere
+--- stp(<)
+    # Comment
+        # Comment
+
+    SchemaType 0.1.0 #Comment
+    # Comment
+    Import Core 0.1.1  #   Comment
+    #Comment
+      #   Comment
+    #Comment
+--- ^stc
+
+
+=== Test 4 - Compact Import Core
+--- stp
+SchemaType 0.1.0 +0.1.1
+--- ^stc
+
+
+=== Test 5 - Two commands on one line
+--- stp: SchemaType 0.1.0; Import Core 0.1.1
+--- ^stc
+
+
+=== Test 6 - Import() with parens
+--- stp
+SchemaType 0.1.0
+Import(Core 0.1.1)
+--- ^stc
+
+
+=== Test 7 - Import() with parens
+--- stp
+SchemaType 0.1.0
+Import(
+  Core 0.1.1
+)
+--- ^stc
+
+
+=== Test 8 - Multiple Imports
+--- stp
+SchemaType 0.1.0
+Import Core 0.1.1
+Import github:schematype/dummy tag/foo
+Import git:git.example.com/stp tag/foo
+Import https://example.com/foo/
+Import https://example.com/bar/xyz
+Import ./foo/
+Import ./bar
+--- stc
+{
+  "SchemaType": {"spec": "0.1.0"},
+  "from": {
+    "name": "test.stp",
+    "time": "1234567890123",
+    "mark": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  },
+  "with": [
+    ["github", "schematype/schematype", "type/0.1.1", "./core/"],
+    ["github", "schematype/dummy", "tag/foo", "./"],
+    ["git", "git.example.com/stp", "tag/foo", "./"],
+    ["http", "https://example.com/foo/", "index.stx"],
+    ["http", "https://example.com/bar/", "xyz.stx"],
+    ["local", "./foo/", "index.stx"],
+    ["local", "./", "bar.stx"]
+  ]
+}
+
+
+=== Test 9 - Multiple Imports combined
+--- stp
+SchemaType 0.1.0
+Import(
+  Core 0.1.1
+  github:schematype/dummy tag/foo
+  git:git.example.com/stp tag/foo
+  https://example.com/foo/
+  https://example.com/bar/xyz
+  ./foo/
+  ./bar
+)
+--- ^stc
+
+
+=== Test 10 - Multiple Imports combined with semicolons
+--- stp
+SchemaType 0.1.0
+Import(
+  Core 0.1.1;
+  github:schematype/dummy tag/foo;
+  git:git.example.com/stp tag/foo;
+  https://example.com/foo/;
+  https://example.com/bar/xyz;
+  ./foo/;
+  ./bar;
+)
+--- ^stc
+
+
+=== Test 11 - Multiple Imports combined with semicolons one line
+--- stp
+SchemaType 0.1.0
+Import(Core 0.1.1; github:schematype/dummy tag/foo; git:git.example.com/stp tag/foo; https://example.com/foo/; https://example.com/bar/xyz; ./foo/; ./bar)
+--- ^stc
+
+
+=== Test 12 - Multiple Imports combined with semicolons variation
+--- stp
+SchemaType 0.1.0
+Import( Core 0.1.1  #Comment
+  github:schematype/dummy tag/foo; git:git.example.com/stp tag/foo
+  https://example.com/foo/; https://example.com/bar/xyz
+  ./foo/; ./bar
+) #comment
+--- ^stc
+
+
+# vim: set ft=testml sw=2:

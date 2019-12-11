@@ -1,1 +1,96 @@
-../../test.compiler/020-scalar-type-defs.tml
+#!/usr/bin/env testml
+
+
+*stp.compile == *stc-all
+*stp.add-head.compile.clean == *stc
+
+
+=== Test 1 - Type def with just kinds
+--- stp
+SchemaType 0.1.0 +0.1.1
+
+s1 := Str
+s2 = Int
+s3 := Bool
+
+--- stc-all
+{
+  "SchemaType": {"spec": "0.1.0"},
+  "from": {
+    "name": "test.stp",
+    "time": "1234567890123",
+    "mark": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  },
+  "with": [["github", "schematype/schematype", "type/0.1.1", "./core/"]],
+  "show": ["!s1", "!s3"],
+  "type": {"s1": {"kind": "Str"}, "s2": {"kind": "Int"}, "s3": {"kind": "Bool"}}
+}
+
+
+=== Test 2 - Type def with just base types
+--- stp
+s1 := !str
+s2 = !int
+s3 := !s2
+--- stc
+"show": ["!s1", "!s3"]
+"type": {
+  "s1": {"base": "!str"}
+  "s2": {"base": "!int"}
+  "s3": {"base": "!s2"}
+
+
+=== Test 3 - Type def with kind and enum
+--- stp
+s1 := Str [xxx yyy zzz]
+--- stc
+"show": ["!s1"]
+"type": {"s1": {"kind": "Str", "enum": ["xxx", "yyy", "zzz"]}}
+
+
+=== Test 4 - Type def with kind and like
+--- stp
+s1 = Str // foo - (: xxx | yyy ) //
+--- stc
+"type": {"s1": {"kind": "Str", "like": "\\Afoo-(?:xxx|yyy)\\z"}}
+
+
+=== Test 5 - Type def with kind, like and smax
+--- stp
+s1 = Str // foo .* / +50
+--- stc
+"type": {"s1": {"kind": "Str", "like": "\\Afoo.*", "smax": 50}}
+
+
+=== Test 6 - Type def with parens
+--- stp
+s1 = Str(
+  // foo .* /
+  +50
+)
+--- ^stc
+
+
+=== Test 7 - Type def with parens, one line
+--- stp
+s1 = Str(// foo .* / +50)
+--- ^stc
+
+
+=== Test 8 - Type def with parens, variation
+--- stp
+s1 = Str(// foo .* /
+  +50
+)
+--- ^stc
+
+
+=== Test 9 - Type def with parens, comments
+--- stp
+s1 = Str(// foo .* /  #comment
+  #comment
+  +50)  #comment
+--- ^stc
+
+
+# vim: set ft=testml sw=2:

@@ -1,1 +1,46 @@
-../../test.compiler/040-map-type-defs.tml
+#!/usr/bin/env testml
+
+
+*stp.add-head.compile.clean2 == *stc
+
+
+=== Test 1 - Map with no constraints
+--- stp
+t1 := Map
+t2 := !map
+--- stc
+"type": {"t1": {"kind": "Map"}, "t2": {"base": "!map"}}
+
+
+=== Test 2 - Map required pairs
+--- stp
+t1 := Map(
+  + foo => Int 1..10
+  + bar => Str [xxx yyy zzz]
+)
+t2 := !map
+--- stc
+"type": {
+  "t1": {
+    "kind": "Map"
+    "pair": [
+      ["foo", {"kind": "Int", "xtoy": ["1", "10"]}, true]
+      ["bar", {"kind": "Str", "enum": ["xxx", "yyy", "zzz"]}, true]
+  "t2": {"base": "!map"}
+
+
+=== Test 3 - Pair type values without kind/base
+--- stp
+t1 := Map(
+  + foo => 1..10 +20
+  + bar => [xxx yyy zzz]
+)
+--- stc
+"type": {
+  "t1": {
+    "kind": "Map"
+    "pair": [
+      ["foo", {"smax": 20, "xtoy": ["1", "10"]}, true]
+      ["bar", {"enum": ["xxx", "yyy", "zzz"]}, true]
+
+# vim: set ft=testml sw=2:

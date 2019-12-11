@@ -3,9 +3,8 @@ ROOT := $(shell cd .. && pwd)
 
 COMPILER := $(ROOT)/compiler
 BUILD := $(COMPILER)/build
-GRAMMAR := $(ROOT)/grammar
+GRAMMAR := $(COMPILER)/grammar
 NODE_MODULES := $(ROOT)/node_modules
-TEST_COMPILER := $(ROOT)/test.compiler
 TESTML := $(ROOT)/testml
 
 GRAMMAR_COFFEE := lib/schematype-compiler/grammar.coffee
@@ -27,14 +26,15 @@ export SCHEMATYPE_COMPILER_DEBUG := $(debug)
 default:
 
 .PHONY: test
-test: build $(TESTML_RUNNER) $(TEST_COMPILER) test/testml-bridge.js
+test: build $(TESTML_RUNNER) test/testml-bridge.js
 	(source $(TESTML)/.rc && prove -v -j$(j) $(test))
 
 .PHONY: build
 build: dep-node $(NODE_MODULES) $(JS_FILES)
 
 clean:
-	rm -fr build/ test/testml-bridge.js test/.testml/ $(TEST_COMPILER)/.testml/
+	rm -fr build/ test/testml-bridge.js test/.testml/
+	make -C grammar $@
 
 #------------------------------------------------------------------------------
 build/bin/%: bin/%

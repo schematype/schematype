@@ -1,0 +1,192 @@
+schema:
+  directives
+  definitions
+
+directives:
+  -
+  schematype-directive
+  import-directive*
+
+schematype-directive: /
+  'SchemaType' s+ ( version )
+    (: s+ PLUS ( version ))?
+  end
+/
+
+import-directive:
+| import-directive-group
+| import-directive-single
+
+import-directive-group:
+  /'Import(' -/
+    (import-target+ %% end)
+  /- ')'/ end
+
+import-directive-single:
+  /'Import' s+/ import-target end
+
+import-target:
+| import-target-core
+| import-target-git
+| import-target-github
+| import-target-http
+| import-target-local
+
+import-target-core: /'Core' s+ ( version )/
+import-target-github: /
+  'github:'
+  ( WORD+ ) SLASH ( WORD+ )
+  s+
+  ( ns+ )
+/
+import-target-git: /
+  'git:'
+  ( ns+ )
+  s+
+  ( ns+ )
+/
+import-target-http: /( 'http's? COLON SLASH SLASH ns+ )/
+import-target-local: /( DOT SLASH ns+ )/
+
+definitions:
+  definition*
+
+definition:
+  /
+    ( var-name ) s*
+    ( op-assign ) -
+  /
+  (
+  | type-definition
+  | pair-definition
+  | must-definition
+  | like-definition
+  | list-definition
+  )
+
+type-definition:
+| type-definition-line
+| type-definition-parens
+| type-definition-bare
+
+type-definition-line:
+  /( type-base ) s+/
+  type-property* % s+
+  end
+
+type-definition-parens:
+  /( type-base )/
+  open
+    (type-property -)*
+  close
+  end
+
+type-definition-baseless:
+  type-property-pairless* % s+
+
+type-definition-bare:
+  /( type-base )/
+  list-properties?
+  end
+
+pair-definition:
+  pair-expr end
+
+must-definition:
+  must-expr end
+
+like-definition:
+  like-expr end
+
+list-definition:
+  list-expr end
+
+list-properties: XXX
+
+type-property:
+| pair-expr
+| must-expr
+| like-expr
+| enum-expr
+| smin-expr
+| smax-expr
+| xtoy-expr
+| desc-expr
+
+type-property-pairless:
+| must-expr
+| like-expr
+| enum-expr
+| smin-expr
+| smax-expr
+| xtoy-expr
+| desc-expr
+
+pair-expr:
+  (
+    pair-marker
+    pair-key
+    /+ '=>' +/
+    pair-value
+  )
+  # (pair-ext* %% end)
+
+pair-marker:
+  /- ([ PLUS DASH ]) +/
+
+pair-key: /(
+  WORD [ WORD DOT DASH ]* |
+  DOUBLE
+    (: BACK DOUBLE | [^ DOUBLE])*
+  DOUBLE
+)/
+
+pair-value:
+| type-definition
+| type-definition-baseless
+
+pair-ext: /[ AMP PIPE ]/
+
+like-expr: /
+  ( SLASH SLASH? )
+  ( [^ SLASH ]+ )
+  ( SLASH SLASH? )
+/
+enum-expr:
+  /'[' -/
+  wordlet+ %% +
+  ']'
+smin-expr: / ([1-9] DIGIT*) PLUS /
+smax-expr: / PLUS ([1-9] DIGIT*) /
+xtoy-expr: / ( DIGIT+ ) DOT DOT ( DIGIT+ ) /
+desc-expr: XXX
+list-expr: XXX
+must-expr: XXX
+
+wordlet: /( [^ WS RSQUARE]+ )/
+
+op-assign: / COLON? EQUAL /
+type-base: /(: type-kinds | BANG var-name )/
+
+type-kinds: /(:Str|Int|Bool|Map|Tuple|List)/
+
+var-name: / LOWER [ DASH LOWERS DIGITS ]* /
+version: / DIGIT+ DOT DIGIT+ DOT DIGIT+ /
+
+# comment line
+s: / BLANK /
+eol: /(: EOL | EOS )/
+cl: /(:
+  s*
+  HASH ANY*
+  eol
+)/
+end: /(: s* (: SEMI | eol | cl ) - )/
+ws: /(: [ SPACE TAB NL CR ] | cl )/
+ns: /[^ WS SEMI RPAREN]/
+open: / LPAREN -/
+close: / RPAREN /
+
+XXX: 'XXX'
+
+# vim: ft=pegex sw=2 lisp:
