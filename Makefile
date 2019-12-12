@@ -37,11 +37,11 @@ default: status
 
 #------------------------------------------------------------------------------
 .PHONY: test
-test: test-compiler
+test: test-compiler test-linker test-generator-jsonschema
 
-test-all: test-shellcheck test-compiler
+test-all: test-shellcheck test
 
-test-compiler: compiler
+test-%: %
 	make -C $< test
 
 test-shellcheck:
