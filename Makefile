@@ -14,7 +14,7 @@ WORK_BRANCHES := \
     validator \
 
 WORK_REPOS := \
-    testml \
+    .testml \
 
 WORK_DIRS := \
     $(WORK_BRANCHES) \
@@ -80,7 +80,7 @@ $(WORK_BRANCHES):
 	git branch --track $@ origin/$@ 2>/dev/null || true
 	git worktree add -f $@ $@
 
-testml:
+.testml:
 	git clone https://github.com/testml-lang/testml $@
 
 clean:
