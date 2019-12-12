@@ -1,0 +1,7 @@
+#!/usr/bin/env testml
+
+
+*stc.link == *stx
+
+
+%Import ../../testml/test-data-1
