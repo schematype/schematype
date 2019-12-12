@@ -5,7 +5,7 @@ COMPILER := $(ROOT)/compiler
 BUILD := $(COMPILER)/build
 GRAMMAR := $(COMPILER)/grammar
 NODE_MODULES := $(ROOT)/node_modules
-TESTML := $(ROOT)/testml
+TESTML := $(ROOT)/.testml
 
 GRAMMAR_COFFEE := lib/schematype-compiler/grammar.coffee
 COFFEE_FILES := $(shell find bin -type f && find lib -name '*.coffee')
