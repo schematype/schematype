@@ -4,7 +4,7 @@ ROOT := $(shell cd .. && pwd)
 GENERATOR := $(ROOT)/generator-jsonschema
 BUILD := $(GENERATOR)/build
 NODE_MODULES := $(ROOT)/node_modules
-TESTML := $(ROOT)/testml
+TESTML := $(ROOT)/.testml
 
 COFFEE_FILES := $(shell find lib -name '*.coffee')
 JS_FILES := $(COFFEE_FILES:%.coffee=%.js)
