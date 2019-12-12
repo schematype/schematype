@@ -4,7 +4,7 @@ ROOT := $(shell cd .. && pwd)
 LINKER := $(ROOT)/linker
 BUILD := $(LINKER)/build
 NODE_MODULES := $(ROOT)/node_modules
-TESTML := $(ROOT)/testml
+TESTML := $(ROOT)/.testml
 
 COFFEE_FILES := $(shell find bin -type f && find lib -name '*.coffee')
 JS_FILES := $(COFFEE_FILES:%.coffee=%.js)
