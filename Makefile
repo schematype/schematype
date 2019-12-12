@@ -59,7 +59,7 @@ lib/schematype-compiler/grammar.coffee: $(GRAMMAR)/schematype.pgx.json
 $(GRAMMAR)/schematype.pgx.json: $(GRAMMAR)
 	make -C $< build
 
-$(GRAMMAR) $(NODE_MODULES) $(TEST_COMPILER) $(TESTML):
+$(GRAMMAR) $(NODE_MODULES) $(TEST_COMPILER) $(TESTML) $(TESTML_SHARED):
 	make -C $(ROOT) $(@:$(ROOT)/%=%)
 
 test/testml-bridge.js: test/testml-bridge.coffee
