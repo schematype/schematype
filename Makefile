@@ -5,6 +5,7 @@ LINKER := $(ROOT)/linker
 BUILD := $(LINKER)/build
 NODE_MODULES := $(ROOT)/node_modules
 TESTML := $(ROOT)/.testml
+TESTML_SHARED := $(ROOT)/testml
 
 COFFEE_FILES := $(shell find bin -type f && find lib -name '*.coffee')
 JS_FILES := $(COFFEE_FILES:%.coffee=%.js)
@@ -24,7 +25,7 @@ export SCHEMATYPE_LINKER_DEBUG := $(debug)
 default:
 
 .PHONY: test
-test: build $(TESTML_RUNNER) test/testml-bridge.js
+test: build $(TESTML_RUNNER) $(TESTML_SHARED) test/testml-bridge.js
 	(source $(TESTML)/.rc && prove -v -j$(j) $(test))
 
 .PHONY: build
@@ -44,7 +45,7 @@ build/%.js: %.coffee
 	mkdir -p $$(dirname $@)
 	coffee -cp $< > $@
 
-$(NODE_MODULES) $(TESTML):
+$(NODE_MODULES) $(TESTML) $(TESTML_SHARED):
 	make -C $(ROOT) $(@:$(ROOT)/%=%)
 
 test/testml-bridge.js: test/testml-bridge.coffee
