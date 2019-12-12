@@ -11,6 +11,7 @@ WORK_BRANCHES := \
     note \
     perl5 \
     stp \
+    testml \
     validator \
 
 WORK_REPOS := \
@@ -100,21 +101,31 @@ s: status
 
 status:
 	@for d in $(WORK_BRANCHES); do \
-	    [[ -d $$d ]] || continue; \
-	    ( \
-	      echo "=== $$d"; \
-	      cd $$d; \
-	      output=$$( \
-		git status | grep -Ev '(^On branch|up.to.date|nothing to commit)'; \
-		git log --graph --decorate --pretty=oneline --abbrev-commit -10 | grep wip; \
-		git clean -dxn; \
-	      ); \
-	      [[ -z $$output ]] || echo "$$output"; \
+	  [[ -d $$d ]] || continue; \
+	  ( \
+	    echo "=== $$d"; \
+	    cd $$d; \
+	    output=$$( \
+	      git status --short | grep -Ev '(^On branch|up.to.date|nothing to commit)'; \
+	      git log --oneline origin/$$d..HEAD; \
+	      git log --graph --decorate --pretty=oneline --abbrev-commit -10 | grep wip; \
+	      git clean -dxn; \
 	    ); \
+	    [[ -z $$output ]] || echo "$$output"; \
+	  ); \
 	done
-	@echo "=== $$(git rev-parse --abbrev-ref HEAD)"
-	@git status | grep -Ev '(^On branch|up.to.date|nothing to commit)' || true
-	@git log --graph --decorate --pretty=oneline --abbrev-commit -10 | grep wip || true
+	@( \
+	  d="$$(git rev-parse --abbrev-ref HEAD)"; \
+	  echo "=== $$d"; \
+	  output=$$( \
+	    d=$$(git rev-parse --abbrev-ref HEAD); \
+	    git status --short | grep -Ev '(^On branch|up.to.date|nothing to commit)' || true; \
+	    git log --oneline origin/$$d..HEAD || true; \
+	    git log --graph --decorate --pretty=oneline --abbrev-commit -10 | grep wip || true; \
+	    git clean -dxn | grep -v '^Would skip '; \
+	  ); \
+	  [[ -z $$output ]] || echo "$$output"; \
+	)
 
 pull:
 	@for d in $(WORK_BRANCHES); do \

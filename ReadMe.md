@@ -100,6 +100,7 @@ Then try `make test`, which will run all the test suites.
 * `note` - Notes about the SchemaType project
 * `perl5` - Perl5 dependencies
 * `stp` - The `stp` commandline tool
+* `testml` - Tests not belonging to a particular subsystem
 * `validator` - A SchemaType data validator tool
 
 ## Makefile Rules
