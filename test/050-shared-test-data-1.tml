@@ -1,0 +1,7 @@
+#!/usr/bin/env testml
+
+
+*stp.compile == *stc
+
+
+%Import ../../testml/test-data-1

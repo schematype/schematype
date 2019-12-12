@@ -6,6 +6,7 @@ BUILD := $(COMPILER)/build
 GRAMMAR := $(COMPILER)/grammar
 NODE_MODULES := $(ROOT)/node_modules
 TESTML := $(ROOT)/.testml
+TESTML_SHARED := $(ROOT)/testml
 
 GRAMMAR_COFFEE := lib/schematype-compiler/grammar.coffee
 COFFEE_FILES := $(shell find bin -type f && find lib -name '*.coffee')
@@ -26,7 +27,7 @@ export SCHEMATYPE_COMPILER_DEBUG := $(debug)
 default:
 
 .PHONY: test
-test: build $(TESTML_RUNNER) test/testml-bridge.js
+test: build $(TESTML_RUNNER) $(TESTML_SHARED) test/testml-bridge.js
 	(source $(TESTML)/.rc && prove -v -j$(j) $(test))
 
 .PHONY: build
