@@ -15,8 +15,7 @@
   }
 }
 
---- stx
-xyzzy
+--- ^stx=stc
 
 
 # vim: set ft=testml sw=2:

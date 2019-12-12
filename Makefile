@@ -4,7 +4,6 @@ ROOT := $(shell cd .. && pwd)
 LINKER := $(ROOT)/linker
 BUILD := $(LINKER)/build
 NODE_MODULES := $(ROOT)/node_modules
-TEST_LINKER := $(ROOT)/test.linker
 TESTML := $(ROOT)/testml
 
 COFFEE_FILES := $(shell find bin -type f && find lib -name '*.coffee')
@@ -20,18 +19,19 @@ test := test/*.tml
 j := 1
 export SCHEMATYPE_LINKER_DEBUG := $(debug)
 
+.DELETE_ON_ERROR:
 #------------------------------------------------------------------------------
 default:
 
 .PHONY: test
-test: build $(TESTML_RUNNER) $(TEST_LINKER) test/testml-bridge.js
+test: build $(TESTML_RUNNER) test/testml-bridge.js
 	(source $(TESTML)/.rc && prove -v -j$(j) $(test))
 
 .PHONY: build
 build: dep-node $(NODE_MODULES) $(JS_FILES)
 
 clean:
-	rm -fr build/ test/testml-bridge.js test/.testml/ $(TEST_LINKER)/.testml/
+	rm -fr build/ test/testml-bridge.js test/.testml/
 
 #------------------------------------------------------------------------------
 build/bin/%: bin/%
@@ -44,7 +44,7 @@ build/%.js: %.coffee
 	mkdir -p $$(dirname $@)
 	coffee -cp $< > $@
 
-$(NODE_MODULES) $(TEST_LINKER) $(TESTML):
+$(NODE_MODULES) $(TESTML):
 	make -C $(ROOT) $(@:$(ROOT)/%=%)
 
 test/testml-bridge.js: test/testml-bridge.coffee
