@@ -1,0 +1,3 @@
+stp -c foo.stp              -> foo.stx CACHE/foo-1234.stx
+cat foo.stp | stp -c        -> STDOUT CACHE/1234.stx
+stp -v
