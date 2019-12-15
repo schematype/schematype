@@ -17,4 +17,6 @@
 /lib/
 /man/
 
+/cache/
+
 /package-lock.json

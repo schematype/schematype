@@ -38,7 +38,7 @@ default: status
 
 #------------------------------------------------------------------------------
 .PHONY: test
-test: test-compiler test-linker test-generator-jsonschema
+test: test-stp test-compiler test-linker test-generator-jsonschema
 
 test-all: test-shellcheck test
 
@@ -51,7 +51,7 @@ test-shellcheck:
 #------------------------------------------------------------------------------
 build: $(ALL_BIN) man/man1
 
-bin/stp: stp bin lib
+bin/stp: stp bin lib stp/bin/stp
 	cp -r $</bin/* bin/
 	cp -r $</lib/* lib/
 
@@ -86,7 +86,7 @@ $(WORK_BRANCHES):
 
 clean:
 	rm -f package-lock.json
-	rm -fr bin lib man
+	rm -fr bin lib man cache
 	@for d in $(WORK_BRANCHES); do \
 	    if [[ -f $$d/Makefile ]]; then \
 		make -C $$d clean; \
@@ -94,7 +94,7 @@ clean:
 	done
 
 realclean: clean
-	rm -fr $(WORK_DIRS) test
+	rm -fr $(WORK_DIRS)
 
 #------------------------------------------------------------------------------
 s: status
