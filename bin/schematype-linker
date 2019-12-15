@@ -27,6 +27,8 @@ input_text = file_read input_file
 
 linker = new SchemaTypeLinker.Linker
 
-out linker.link input_text, input_file
+stx = linker.link input_text, input_file
+
+out stx
 
 # vim: sw=2:
