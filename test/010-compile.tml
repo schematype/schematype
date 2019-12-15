@@ -1,0 +1,35 @@
+#!/usr/bin/env testml
+
+*cmd.run-out.clean == *out
+
+=== Test 1
+--- cmd: stp --compile --print 001/test.stp
+--- out
+{
+  "SchemaType": {"spec": "0.1.0"},
+  "from": {
+    "name": "001/test.stp",
+    "time": "1234567890123",
+    "mark": "b630f1c257a509b2b776fdc2cd1d45dc43eb6369d810cbf8abede852af5a3026"
+  },
+  "show": ["!test"],
+  "type": {
+    "test": {
+      "kind": "Map",
+      "pair": [
+        ["foo", "!Int-1", true],
+        ["bar", "!Str-2", true],
+        ["baz", "!Str-3", true]
+      ]
+    },
+    "Int-1": {"kind": "Int", "xtoy": ["10", "100"]},
+    "Str-2": {"kind": "Str", "like": "x.*y"},
+    "Str-3": {"kind": "Str", "enum": ["apple", "banana", "carrot"]}
+  }
+}
+--- files(@)
+CACHE/foo.5c4e3a.stc
+CACHE/foo.5c4e3a.stx
+001/foo.stx
+
+# vim: ft=testml sw=2:

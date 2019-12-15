@@ -19,9 +19,12 @@ Options:
  
 c,compile   Compile and link a SchemaType stp file
 l,link      Link a SchemaType compiled stc file
-L,no-link   Don't link after compile
 g,generate= Generate various kinds of code from an stp
 v,validate  Validate data files with an atp file
+ 
+p,print     Print compile/link output to stdout
+L,nolink    Don't link after compile
+ 
 version     Print SchemaType version
 h,help      Show the command summary
  
@@ -40,43 +43,116 @@ main() (
 
 #------------------------------------------------------------------------------
 cmd:compile() {
-  [[ $# -gt 0 ]] ||
+  [[ $# -ge 1 ]] ||
     error "stp --compile requires one or more file arguments"
 
-  for file; do
-    if [[ $file == '-' ]]; then
-      file=$(mktemp -d)/STDIN
-      cat <&0 > "$file"
+  temp_file=false
+  for stp_file; do
+    if [[ $stp_file == '-' ]]; then
+      $temp_file &&
+        die "Can't use '-' (for stdin) more than once"
+      temp_file=true
+      stp_file=$(mktemp -d)/-.stp
+      cat <&0 > "$stp_file"
+      trap "rm -f '$stp_file'" exit
     fi
 
-    compile-stp "$file" /dev/stdout
+    [[ $stp_file == *.stp ]] ||
+      error "input file for --compile '$stp_file' doesn't end with '.stp'"
+
+    stc_cache=$(cache-file "$stp_file" stc)
+    compile "$stp_file" "$stc_cache"
+
+    if $option_nolink; then
+      printer "$stc_cache" "${stp_file%.stp}.stc"
+    else
+      stx_cache=$(cache-file "$stp_file" stx)
+      link "$stc_cache" "$stx_cache"
+      printer "$stx_cache" "${stp_file%.stp}.stx"
+    fi
+  done
+}
+
+cmd:validate() {
+  [[ $# -ge 2 ]] ||
+    error "stp --validate requires one or more file arguments"
+
+  stp=$1; shift
+  schema=$(compile "$stp")
+
+  for file; do
+    [[ $file == *.json ]] ||
+      die "stp validate only works with .json files right now"
+
+    validate "$schema" "$file"
   done
 }
 
 #------------------------------------------------------------------------------
-compile-stp() {
-  file=$1
-  out=$2
+compile() {
+  in_file=$1
+  cache_file=$2
 
-  compiler=$(get-compiler) || exit
+  [[ -s $cache_file ]] || rm -f "$cache_file"
 
-  option_no_link=true   # XXX
-
-  if $option_no_link; then
-    "$compiler" "$file" > "$out"
-  else
-    "$compiler" | link-stp > "$out"
+  if [[ ! -f $cache_file ]]; then
+    compiler=$(get-component compiler)
+    "$compiler" "$in_file" > "$cache_file"
   fi
 }
 
-get-compiler() {
-  compiler=bin/schematype-compiler
-  compiler_path=$SCHEMATYPE_ROOT/$compiler
+link() {
+  in_file=$1
+  cache_file=$2
 
-  [[ -f $compiler_path ]] ||
-    run-cmd make -C "$SCHEMATYPE_ROOT" "$compiler"
+  [[ -s $cache_file ]] || rm -f "$cache_file"
 
-  echo "$compiler_path"
+  if [[ ! -f $cache_file ]]; then
+    linker=$(get-component linker)
+    "$linker" "$in_file" > "$cache_file"
+  fi
+}
+
+validate() {
+  schema_file=$1
+  data_file=$2
+
+  linker=$(get-component linker)
+}
+
+printer() {
+  in_file=$1
+  out_file=$2
+
+  if $option_print; then
+    cat "$in_file"
+  else
+    cp "$in_file" "$out_file"
+  fi
+}
+
+#------------------------------------------------------------------------------
+get-component() {
+  name=$1
+
+  component=bin/schematype-$name
+  component_path=$SCHEMATYPE_ROOT/$component
+
+  [[ -f $component_path ]] ||
+    run-cmd make -C "$SCHEMATYPE_ROOT" "$component"
+
+  echo "$component_path"
+}
+
+cache-file() {
+  file=$1
+  ext=$2
+  sha=$(sha256sum "$file" | cut -d' ' -f1)
+
+  name=$(basename "$file")
+  name=${name%.*}
+
+  echo "$SCHEMATYPE_CACHE/$name-$sha.$ext"
 }
 
 run-cmd() {
@@ -99,6 +175,14 @@ setup() {
     }
   fi
 
+  [[ -f $SCHEMATYPE_ROOT/stp/lib/stdlib.bash ]] || {
+    echo "SchemaType is not properly enabled"
+    echo "Did you 'source $SCHEMATYPE_ROOT/.rc'?"
+    echo
+    echo "See: https://github.com/schematype/schematype/wiki/SchemaType-Setup"
+    exit 1
+  }
+
   export SCHEMATYPE_ROOT
 
   PATH=$SCHEMATYPE_ROOT/stp/lib:$PATH
@@ -109,6 +193,21 @@ setup() {
   }
 
   check-bash-version
+
+  { # XXX Default to ./.schematype/ or ~/.schematype/ if SCHEMATYPE_ROOT is not
+    # a git repo or not writable.
+    [[ ${SCHEMATYPE_BASE-} ]] ||
+      SCHEMATYPE_BASE=$SCHEMATYPE_ROOT
+    export SCHEMATYPE_BASE
+  }
+
+  {
+    [[ ${SCHEMATYPE_CACHE-} ]] ||
+      SCHEMATYPE_CACHE=$SCHEMATYPE_BASE/cache
+    [[ -d $SCHEMATYPE_CACHE ]] ||
+      mkdir -p "$SCHEMATYPE_CACHE"
+    export SCHEMATYPE_CACHE
+  }
 }
 
 get-opts() {
@@ -121,6 +220,7 @@ get-opts() {
 
   $option_compile && cmd=compile
   $option_link && cmd='link'
+  $option_validate && cmd=validate
 
   true
 }
