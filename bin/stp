@@ -77,14 +77,15 @@ cmd:validate() {
   [[ $# -ge 2 ]] ||
     error "stp --validate requires one or more file arguments"
 
-  stp=$1; shift
-  schema=$(compile "$stp")
+  stp_file=$1; shift
+  stp --compile --print "$stp_file" >/dev/null
+  stx_file=$(cache-file "$stp_file" stx)
 
-  for file; do
-    [[ $file == *.json ]] ||
+  for json_file; do
+    [[ $json_file == *.json ]] ||
       die "stp validate only works with .json files right now"
 
-    validate "$schema" "$file"
+    validate "$stx_file" "$json_file"
   done
 }
 
@@ -117,7 +118,9 @@ validate() {
   schema_file=$1
   data_file=$2
 
-  linker=$(get-component linker)
+  validator=$(get-component validator)
+
+  "$validator" "$schema_file" "$data_file"
 }
 
 printer() {

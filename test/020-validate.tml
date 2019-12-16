@@ -1,0 +1,8 @@
+#!/usr/bin/env testml
+
+*cmd.run-out.clean == *out
+
+=== Test 1
+--- cmd: stp --validate 001/test.stp 001/test1.json
+--- out
+OK

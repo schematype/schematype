@@ -4,6 +4,7 @@
 
 === Test 1
 --- cmd: stp --compile --print 001/test.stp
+--- show-cache: true
 --- out
 {
   "SchemaType": {"spec": "0.1.0"},
@@ -27,6 +28,13 @@
     "Str-3": {"kind": "Str", "enum": ["apple", "banana", "carrot"]}
   }
 }
+
+# XXX Hack until testml-bash can handle:
+# =>
+#   ...
+test-4bf3be9517efdcb441213ca2c0b4fa0e652f7098c956583565e303ffdf315673.stc
+test-4bf3be9517efdcb441213ca2c0b4fa0e652f7098c956583565e303ffdf315673.stx
+
 --- files(@)
 CACHE/foo.5c4e3a.stc
 CACHE/foo.5c4e3a.stx
