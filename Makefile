@@ -9,7 +9,7 @@ TESTML := $(ROOT)/.testml
 TESTML_SHARED := $(ROOT)/testml
 
 GRAMMAR_COFFEE := lib/schematype-compiler/grammar.coffee
-COFFEE_FILES := $(shell find bin -type f && find lib -name '*.coffee')
+COFFEE_FILES := $(shell find bin -type f | grep -v swp && find lib -name '*.coffee')
 JS_FILES := $(COFFEE_FILES:%.coffee=%.js)
 JS_FILES := $(JS_FILES:%=build/%)
 TESTML_RUNNER := $(TESTML)/src/node/lib/testml/run/tap.js
