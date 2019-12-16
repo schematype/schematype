@@ -4,34 +4,25 @@ module.paths.unshift "#{require('path').dirname(__dirname)}/lib"
 
 require 'ingy-prelude'
 require 'schematype-validator/validator'
+{ArgumentParser} = require 'argparse'
 
-argv = process.argv[2..]
+ap = new ArgumentParser \
+  usage: "usage: schematype-validator <type-name> <stx-file> <data-file>...",
+  version: SchemaTypeValidator.VERSION
+ap.addArgument '--type',
+  defaultValue: 'Main'
+ap.addArgument 'stx_file'
+ap.addArgument 'data_file'
+args = ap.parseArgs()
+{type, stx_file, data_file} = args
 
-if argv.length != 1
-  die "schematype-validator <schematype-stc-file> | - | --version"
-
-if argv[0] == '--version'
-  say "SchemaType version '#{SchemaTypeValidator.VERSION}'"
-  exit 0
-else if argv[0].match /^-./
-  die "Unknown argument '#{argv[0]}'"
-
-stx_file = argv[0]
-
-throw "usage: schematype-validator <stx-file> <data-file>..." \
-  unless stx_file?
 throw "Input file does not exist: '#{stx_file}'" \
   unless stx_file == '-' or file_exists stx_file
 
 schema = JSON.parse file_read stx_file
 
-exit_status = 0
-for data_file in argv[1..]
-  validator = new SchemaTypeValidator.Validator
-  validator.validate schema, data_file
-  validator.write_output()
-  exit_status = 1 if validator.status
+validator = new SchemaTypeValidator.Validator
 
-exit exit_status
+exit validator.validate schema, 'Main', data_file
 
 # vim: sw=2:

@@ -6,7 +6,7 @@ BUILD := $(VALIDATOR)/build
 NODE_MODULES := $(ROOT)/node_modules
 TESTML := $(ROOT)/testml
 
-COFFEE_FILES := $(shell find bin -type f && find lib -name '*.coffee')
+COFFEE_FILES := $(shell find bin -type f | grep -v swp && find lib -name '*.coffee')
 JS_FILES := $(COFFEE_FILES:%.coffee=%.js)
 JS_FILES := $(JS_FILES:%=build/%)
 TESTML_RUNNER := $(TESTML)/src/node/lib/testml/run/tap.js
