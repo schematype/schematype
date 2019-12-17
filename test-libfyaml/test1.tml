@@ -1,0 +1,28 @@
+#!/usr/bin/env testml-bash-tap
+
+*yaml.run(*cmd) == *out
+
+
+=== Test 1
+--- cmd: fy-tool --filter --file test.yaml --follow /head/next
+--- yaml
+head: *id0
+tail: *id2
+items:
+  - &id0
+    next: *id1
+    prev: *id2
+    content: foo
+  - &id1
+    next: *id2
+    prev: *id0
+    content: bar
+  - &id2
+    next: *id0
+    prev: *id1
+    content: baz
+--- out
+&id1
+next: *id2
+prev: *id0
+content: bar

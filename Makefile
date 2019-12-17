@@ -48,6 +48,10 @@ test: test-stp test-compiler test-linker test-generator-jsonschema
 
 test-all: test-shellcheck test
 
+.PHONY: test-libfyaml
+test-libfyaml:
+	make -C $@ test
+
 test-%: %
 	make -C $< test
 
