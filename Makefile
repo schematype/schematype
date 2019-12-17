@@ -26,13 +26,19 @@ BUILD_BRANCHES := \
     linker \
     stp \
 
-ALL_BIN := \
-    bin/stp \
+BUILD_BIN := \
     bin/schematype-compiler \
     bin/schematype-linker \
     bin/schematype-validator \
     # bin/schematype-generator-jsonschema \
 
+ALL_BIN := \
+    bin/stp \
+    $(BUILD_BIN)
+
+action-dir = $(1:bin/schematype-%=%)
+
+.SECONDEXPANSION:
 #------------------------------------------------------------------------------
 default: status
 
@@ -51,11 +57,13 @@ test-shellcheck:
 #------------------------------------------------------------------------------
 build: $(ALL_BIN) man/man1
 
+build-bin: $(BUILD_BIN)
+
 bin/stp: stp bin lib stp/bin/stp
 	cp -r $</bin/* bin/
 	cp -r $</lib/* lib/
 
-bin/schematype-%: % bin lib
+bin/schematype-%: % bin lib $$(shell find $$(call action-dir,$$@) -type f | grep -v '\.swp')
 	make -C $< build
 	cp -r $</build/bin/* bin/
 	cp -r $</build/lib/* lib/
