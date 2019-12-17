@@ -3,5 +3,5 @@ SchemaType 0.1.0
 test := Map(
   + foo => 10..100
   + bar => / x .* y /
-  + baz => [ apple banana carrot ]
+  - baz => [ apple banana carrot ]
 )

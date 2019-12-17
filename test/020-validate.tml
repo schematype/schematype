@@ -1,8 +1,40 @@
 #!/usr/bin/env testml
 
-*cmd.run-out.clean == *out
+
+*cmd.run-out == *out
+
 
 === Test 1
---- cmd: stp --validate 001/test.stp 001/test1.json
+--- cmd: stp --validate 001/test.stp 001/ok1.json
 --- out
-OK
+
+
+=== Test 2
+--- cmd: stp --validate 001/test.stp 001/ok2.json
+--- out
+
+
+=== Test 3
+--- cmd: stp --validate 001/test.stp 001/err1.json
+--- out
+Found the following problems validating '001/err1.json:
+* Expected Map key 'foo' at data path /
+* Unexpected key 'nope' at data path /
+
+
+=== Test 4
+--- cmd: stp --validate 001/test.stp 001/err2.json
+--- out
+Found the following problems validating '001/err2.json:
+* Expected Map key 'bar' at data path /
+* 0 is not in range '10..100' at data path /foo
+* 'eggplant' is not one of [apple,banana,carrot] at data path /baz
+
+
+=== Test 5
+--- cmd: stp --validate 001/test.stp 001/err3.json
+--- out
+Found the following problems validating '001/err3.json:
+* 'xmas' does not match pattern /x.*y/ at data path /bar
+
+# vim: ft=testml sw=2:

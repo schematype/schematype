@@ -11,7 +11,7 @@
   "from": {
     "name": "001/test.stp",
     "time": "1234567890123",
-    "mark": "b630f1c257a509b2b776fdc2cd1d45dc43eb6369d810cbf8abede852af5a3026"
+    "mark": "13955d6cb7cf352fa24839e5427490a778a92736fb447e23e069ddcff4944a05"
   },
   "show": ["!test"],
   "type": {
@@ -20,7 +20,7 @@
       "pair": [
         ["foo", "!Int-1", true],
         ["bar", "!Str-2", true],
-        ["baz", "!Str-3", true]
+        ["baz", "!Str-3"]
       ]
     },
     "Int-1": {"kind": "Int", "xtoy": ["10", "100"]},
@@ -32,8 +32,8 @@
 # XXX Hack until testml-bash can handle:
 # =>
 #   ...
-test-4bf3be9517efdcb441213ca2c0b4fa0e652f7098c956583565e303ffdf315673.stc
-test-4bf3be9517efdcb441213ca2c0b4fa0e652f7098c956583565e303ffdf315673.stx
+test-86bad1d2527d6d57d60c072de1752e882f030794e3220366796774f1ac552110.stc
+test-86bad1d2527d6d57d60c072de1752e882f030794e3220366796774f1ac552110.stx
 
 --- files(@)
 CACHE/foo.5c4e3a.stc

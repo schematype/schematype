@@ -22,6 +22,7 @@ l,link      Link a SchemaType compiled stc file
 g,generate= Generate various kinds of code from an stp
 v,validate  Validate data files with an atp file
  
+t,type=     Type name to use (default is 'Main')
 p,print     Print compile/link output to stdout
 L,nolink    Don't link after compile
  
@@ -54,6 +55,7 @@ cmd:compile() {
       temp_file=true
       stp_file=$(mktemp -d)/-.stp
       cat <&0 > "$stp_file"
+      # shellcheck disable=2064
       trap "rm -f '$stp_file'" exit
     fi
 
@@ -81,12 +83,18 @@ cmd:validate() {
   stp --compile --print "$stp_file" >/dev/null
   stx_file=$(cache-file "$stp_file" stx)
 
+  rc=0
   for json_file; do
+    if [[ $# -gt 1 ]]; then
+      echo "=== Validating file '$json_file':"
+    fi
     [[ $json_file == *.json ]] ||
       die "stp validate only works with .json files right now"
 
-    validate "$stx_file" "$json_file"
+    validate "$stx_file" "$json_file" || rc=1
   done
+
+  exit $rc
 }
 
 #------------------------------------------------------------------------------
@@ -120,7 +128,7 @@ validate() {
 
   validator=$(get-component validator)
 
-  "$validator" "$schema_file" "$data_file"
+  "$validator" --type="$option_type" "$schema_file" "$data_file"
 }
 
 printer() {
@@ -224,6 +232,8 @@ get-opts() {
   $option_compile && cmd=compile
   $option_link && cmd='link'
   $option_validate && cmd=validate
+
+  : "${option_type:=Main}"
 
   true
 }
