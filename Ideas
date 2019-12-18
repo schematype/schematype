@@ -1,5 +1,10 @@
-# Compiler
-- Compiler and Linker shasums should go into compunit
+# Transform plugins
+- JSC to STP
+- STP to JSC
+
+# Compiler and Linker
+- Audit trail of build artifacts
+  - Compiler and Linker shasums should go into compunit
 
 
 # Env Vars
@@ -17,6 +22,9 @@
   - s = sha256 foo.stp
   - compile/link to $SCHEMATYPE_CACHE/foo-<s>.stx
 
+#------------------------------------------------------------------------------
+# STP Syntax
+#------------------------------------------------------------------------------
 # Import w/ Exports syntax:
 Import ./foo (a b !c /*)
 Import ./foo :(*)   # Re-export all imports
@@ -31,6 +39,10 @@ foo/bar = !foo/bar (. > 10)
 - main type is exported type if only one
 - else
   Main := !type-name    # type-name must be exported
+
+
+
+
 
 == Sample stc/stx format
     SchemaType: 0.1.0
