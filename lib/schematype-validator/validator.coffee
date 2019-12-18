@@ -57,8 +57,12 @@ class SchemaTypeValidator.Validator
       @err "Expected Str ..."
       return
 
-    if (like = type.like)? and not node.match like
-      @err "'#{node}' does not match pattern /#{like}/ ..."
+    if (like = type.like)?
+      like = like.replace /\\A/g, '(?<!.)'
+      like = like.replace /\\z/g, '(?!.)'
+      rgx = new RegExp like, 'sm'
+      if not node.match rgx
+        @err "'#{node}' does not match pattern /#{like}/ms ..."
 
     if (enum_ = type.enum)? and not (node in enum_)
       @err "'#{node}' is not one of [#{_.toString enum_}] ..."

@@ -4,7 +4,7 @@ ROOT := $(shell cd .. && pwd)
 VALIDATOR := $(ROOT)/validator
 BUILD := $(VALIDATOR)/build
 NODE_MODULES := $(ROOT)/node_modules
-TESTML := $(ROOT)/testml
+TESTML := $(ROOT)/.testml
 
 COFFEE_FILES := $(shell find bin -type f | grep -v swp && find lib -name '*.coffee')
 JS_FILES := $(COFFEE_FILES:%.coffee=%.js)

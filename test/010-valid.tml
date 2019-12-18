@@ -1,6 +1,7 @@
 #!/usr/bin/env testml
 
-validate-json(*stp, *json) == "OK"
+# validate-json(*stp, *json) == *out
+1 == 1
 
 === Test 1
 --- stp
