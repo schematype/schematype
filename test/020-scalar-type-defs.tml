@@ -50,14 +50,14 @@ s1 := Str [xxx yyy zzz]
 
 === Test 4 - Type def with kind and like
 --- stp
-s1 = Str // foo - (: xxx | yyy ) //
+s1 = Str / foo - (: xxx | yyy ) /
 --- stc
 "type": {"s1": {"kind": "Str", "like": "\\Afoo-(?:xxx|yyy)\\z"}}
 
 
 === Test 5 - Type def with kind, like and smax
 --- stp
-s1 = Str // foo .* / +50
+s1 = Str / foo .*/ +50
 --- stc
 "type": {"s1": {"kind": "Str", "like": "\\Afoo.*", "smax": 50}}
 
@@ -65,7 +65,7 @@ s1 = Str // foo .* / +50
 === Test 6 - Type def with parens
 --- stp
 s1 = Str(
-  // foo .* /
+  / foo .*/
   +50
 )
 --- ^stc
@@ -73,13 +73,13 @@ s1 = Str(
 
 === Test 7 - Type def with parens, one line
 --- stp
-s1 = Str(// foo .* / +50)
+s1 = Str(/ foo .*/ +50)
 --- ^stc
 
 
 === Test 8 - Type def with parens, variation
 --- stp
-s1 = Str(// foo .* /
+s1 = Str(/ foo .*/
   +50
 )
 --- ^stc
@@ -87,7 +87,7 @@ s1 = Str(// foo .* /
 
 === Test 9 - Type def with parens, comments
 --- stp
-s1 = Str(// foo .* /  #comment
+s1 = Str(/ foo .*/  #comment
   #comment
   +50)  #comment
 --- ^stc

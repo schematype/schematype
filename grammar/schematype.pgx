@@ -148,9 +148,9 @@ pair-value:
 pair-ext: /[ AMP PIPE ]/
 
 like-expr: /
-  ( SLASH SLASH? )
+  SLASH
   ( [^ SLASH ]+ )
-  ( SLASH SLASH? )
+  SLASH
 /
 enum-expr:
   /'[' -/

@@ -203,7 +203,7 @@ class SchemaTypeCompiler.Grammar extends Pegex.Grammar
           ]
        },
        "like_expr" : {
-          ".rgx" : "(//?)([^/]+)(//?)"
+          ".rgx" : "/([^/]+)/"
        },
        "list_definition" : {
           ".all" : [

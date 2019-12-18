@@ -113,11 +113,11 @@ class SchemaTypeCompiler.AST extends Pegex.Tree
     enum: @flat got
 
   got_like_expr: (got)->
-    [head, regex, foot] = @flat got
+    regex = got.replace /\r?\n/g, ' '
+    regex = regex.replace /^\ /, '\\A'
+    regex = regex.replace /\ $/, '\\z'
     regex = regex.replace /\(:/g, '(?:'
     regex = regex.replace /\s/g, ''
-    regex = "\\A#{regex}" if head == '//'
-    regex = "#{regex}\\z" if foot == '//'
     like: regex
 
   got_xtoy_expr: ([x, y])->

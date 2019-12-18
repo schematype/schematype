@@ -23,29 +23,29 @@ r1 := /(:
 
 === Test 2 - Anchored syntax - both
 --- stp
-r1 = //(: foo | bar)//
+r1 = / (: foo | bar) /
 --- stc
 "like": {"r1": "\\A(?:foo|bar)\\z"}
 
 
 === Test 3 - Anchored syntax - left
 --- stp
-r1 = //(: foo | bar)/
+r1 = / (: foo | bar)/
 --- stc
 "like": {"r1": "\\A(?:foo|bar)"}
 
 
 === Test 4 - Anchored syntax - right
 --- stp
-r1 = /(: foo | bar)//
+r1 = /(: foo | bar) /
 --- stc
 "like": {"r1": "(?:foo|bar)\\z"}
 
 
 === Test 5 - Interpolation
 --- stp
-t1 := Str / foo {bar}* /
-bar = / [abc] /
+t1 := Str /foo {bar}*/
+bar = /[abc]/
 --- stc
 "show": ["!t1"]
 "type": {"t1": {"kind": "Str", "like": "foo[abc]*"}}
