@@ -205,10 +205,15 @@ setup() {
 
   check-bash-version
 
-  { # XXX Default to ./.schematype/ or ~/.schematype/ if SCHEMATYPE_ROOT is not
-    # a git repo or not writable.
-    [[ ${SCHEMATYPE_BASE-} ]] ||
+  {
+    [[ -z ${SCHEMATYPE_BASE-} && -d $PWD/.schematype ]] &&
+      SCHEMATYPE_BASE=$PWD/.schematype
+    [[ -z ${SCHEMATYPE_BASE-} && -d ~/.schematype ]] &&
+      SCHEMATYPE_BASE=~/.schematype
+    [[ -z ${SCHEMATYPE_BASE-} && -d $SCHEMATYPE_ROOT/.git ]] &&
       SCHEMATYPE_BASE=$SCHEMATYPE_ROOT
+    [[ $SCHEMATYPE_BASE ]] ||
+      die "Can't find base directory. Set SCHEMATYPE_BASE."
     export SCHEMATYPE_BASE
   }
 

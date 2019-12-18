@@ -24,7 +24,7 @@
       ]
     },
     "Int-1": {"kind": "Int", "xtoy": ["10", "100"]},
-    "Str-2": {"kind": "Str", "like": "x.*y"},
+    "Str-2": {"kind": "Str", "like": "\\Ax.*y\\z"},
     "Str-3": {"kind": "Str", "enum": ["apple", "banana", "carrot"]}
   }
 }

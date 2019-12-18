@@ -35,6 +35,6 @@ Found the following problems validating '001/err2.json:
 --- cmd: stp --validate 001/test.stp 001/err3.json
 --- out
 Found the following problems validating '001/err3.json:
-* 'xmas' does not match pattern /x.*y/ at data path /bar
+* 'xmas' does not match pattern /(?<!.)x.*y(?!.)/ms at data path /bar
 
 # vim: ft=testml sw=2:
