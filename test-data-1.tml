@@ -20,7 +20,7 @@ test := Map(
       "kind": "Map",
       "pair": [
         ["foo", {"xtoy": ["10", "100"]}, true],
-        ["bar", {"like": "x.*y"}, true],
+        ["bar", {"like": "\\Ax.*y\\z"}, true],
         ["baz", {"enum": ["apple", "banana", "carrot"]}, true]
       ]
     }
@@ -45,7 +45,7 @@ test := Map(
       ]
     },
     "Int-1": {"kind": "Int", "xtoy": ["10", "100"]},
-    "Str-2": {"kind": "Str", "like": "x.*y"},
+    "Str-2": {"kind": "Str", "like": "\\Ax.*y\\z"},
     "Str-3": {"kind": "Str", "enum": ["apple", "banana", "carrot"]}
   }
 }
