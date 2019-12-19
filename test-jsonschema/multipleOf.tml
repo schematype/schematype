@@ -1,0 +1,66 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - by int - int by int
+--- valid: true
+--- jsc
+{"multipleOf": 2}
+--- json
+10
+
+
+=== Test 2 - by int - int by int fail
+--- valid: false
+--- ^jsc
+--- json
+7
+
+
+=== Test 3 - by int - ignores non-numbers
+--- valid: true
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 4 - by number - zero is multiple of anything
+--- valid: true
+--- jsc
+{"multipleOf": 1.5}
+--- json
+0
+
+
+=== Test 5 - by number - 4.5 is multiple of 1.5
+--- valid: true
+--- ^jsc
+--- json
+4.5
+
+
+=== Test 6 - by number - 35 is not multiple of 1.5
+--- valid: false
+--- ^jsc
+--- json
+35
+
+
+=== Test 7 - by small number - 0.0075 is multiple of 0.0001
+--- valid: true
+--- jsc
+{"multipleOf": 0.0001}
+--- json
+0.0075
+
+
+=== Test 8 - by small number - 0.00751 is not multiple of 0.0001
+--- valid: false
+--- ^jsc
+--- json
+0.00751
+
+
+# vim: ft=testml sw=2:

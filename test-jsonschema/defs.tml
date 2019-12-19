@@ -1,0 +1,27 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - valid definition - valid definition schema
+--- valid: true
+--- jsc
+{
+  "$ref": "https://json-schema.org/draft/2019-09/schema"
+}
+--- json
+{"$defs": {"foo": {"type": "integer"}}}
+
+
+=== Test 2 - invalid definition - invalid definition schema
+--- valid: false
+--- jsc
+{
+  "$ref": "https://json-schema.org/draft/2019-09/schema"
+}
+--- json
+{"$defs": {"foo": {"type": 1}}}
+
+
+# vim: ft=testml sw=2:

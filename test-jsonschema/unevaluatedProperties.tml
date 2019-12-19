@@ -1,0 +1,38 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - can peer inside allOf, results in no-op - string props valid
+--- valid: true
+--- jsc
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "unevaluatedProperties": false,
+  "allOf": [
+    {
+      "properties": {
+        "foo": {"type": ["string", "null"]},
+        "bar": {"type": ["string", "null"]}
+      }
+    },
+    {
+      "additionalProperties": {
+        "not": {"enum": [null]}
+      }
+    }
+  ]
+}
+--- json
+{"bar": "foo", "bob": "who?"}
+
+
+=== Test 2 - can peer inside allOf, results in no-op - null prop is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"bar": "foo", "bob": null}
+
+
+# vim: ft=testml sw=2:

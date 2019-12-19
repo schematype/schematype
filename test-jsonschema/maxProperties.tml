@@ -1,0 +1,50 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - maxProperties validation - shorter is valid
+--- valid: true
+--- jsc
+{"maxProperties": 2}
+--- json
+{"foo": 1}
+
+
+=== Test 2 - maxProperties validation - exact length is valid
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2}
+
+
+=== Test 3 - maxProperties validation - too long is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2, "baz": 3}
+
+
+=== Test 4 - maxProperties validation - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[1, 2, 3]
+
+
+=== Test 5 - maxProperties validation - ignores strings
+--- valid: true
+--- ^jsc
+--- json
+"foobar"
+
+
+=== Test 6 - maxProperties validation - ignores other non-objects
+--- valid: true
+--- ^jsc
+--- json
+12
+
+
+# vim: ft=testml sw=2:

@@ -1,0 +1,179 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - ECMA 262 regex non-compliance - ECMA 262 has no support for \Z anchor from .NET
+--- valid: false
+--- jsc
+{"format": "regex"}
+--- json
+"^\\S(|(.|\\n)*\\S)\\Z"
+
+
+=== Test 2 - ECMA 262 regex $ does not match trailing newline - matches in Python, but should not in jsonschema
+--- valid: false
+--- jsc
+{"type": "string", "pattern": "^abc$"}
+--- json
+"abc\n"
+
+
+=== Test 3 - ECMA 262 regex $ does not match trailing newline - should match
+--- valid: true
+--- ^jsc
+--- json
+"abc"
+
+
+=== Test 4 - ECMA 262 regex converts \t to horizontal tab - does not match
+--- valid: false
+--- jsc
+{"type": "string", "pattern": "^\\t$"}
+--- json
+"\\t"
+
+
+=== Test 5 - ECMA 262 regex converts \t to horizontal tab - matches
+--- valid: true
+--- ^jsc
+--- json
+"\t"
+
+
+=== Test 6 - ECMA 262 regex escapes control codes with \c and upper letter - does not match
+--- valid: false
+--- jsc
+{"type": "string", "pattern": "^\\cC$"}
+--- json
+"\\cC"
+
+
+=== Test 7 - ECMA 262 regex escapes control codes with \c and upper letter - matches
+--- valid: true
+--- ^jsc
+--- json
+"\u0003"
+
+
+=== Test 8 - ECMA 262 regex escapes control codes with \c and lower letter - does not match
+--- valid: false
+--- jsc
+{"type": "string", "pattern": "^\\cc$"}
+--- json
+"\\cc"
+
+
+=== Test 9 - ECMA 262 regex escapes control codes with \c and lower letter - matches
+--- valid: true
+--- ^jsc
+--- json
+"\u0003"
+
+
+=== Test 10 - ECMA 262 \d matches ascii digits only - ASCII zero matches
+--- valid: true
+--- jsc
+{"type": "string", "pattern": "^\\d$"}
+--- json
+"0"
+
+
+=== Test 11 - ECMA 262 \d matches ascii digits only - NKO DIGIT ZERO does not match (unlike e.g. Python)
+--- valid: false
+--- ^jsc
+--- json
+"߀"
+
+
+=== Test 12 - ECMA 262 \d matches ascii digits only - NKO DIGIT ZERO (as \u escape) does not match
+--- valid: false
+--- ^jsc
+--- json
+"߀"
+
+
+=== Test 13 - ECMA 262 \D matches everything but ascii digits - ASCII zero does not match
+--- valid: false
+--- jsc
+{"type": "string", "pattern": "^\\D$"}
+--- json
+"0"
+
+
+=== Test 14 - ECMA 262 \D matches everything but ascii digits - NKO DIGIT ZERO matches (unlike e.g. Python)
+--- valid: true
+--- ^jsc
+--- json
+"߀"
+
+
+=== Test 15 - ECMA 262 \D matches everything but ascii digits - NKO DIGIT ZERO (as \u escape) matches
+--- valid: true
+--- ^jsc
+--- json
+"߀"
+
+
+=== Test 16 - ECMA 262 \w matches ascii letters only - ASCII 'a' matches
+--- valid: true
+--- jsc
+{"type": "string", "pattern": "^\\w$"}
+--- json
+"a"
+
+
+=== Test 17 - ECMA 262 \w matches ascii letters only - latin-1 e-acute does not match (unlike e.g. Python)
+--- valid: false
+--- ^jsc
+--- json
+"é"
+
+
+=== Test 18 - ECMA 262 \w matches everything but ascii letters - ASCII 'a' does not match
+--- valid: false
+--- jsc
+{"type": "string", "pattern": "^\\W$"}
+--- json
+"a"
+
+
+=== Test 19 - ECMA 262 \w matches everything but ascii letters - latin-1 e-acute matches (unlike e.g. Python)
+--- valid: true
+--- ^jsc
+--- json
+"é"
+
+
+=== Test 20 - ECMA 262 \s matches ascii whitespace only - ASCII space matches
+--- valid: true
+--- jsc
+{"type": "string", "pattern": "^\\s$"}
+--- json
+" "
+
+
+=== Test 21 - ECMA 262 \s matches ascii whitespace only - latin-1 non-breaking-space does not match (unlike e.g. Python)
+--- valid: false
+--- ^jsc
+--- json
+" "
+
+
+=== Test 22 - ECMA 262 \S matches everything but ascii whitespace - ASCII space does not match
+--- valid: false
+--- jsc
+{"type": "string", "pattern": "^\\S$"}
+--- json
+" "
+
+
+=== Test 23 - ECMA 262 \S matches everything but ascii whitespace - latin-1 non-breaking-space matches (unlike e.g. Python)
+--- valid: true
+--- ^jsc
+--- json
+" "
+
+
+# vim: ft=testml sw=2:

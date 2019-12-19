@@ -1,0 +1,71 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of date-time strings - a valid date-time string
+--- valid: true
+--- jsc
+{"format": "date-time"}
+--- json
+"1963-06-19T08:30:06.283185Z"
+
+
+=== Test 2 - validation of date-time strings - a valid date-time string without second fraction
+--- valid: true
+--- ^jsc
+--- json
+"1963-06-19T08:30:06Z"
+
+
+=== Test 3 - validation of date-time strings - a valid date-time string with plus offset
+--- valid: true
+--- ^jsc
+--- json
+"1937-01-01T12:00:27.87+00:20"
+
+
+=== Test 4 - validation of date-time strings - a valid date-time string with minus offset
+--- valid: true
+--- ^jsc
+--- json
+"1990-12-31T15:59:50.123-08:00"
+
+
+=== Test 5 - validation of date-time strings - a invalid day in date-time string
+--- valid: false
+--- ^jsc
+--- json
+"1990-02-31T15:59:60.123-08:00"
+
+
+=== Test 6 - validation of date-time strings - an invalid offset in date-time string
+--- valid: false
+--- ^jsc
+--- json
+"1990-12-31T15:59:60-24:00"
+
+
+=== Test 7 - validation of date-time strings - an invalid date-time string
+--- valid: false
+--- ^jsc
+--- json
+"06/19/1963 08:30:06 PST"
+
+
+=== Test 8 - validation of date-time strings - case-insensitive T and Z
+--- valid: true
+--- ^jsc
+--- json
+"1963-06-19t08:30:06.283185z"
+
+
+=== Test 9 - validation of date-time strings - only RFC3339 not all of ISO 8601 are valid
+--- valid: false
+--- ^jsc
+--- json
+"2013-350T01:01:01"
+
+
+# vim: ft=testml sw=2:

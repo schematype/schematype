@@ -1,0 +1,36 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - format: uri-template - a valid uri-template
+--- valid: true
+--- jsc
+{"format": "uri-template"}
+--- json
+"http://example.com/dictionary/{term:1}/{term}"
+
+
+=== Test 2 - format: uri-template - an invalid uri-template
+--- valid: false
+--- ^jsc
+--- json
+"http://example.com/dictionary/{term:1}/{term"
+
+
+=== Test 3 - format: uri-template - a valid uri-template without variables
+--- valid: true
+--- ^jsc
+--- json
+"http://example.com/dictionary"
+
+
+=== Test 4 - format: uri-template - a valid relative uri-template
+--- valid: true
+--- ^jsc
+--- json
+"dictionary/{term:1}/{term}"
+
+
+# vim: ft=testml sw=2:

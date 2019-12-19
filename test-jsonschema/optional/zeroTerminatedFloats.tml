@@ -1,0 +1,15 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - some languages do not distinguish between different types of numeric value - a float without fractional part is an integer
+--- valid: true
+--- jsc
+{"type": "integer"}
+--- json
+1
+
+
+# vim: ft=testml sw=2:

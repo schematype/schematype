@@ -1,0 +1,43 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of IP addresses - a valid IP address
+--- valid: true
+--- jsc
+{"format": "ipv4"}
+--- json
+"192.168.0.1"
+
+
+=== Test 2 - validation of IP addresses - an IP address with too many components
+--- valid: false
+--- ^jsc
+--- json
+"127.0.0.0.1"
+
+
+=== Test 3 - validation of IP addresses - an IP address with out-of-range values
+--- valid: false
+--- ^jsc
+--- json
+"256.256.256.256"
+
+
+=== Test 4 - validation of IP addresses - an IP address without 4 components
+--- valid: false
+--- ^jsc
+--- json
+"127.0"
+
+
+=== Test 5 - validation of IP addresses - an IP address as an integer
+--- valid: false
+--- ^jsc
+--- json
+"0x7f000001"
+
+
+# vim: ft=testml sw=2:

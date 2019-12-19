@@ -1,0 +1,225 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - uniqueItems validation - unique array of integers is valid
+--- valid: true
+--- jsc
+{"uniqueItems": true}
+--- json
+[1, 2]
+
+
+=== Test 2 - uniqueItems validation - non-unique array of integers is invalid
+--- valid: false
+--- ^jsc
+--- json
+[1, 1]
+
+
+=== Test 3 - uniqueItems validation - numbers are unique if mathematically unequal
+--- valid: false
+--- ^jsc
+--- json
+[1, 1, 1]
+
+
+=== Test 4 - uniqueItems validation - false is not equal to zero
+--- valid: true
+--- ^jsc
+--- json
+[0, false]
+
+
+=== Test 5 - uniqueItems validation - true is not equal to one
+--- valid: true
+--- ^jsc
+--- json
+[1, true]
+
+
+=== Test 6 - uniqueItems validation - unique array of objects is valid
+--- valid: true
+--- ^jsc
+--- json
+[{"foo": "bar"}, {"foo": "baz"}]
+
+
+=== Test 7 - uniqueItems validation - non-unique array of objects is invalid
+--- valid: false
+--- ^jsc
+--- json
+[{"foo": "bar"}, {"foo": "bar"}]
+
+
+=== Test 8 - uniqueItems validation - unique array of nested objects is valid
+--- valid: true
+--- ^jsc
+--- json
+[
+  {"foo": {"bar": {"baz": true}}},
+  {"foo": {"bar": {"baz": false}}}
+]
+
+
+=== Test 9 - uniqueItems validation - non-unique array of nested objects is invalid
+--- valid: false
+--- ^jsc
+--- json
+[
+  {"foo": {"bar": {"baz": true}}},
+  {"foo": {"bar": {"baz": true}}}
+]
+
+
+=== Test 10 - uniqueItems validation - unique array of arrays is valid
+--- valid: true
+--- ^jsc
+--- json
+[["foo"], ["bar"]]
+
+
+=== Test 11 - uniqueItems validation - non-unique array of arrays is invalid
+--- valid: false
+--- ^jsc
+--- json
+[["foo"], ["foo"]]
+
+
+=== Test 12 - uniqueItems validation - 1 and true are unique
+--- valid: true
+--- ^jsc
+--- json
+[1, true]
+
+
+=== Test 13 - uniqueItems validation - 0 and false are unique
+--- valid: true
+--- ^jsc
+--- json
+[0, false]
+
+
+=== Test 14 - uniqueItems validation - unique heterogeneous types are valid
+--- valid: true
+--- ^jsc
+--- json
+[{}, [1], true, null, 1]
+
+
+=== Test 15 - uniqueItems validation - non-unique heterogeneous types are invalid
+--- valid: false
+--- ^jsc
+--- json
+[{}, [1], true, null, {}, 1]
+
+
+=== Test 16 - uniqueItems with an array of items - [false, true] from items array is valid
+--- valid: true
+--- jsc
+{
+  "items": [
+    {"type": "boolean"},
+    {"type": "boolean"}
+  ],
+  "uniqueItems": true
+}
+--- json
+[false, true]
+
+
+=== Test 17 - uniqueItems with an array of items - [true, false] from items array is valid
+--- valid: true
+--- ^jsc
+--- json
+[true, false]
+
+
+=== Test 18 - uniqueItems with an array of items - [false, false] from items array is not valid
+--- valid: false
+--- ^jsc
+--- json
+[false, false]
+
+
+=== Test 19 - uniqueItems with an array of items - [true, true] from items array is not valid
+--- valid: false
+--- ^jsc
+--- json
+[true, true]
+
+
+=== Test 20 - uniqueItems with an array of items - unique array extended from [false, true] is valid
+--- valid: true
+--- ^jsc
+--- json
+[false, true, "foo", "bar"]
+
+
+=== Test 21 - uniqueItems with an array of items - unique array extended from [true, false] is valid
+--- valid: true
+--- ^jsc
+--- json
+[true, false, "foo", "bar"]
+
+
+=== Test 22 - uniqueItems with an array of items - non-unique array extended from [false, true] is not valid
+--- valid: false
+--- ^jsc
+--- json
+[false, true, "foo", "foo"]
+
+
+=== Test 23 - uniqueItems with an array of items - non-unique array extended from [true, false] is not valid
+--- valid: false
+--- ^jsc
+--- json
+[true, false, "foo", "foo"]
+
+
+=== Test 24 - uniqueItems with an array of items and additionalItems=false - [false, true] from items array is valid
+--- valid: true
+--- jsc
+{
+  "items": [
+    {"type": "boolean"},
+    {"type": "boolean"}
+  ],
+  "uniqueItems": true,
+  "additionalItems": false
+}
+--- json
+[false, true]
+
+
+=== Test 25 - uniqueItems with an array of items and additionalItems=false - [true, false] from items array is valid
+--- valid: true
+--- ^jsc
+--- json
+[true, false]
+
+
+=== Test 26 - uniqueItems with an array of items and additionalItems=false - [false, false] from items array is not valid
+--- valid: false
+--- ^jsc
+--- json
+[false, false]
+
+
+=== Test 27 - uniqueItems with an array of items and additionalItems=false - [true, true] from items array is not valid
+--- valid: false
+--- ^jsc
+--- json
+[true, true]
+
+
+=== Test 28 - uniqueItems with an array of items and additionalItems=false - extra items are invalid even if unique
+--- valid: false
+--- ^jsc
+--- json
+[false, true, null]
+
+
+# vim: ft=testml sw=2:

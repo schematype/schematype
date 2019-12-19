@@ -1,0 +1,190 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - simple enum validation - one of the enum is valid
+--- valid: true
+--- jsc
+{"enum": [1, 2, 3]}
+--- json
+1
+
+
+=== Test 2 - simple enum validation - something else is invalid
+--- valid: false
+--- ^jsc
+--- json
+4
+
+
+=== Test 3 - heterogeneous enum validation - one of the enum is valid
+--- valid: true
+--- jsc
+{"enum": [6, "foo", [], true, {"foo": 12}]}
+--- json
+[]
+
+
+=== Test 4 - heterogeneous enum validation - something else is invalid
+--- valid: false
+--- ^jsc
+--- json
+null
+
+
+=== Test 5 - heterogeneous enum validation - objects are deep compared
+--- valid: false
+--- ^jsc
+--- json
+{"foo": false}
+
+
+=== Test 6 - enums in properties - both properties are valid
+--- valid: true
+--- jsc
+{
+  "type": "object",
+  "properties": {
+    "foo": {"enum": ["foo"]},
+    "bar": {"enum": ["bar"]}
+  },
+  "required": ["bar"]
+}
+--- json
+{"foo": "foo", "bar": "bar"}
+
+
+=== Test 7 - enums in properties - missing optional property is valid
+--- valid: true
+--- ^jsc
+--- json
+{"bar": "bar"}
+
+
+=== Test 8 - enums in properties - missing required property is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "foo"}
+
+
+=== Test 9 - enums in properties - missing all properties is invalid
+--- valid: false
+--- ^jsc
+--- json
+{}
+
+
+=== Test 10 - enum with escaped characters - member 1 is valid
+--- valid: true
+--- jsc
+{"enum": ["foo\nbar", "foo\rbar"]}
+--- json
+"foo\nbar"
+
+
+=== Test 11 - enum with escaped characters - member 2 is valid
+--- valid: true
+--- ^jsc
+--- json
+"foo\rbar"
+
+
+=== Test 12 - enum with escaped characters - another string is invalid
+--- valid: false
+--- ^jsc
+--- json
+"abc"
+
+
+=== Test 13 - enum with false does not match 0 - false is valid
+--- valid: true
+--- jsc
+{"enum": [false]}
+--- json
+false
+
+
+=== Test 14 - enum with false does not match 0 - integer zero is invalid
+--- valid: false
+--- ^jsc
+--- json
+0
+
+
+=== Test 15 - enum with false does not match 0 - float zero is invalid
+--- valid: false
+--- ^jsc
+--- json
+0
+
+
+=== Test 16 - enum with true does not match 1 - true is valid
+--- valid: true
+--- jsc
+{"enum": [true]}
+--- json
+true
+
+
+=== Test 17 - enum with true does not match 1 - integer one is invalid
+--- valid: false
+--- ^jsc
+--- json
+1
+
+
+=== Test 18 - enum with true does not match 1 - float one is invalid
+--- valid: false
+--- ^jsc
+--- json
+1
+
+
+=== Test 19 - enum with 0 does not match false - false is invalid
+--- valid: false
+--- jsc
+{"enum": [0]}
+--- json
+false
+
+
+=== Test 20 - enum with 0 does not match false - integer zero is valid
+--- valid: true
+--- ^jsc
+--- json
+0
+
+
+=== Test 21 - enum with 0 does not match false - float zero is valid
+--- valid: true
+--- ^jsc
+--- json
+0
+
+
+=== Test 22 - enum with 1 does not match true - true is invalid
+--- valid: false
+--- jsc
+{"enum": [1]}
+--- json
+true
+
+
+=== Test 23 - enum with 1 does not match true - integer one is valid
+--- valid: true
+--- ^jsc
+--- json
+1
+
+
+=== Test 24 - enum with 1 does not match true - float one is valid
+--- valid: true
+--- ^jsc
+--- json
+1
+
+
+# vim: ft=testml sw=2:

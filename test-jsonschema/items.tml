@@ -1,0 +1,256 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - a schema given for items - valid items
+--- valid: true
+--- jsc
+{"items": {"type": "integer"}}
+--- json
+[1, 2, 3]
+
+
+=== Test 2 - a schema given for items - wrong type of items
+--- valid: false
+--- ^jsc
+--- json
+[1, "x"]
+
+
+=== Test 3 - a schema given for items - ignores non-arrays
+--- valid: true
+--- ^jsc
+--- json
+{"foo": "bar"}
+
+
+=== Test 4 - a schema given for items - JavaScript pseudo-array is valid
+--- valid: true
+--- ^jsc
+--- json
+{"0": "invalid", "length": 1}
+
+
+=== Test 5 - an array of schemas for items - correct types
+--- valid: true
+--- jsc
+{
+  "items": [
+    {"type": "integer"},
+    {"type": "string"}
+  ]
+}
+--- json
+[1, "foo"]
+
+
+=== Test 6 - an array of schemas for items - wrong types
+--- valid: false
+--- ^jsc
+--- json
+["foo", 1]
+
+
+=== Test 7 - an array of schemas for items - incomplete array of items
+--- valid: true
+--- ^jsc
+--- json
+[1]
+
+
+=== Test 8 - an array of schemas for items - array with additional items
+--- valid: true
+--- ^jsc
+--- json
+[1, "foo", true]
+
+
+=== Test 9 - an array of schemas for items - empty array
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 10 - an array of schemas for items - JavaScript pseudo-array is valid
+--- valid: true
+--- ^jsc
+--- json
+{"0": "invalid", "1": "valid", "length": 2}
+
+
+=== Test 11 - items with boolean schema (true) - any array is valid
+--- valid: true
+--- jsc
+{"items": true}
+--- json
+[1, "foo", true]
+
+
+=== Test 12 - items with boolean schema (true) - empty array is valid
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 13 - items with boolean schema (false) - any non-empty array is invalid
+--- valid: false
+--- jsc
+{"items": false}
+--- json
+[1, "foo", true]
+
+
+=== Test 14 - items with boolean schema (false) - empty array is valid
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 15 - items with boolean schemas - array with one item is valid
+--- valid: true
+--- jsc
+{"items": [true, false]}
+--- json
+[1]
+
+
+=== Test 16 - items with boolean schemas - array with two items is invalid
+--- valid: false
+--- ^jsc
+--- json
+[1, "foo"]
+
+
+=== Test 17 - items with boolean schemas - empty array is valid
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 18 - items and subitems - valid items
+--- valid: true
+--- jsc
+{
+  "$defs": {
+    "item": {
+      "type": "array",
+      "additionalItems": false,
+      "items": [
+        {"$ref": "#/$defs/sub-item"},
+        {"$ref": "#/$defs/sub-item"}
+      ]
+    },
+    "sub-item": {
+      "type": "object",
+      "required": ["foo"]
+    }
+  },
+  "type": "array",
+  "additionalItems": false,
+  "items": [
+    {"$ref": "#/$defs/item"},
+    {"$ref": "#/$defs/item"},
+    {"$ref": "#/$defs/item"}
+  ]
+}
+--- json
+[
+  [{"foo": null}, {"foo": null}],
+  [{"foo": null}, {"foo": null}],
+  [{"foo": null}, {"foo": null}]
+]
+
+
+=== Test 19 - items and subitems - too many items
+--- valid: false
+--- ^jsc
+--- json
+[
+  [{"foo": null}, {"foo": null}],
+  [{"foo": null}, {"foo": null}],
+  [{"foo": null}, {"foo": null}],
+  [{"foo": null}, {"foo": null}]
+]
+
+
+=== Test 20 - items and subitems - too many sub-items
+--- valid: false
+--- ^jsc
+--- json
+[
+  [{"foo": null}, {"foo": null}, {"foo": null}],
+  [{"foo": null}, {"foo": null}],
+  [{"foo": null}, {"foo": null}]
+]
+
+
+=== Test 21 - items and subitems - wrong item
+--- valid: false
+--- ^jsc
+--- json
+[
+  {"foo": null},
+  [{"foo": null}, {"foo": null}],
+  [{"foo": null}, {"foo": null}]
+]
+
+
+=== Test 22 - items and subitems - wrong sub-item
+--- valid: false
+--- ^jsc
+--- json
+[
+  [{}, {"foo": null}],
+  [{"foo": null}, {"foo": null}],
+  [{"foo": null}, {"foo": null}]
+]
+
+
+=== Test 23 - items and subitems - fewer items is valid
+--- valid: true
+--- ^jsc
+--- json
+[[{"foo": null}], [{"foo": null}]]
+
+
+=== Test 24 - nested items - valid nested array
+--- valid: true
+--- jsc
+{
+  "type": "array",
+  "items": {
+    "type": "array",
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {"type": "number"}
+      }
+    }
+  }
+}
+--- json
+[[[[1]], [[2], [3]]], [[[4], [5], [6]]]]
+
+
+=== Test 25 - nested items - nested array with invalid type
+--- valid: false
+--- ^jsc
+--- json
+[[[["1"]], [[2], [3]]], [[[4], [5], [6]]]]
+
+
+=== Test 26 - nested items - not deep enough
+--- valid: false
+--- ^jsc
+--- json
+[[[1], [2], [3]], [[4], [5], [6]]]
+
+
+# vim: ft=testml sw=2:

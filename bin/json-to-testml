@@ -1,0 +1,60 @@
+#!/usr/bin/env coffee
+
+require 'ingy-prelude'
+json_stringify_pretty_compact =
+  require 'json-stringify-pretty-compact'
+
+[input_file] = process.argv[2..]
+data = JSON.parse file_read input_file
+
+say "#!/usr/bin/env testml"
+say ""
+say ""
+say "*jsc.validate(*json) == *valid"
+say ""
+say ""
+
+get = (object, key)->
+  if typeof object[key] is 'undefined'
+    xxx "Error in '#{input_file}'",
+        "Can't find '#{key}' in:",
+        object
+
+  return object[key]
+
+dump = (data)->
+  json_stringify_pretty_compact data,
+    maxLength: 50
+
+num = 1
+for section in data
+  desc = get section, 'description'
+  jsc = dump get section, 'schema'
+  tests = get section, 'tests'
+
+  first = true
+  for test in tests
+    test_desc = get test, 'description'
+    json = dump get test, 'data'
+    valid = String get test, 'valid'
+
+    if first
+      first = false
+      jsc_point = """\
+--- jsc
+#{jsc}
+"""
+    else
+      jsc_point = "--- ^jsc"
+
+    say """\
+=== Test #{num++} - #{desc} - #{test.description or err}
+--- valid: #{valid}
+#{jsc_point}
+--- json
+#{json}
+
+
+"""
+
+say "# vim: ft=testml sw=2:"

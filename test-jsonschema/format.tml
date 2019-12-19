@@ -1,0 +1,738 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of e-mail addresses - ignores integers
+--- valid: true
+--- jsc
+{"format": "email"}
+--- json
+12
+
+
+=== Test 2 - validation of e-mail addresses - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 3 - validation of e-mail addresses - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 4 - validation of e-mail addresses - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 5 - validation of e-mail addresses - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 6 - validation of e-mail addresses - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 7 - validation of IDN e-mail addresses - ignores integers
+--- valid: true
+--- jsc
+{"format": "idn-email"}
+--- json
+12
+
+
+=== Test 8 - validation of IDN e-mail addresses - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 9 - validation of IDN e-mail addresses - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 10 - validation of IDN e-mail addresses - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 11 - validation of IDN e-mail addresses - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 12 - validation of IDN e-mail addresses - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 13 - validation of regexes - ignores integers
+--- valid: true
+--- jsc
+{"format": "regex"}
+--- json
+12
+
+
+=== Test 14 - validation of regexes - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 15 - validation of regexes - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 16 - validation of regexes - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 17 - validation of regexes - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 18 - validation of regexes - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 19 - validation of IP addresses - ignores integers
+--- valid: true
+--- jsc
+{"format": "ipv4"}
+--- json
+12
+
+
+=== Test 20 - validation of IP addresses - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 21 - validation of IP addresses - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 22 - validation of IP addresses - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 23 - validation of IP addresses - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 24 - validation of IP addresses - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 25 - validation of IPv6 addresses - ignores integers
+--- valid: true
+--- jsc
+{"format": "ipv6"}
+--- json
+12
+
+
+=== Test 26 - validation of IPv6 addresses - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 27 - validation of IPv6 addresses - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 28 - validation of IPv6 addresses - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 29 - validation of IPv6 addresses - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 30 - validation of IPv6 addresses - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 31 - validation of IDN hostnames - ignores integers
+--- valid: true
+--- jsc
+{"format": "idn-hostname"}
+--- json
+12
+
+
+=== Test 32 - validation of IDN hostnames - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 33 - validation of IDN hostnames - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 34 - validation of IDN hostnames - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 35 - validation of IDN hostnames - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 36 - validation of IDN hostnames - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 37 - validation of hostnames - ignores integers
+--- valid: true
+--- jsc
+{"format": "hostname"}
+--- json
+12
+
+
+=== Test 38 - validation of hostnames - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 39 - validation of hostnames - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 40 - validation of hostnames - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 41 - validation of hostnames - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 42 - validation of hostnames - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 43 - validation of date strings - ignores integers
+--- valid: true
+--- jsc
+{"format": "date"}
+--- json
+12
+
+
+=== Test 44 - validation of date strings - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 45 - validation of date strings - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 46 - validation of date strings - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 47 - validation of date strings - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 48 - validation of date strings - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 49 - validation of date-time strings - ignores integers
+--- valid: true
+--- jsc
+{"format": "date-time"}
+--- json
+12
+
+
+=== Test 50 - validation of date-time strings - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 51 - validation of date-time strings - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 52 - validation of date-time strings - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 53 - validation of date-time strings - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 54 - validation of date-time strings - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 55 - validation of time strings - ignores integers
+--- valid: true
+--- jsc
+{"format": "time"}
+--- json
+12
+
+
+=== Test 56 - validation of time strings - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 57 - validation of time strings - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 58 - validation of time strings - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 59 - validation of time strings - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 60 - validation of time strings - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 61 - validation of JSON pointers - ignores integers
+--- valid: true
+--- jsc
+{"format": "json-pointer"}
+--- json
+12
+
+
+=== Test 62 - validation of JSON pointers - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 63 - validation of JSON pointers - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 64 - validation of JSON pointers - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 65 - validation of JSON pointers - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 66 - validation of JSON pointers - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 67 - validation of relative JSON pointers - ignores integers
+--- valid: true
+--- jsc
+{"format": "relative-json-pointer"}
+--- json
+12
+
+
+=== Test 68 - validation of relative JSON pointers - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 69 - validation of relative JSON pointers - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 70 - validation of relative JSON pointers - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 71 - validation of relative JSON pointers - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 72 - validation of relative JSON pointers - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 73 - validation of IRIs - ignores integers
+--- valid: true
+--- jsc
+{"format": "iri"}
+--- json
+12
+
+
+=== Test 74 - validation of IRIs - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 75 - validation of IRIs - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 76 - validation of IRIs - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 77 - validation of IRIs - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 78 - validation of IRIs - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 79 - validation of IRI references - ignores integers
+--- valid: true
+--- jsc
+{"format": "iri-reference"}
+--- json
+12
+
+
+=== Test 80 - validation of IRI references - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 81 - validation of IRI references - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 82 - validation of IRI references - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 83 - validation of IRI references - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 84 - validation of IRI references - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 85 - validation of URIs - ignores integers
+--- valid: true
+--- jsc
+{"format": "uri"}
+--- json
+12
+
+
+=== Test 86 - validation of URIs - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 87 - validation of URIs - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 88 - validation of URIs - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 89 - validation of URIs - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 90 - validation of URIs - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 91 - validation of URI references - ignores integers
+--- valid: true
+--- jsc
+{"format": "uri-reference"}
+--- json
+12
+
+
+=== Test 92 - validation of URI references - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 93 - validation of URI references - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 94 - validation of URI references - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 95 - validation of URI references - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 96 - validation of URI references - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 97 - validation of URI templates - ignores integers
+--- valid: true
+--- jsc
+{"format": "uri-template"}
+--- json
+12
+
+
+=== Test 98 - validation of URI templates - ignores floats
+--- valid: true
+--- ^jsc
+--- json
+13.7
+
+
+=== Test 99 - validation of URI templates - ignores objects
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 100 - validation of URI templates - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 101 - validation of URI templates - ignores booleans
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 102 - validation of URI templates - ignores null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+# vim: ft=testml sw=2:

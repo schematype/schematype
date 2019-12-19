@@ -1,0 +1,22 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of e-mail addresses - a valid e-mail address
+--- valid: true
+--- jsc
+{"format": "email"}
+--- json
+"joe.bloggs@example.com"
+
+
+=== Test 2 - validation of e-mail addresses - an invalid e-mail address
+--- valid: false
+--- ^jsc
+--- json
+"2962"
+
+
+# vim: ft=testml sw=2:

@@ -1,0 +1,71 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of IRIs - a valid IRI with anchor tag
+--- valid: true
+--- jsc
+{"format": "iri"}
+--- json
+"http://ƒøø.ßår/?∂éœ=πîx#πîüx"
+
+
+=== Test 2 - validation of IRIs - a valid IRI with anchor tag and parantheses
+--- valid: true
+--- ^jsc
+--- json
+"http://ƒøø.com/blah_(wîkïpédiå)_blah#ßité-1"
+
+
+=== Test 3 - validation of IRIs - a valid IRI with URL-encoded stuff
+--- valid: true
+--- ^jsc
+--- json
+"http://ƒøø.ßår/?q=Test%20URL-encoded%20stuff"
+
+
+=== Test 4 - validation of IRIs - a valid IRI with many special characters
+--- valid: true
+--- ^jsc
+--- json
+"http://-.~_!$&'()*+,;=:%40:80%2f::::::@example.com"
+
+
+=== Test 5 - validation of IRIs - a valid IRI based on IPv6
+--- valid: true
+--- ^jsc
+--- json
+"http://[2001:0db8:85a3:0000:0000:8a2e:0370:7334]"
+
+
+=== Test 6 - validation of IRIs - an invalid IRI based on IPv6
+--- valid: false
+--- ^jsc
+--- json
+"http://2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+
+
+=== Test 7 - validation of IRIs - an invalid relative IRI Reference
+--- valid: false
+--- ^jsc
+--- json
+"/abc"
+
+
+=== Test 8 - validation of IRIs - an invalid IRI
+--- valid: false
+--- ^jsc
+--- json
+"\\\\WINDOWS\\filëßåré"
+
+
+=== Test 9 - validation of IRIs - an invalid IRI though valid IRI reference
+--- valid: false
+--- ^jsc
+--- json
+"âππ"
+
+
+# vim: ft=testml sw=2:

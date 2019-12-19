@@ -1,0 +1,141 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of URIs - a valid URL with anchor tag
+--- valid: true
+--- jsc
+{"format": "uri"}
+--- json
+"http://foo.bar/?baz=qux#quux"
+
+
+=== Test 2 - validation of URIs - a valid URL with anchor tag and parantheses
+--- valid: true
+--- ^jsc
+--- json
+"http://foo.com/blah_(wikipedia)_blah#cite-1"
+
+
+=== Test 3 - validation of URIs - a valid URL with URL-encoded stuff
+--- valid: true
+--- ^jsc
+--- json
+"http://foo.bar/?q=Test%20URL-encoded%20stuff"
+
+
+=== Test 4 - validation of URIs - a valid puny-coded URL 
+--- valid: true
+--- ^jsc
+--- json
+"http://xn--nw2a.xn--j6w193g/"
+
+
+=== Test 5 - validation of URIs - a valid URL with many special characters
+--- valid: true
+--- ^jsc
+--- json
+"http://-.~_!$&'()*+,;=:%40:80%2f::::::@example.com"
+
+
+=== Test 6 - validation of URIs - a valid URL based on IPv4
+--- valid: true
+--- ^jsc
+--- json
+"http://223.255.255.254"
+
+
+=== Test 7 - validation of URIs - a valid URL with ftp scheme
+--- valid: true
+--- ^jsc
+--- json
+"ftp://ftp.is.co.za/rfc/rfc1808.txt"
+
+
+=== Test 8 - validation of URIs - a valid URL for a simple text file
+--- valid: true
+--- ^jsc
+--- json
+"http://www.ietf.org/rfc/rfc2396.txt"
+
+
+=== Test 9 - validation of URIs - a valid URL 
+--- valid: true
+--- ^jsc
+--- json
+"ldap://[2001:db8::7]/c=GB?objectClass?one"
+
+
+=== Test 10 - validation of URIs - a valid mailto URI
+--- valid: true
+--- ^jsc
+--- json
+"mailto:John.Doe@example.com"
+
+
+=== Test 11 - validation of URIs - a valid newsgroup URI
+--- valid: true
+--- ^jsc
+--- json
+"news:comp.infosystems.www.servers.unix"
+
+
+=== Test 12 - validation of URIs - a valid tel URI
+--- valid: true
+--- ^jsc
+--- json
+"tel:+1-816-555-1212"
+
+
+=== Test 13 - validation of URIs - a valid URN
+--- valid: true
+--- ^jsc
+--- json
+"urn:oasis:names:specification:docbook:dtd:xml:4.1.2"
+
+
+=== Test 14 - validation of URIs - an invalid protocol-relative URI Reference
+--- valid: false
+--- ^jsc
+--- json
+"//foo.bar/?baz=qux#quux"
+
+
+=== Test 15 - validation of URIs - an invalid relative URI Reference
+--- valid: false
+--- ^jsc
+--- json
+"/abc"
+
+
+=== Test 16 - validation of URIs - an invalid URI
+--- valid: false
+--- ^jsc
+--- json
+"\\\\WINDOWS\\fileshare"
+
+
+=== Test 17 - validation of URIs - an invalid URI though valid URI reference
+--- valid: false
+--- ^jsc
+--- json
+"abc"
+
+
+=== Test 18 - validation of URIs - an invalid URI with spaces
+--- valid: false
+--- ^jsc
+--- json
+"http:// shouldfail.com"
+
+
+=== Test 19 - validation of URIs - an invalid URI with spaces and missing scheme
+--- valid: false
+--- ^jsc
+--- json
+":// should fail"
+
+
+# vim: ft=testml sw=2:

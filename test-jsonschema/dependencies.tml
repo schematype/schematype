@@ -1,0 +1,268 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - dependencies - neither
+--- valid: true
+--- jsc
+{"dependencies": {"bar": ["foo"]}}
+--- json
+{}
+
+
+=== Test 2 - dependencies - nondependant
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1}
+
+
+=== Test 3 - dependencies - with dependency
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2}
+
+
+=== Test 4 - dependencies - missing dependency
+--- valid: false
+--- ^jsc
+--- json
+{"bar": 2}
+
+
+=== Test 5 - dependencies - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+["bar"]
+
+
+=== Test 6 - dependencies - ignores strings
+--- valid: true
+--- ^jsc
+--- json
+"foobar"
+
+
+=== Test 7 - dependencies - ignores other non-objects
+--- valid: true
+--- ^jsc
+--- json
+12
+
+
+=== Test 8 - dependencies with empty array - empty object
+--- valid: true
+--- jsc
+{"dependencies": {"bar": []}}
+--- json
+{}
+
+
+=== Test 9 - dependencies with empty array - object with one property
+--- valid: true
+--- ^jsc
+--- json
+{"bar": 2}
+
+
+=== Test 10 - multiple dependencies - neither
+--- valid: true
+--- jsc
+{"dependencies": {"quux": ["foo", "bar"]}}
+--- json
+{}
+
+
+=== Test 11 - multiple dependencies - nondependants
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2}
+
+
+=== Test 12 - multiple dependencies - with dependencies
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2, "quux": 3}
+
+
+=== Test 13 - multiple dependencies - missing dependency
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 1, "quux": 2}
+
+
+=== Test 14 - multiple dependencies - missing other dependency
+--- valid: false
+--- ^jsc
+--- json
+{"bar": 1, "quux": 2}
+
+
+=== Test 15 - multiple dependencies - missing both dependencies
+--- valid: false
+--- ^jsc
+--- json
+{"quux": 1}
+
+
+=== Test 16 - multiple dependencies subschema - valid
+--- valid: true
+--- jsc
+{
+  "dependencies": {
+    "bar": {
+      "properties": {
+        "foo": {"type": "integer"},
+        "bar": {"type": "integer"}
+      }
+    }
+  }
+}
+--- json
+{"foo": 1, "bar": 2}
+
+
+=== Test 17 - multiple dependencies subschema - no dependency
+--- valid: true
+--- ^jsc
+--- json
+{"foo": "quux"}
+
+
+=== Test 18 - multiple dependencies subschema - wrong type
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "quux", "bar": 2}
+
+
+=== Test 19 - multiple dependencies subschema - wrong type other
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 2, "bar": "quux"}
+
+
+=== Test 20 - multiple dependencies subschema - wrong type both
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "quux", "bar": "quux"}
+
+
+=== Test 21 - dependencies with boolean subschemas - object with property having schema true is valid
+--- valid: true
+--- jsc
+{"dependencies": {"foo": true, "bar": false}}
+--- json
+{"foo": 1}
+
+
+=== Test 22 - dependencies with boolean subschemas - object with property having schema false is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"bar": 2}
+
+
+=== Test 23 - dependencies with boolean subschemas - object with both properties is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2}
+
+
+=== Test 24 - dependencies with boolean subschemas - empty object is valid
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 25 - empty array of dependencies - object with property is valid
+--- valid: true
+--- jsc
+{"dependencies": {"foo": []}}
+--- json
+{"foo": 1}
+
+
+=== Test 26 - empty array of dependencies - empty object is valid
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 27 - empty array of dependencies - non-object is valid
+--- valid: true
+--- ^jsc
+--- json
+1
+
+
+=== Test 28 - dependencies with escaped characters - valid object 1
+--- valid: true
+--- jsc
+{
+  "dependencies": {
+    "foo\nbar": ["foo\rbar"],
+    "foo\tbar": {"minProperties": 4},
+    "foo'bar": {"required": ["foo\"bar"]},
+    "foo\"bar": ["foo'bar"]
+  }
+}
+--- json
+{"foo\nbar": 1, "foo\rbar": 2}
+
+
+=== Test 29 - dependencies with escaped characters - valid object 2
+--- valid: true
+--- ^jsc
+--- json
+{"foo\tbar": 1, "a": 2, "b": 3, "c": 4}
+
+
+=== Test 30 - dependencies with escaped characters - valid object 3
+--- valid: true
+--- ^jsc
+--- json
+{"foo'bar": 1, "foo\"bar": 2}
+
+
+=== Test 31 - dependencies with escaped characters - invalid object 1
+--- valid: false
+--- ^jsc
+--- json
+{"foo\nbar": 1, "foo": 2}
+
+
+=== Test 32 - dependencies with escaped characters - invalid object 2
+--- valid: false
+--- ^jsc
+--- json
+{"foo\tbar": 1, "a": 2}
+
+
+=== Test 33 - dependencies with escaped characters - invalid object 3
+--- valid: false
+--- ^jsc
+--- json
+{"foo'bar": 1}
+
+
+=== Test 34 - dependencies with escaped characters - invalid object 4
+--- valid: false
+--- ^jsc
+--- json
+{"foo\"bar": 2}
+
+
+# vim: ft=testml sw=2:

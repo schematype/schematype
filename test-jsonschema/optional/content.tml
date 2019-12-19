@@ -1,0 +1,83 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of string-encoded content based on media type - a valid JSON document
+--- valid: true
+--- jsc
+{"contentMediaType": "application/json"}
+--- json
+"{\"foo\": \"bar\"}"
+
+
+=== Test 2 - validation of string-encoded content based on media type - an invalid JSON document
+--- valid: false
+--- ^jsc
+--- json
+"{:}"
+
+
+=== Test 3 - validation of string-encoded content based on media type - ignores non-strings
+--- valid: true
+--- ^jsc
+--- json
+100
+
+
+=== Test 4 - validation of binary string-encoding - a valid base64 string
+--- valid: true
+--- jsc
+{"contentEncoding": "base64"}
+--- json
+"eyJmb28iOiAiYmFyIn0K"
+
+
+=== Test 5 - validation of binary string-encoding - an invalid base64 string (% is not a valid character)
+--- valid: false
+--- ^jsc
+--- json
+"eyJmb28iOi%iYmFyIn0K"
+
+
+=== Test 6 - validation of binary string-encoding - ignores non-strings
+--- valid: true
+--- ^jsc
+--- json
+100
+
+
+=== Test 7 - validation of binary-encoded media type documents - a valid base64-encoded JSON document
+--- valid: true
+--- jsc
+{
+  "contentMediaType": "application/json",
+  "contentEncoding": "base64"
+}
+--- json
+"eyJmb28iOiAiYmFyIn0K"
+
+
+=== Test 8 - validation of binary-encoded media type documents - a validly-encoded invalid JSON document
+--- valid: false
+--- ^jsc
+--- json
+"ezp9Cg=="
+
+
+=== Test 9 - validation of binary-encoded media type documents - an invalid base64 string that is valid JSON
+--- valid: false
+--- ^jsc
+--- json
+"{}"
+
+
+=== Test 10 - validation of binary-encoded media type documents - ignores non-strings
+--- valid: true
+--- ^jsc
+--- json
+100
+
+
+# vim: ft=testml sw=2:

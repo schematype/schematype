@@ -1,0 +1,186 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - object properties validation - both properties present and valid is valid
+--- valid: true
+--- jsc
+{
+  "properties": {
+    "foo": {"type": "integer"},
+    "bar": {"type": "string"}
+  }
+}
+--- json
+{"foo": 1, "bar": "baz"}
+
+
+=== Test 2 - object properties validation - one property invalid is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 1, "bar": {}}
+
+
+=== Test 3 - object properties validation - both properties invalid is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": [], "bar": {}}
+
+
+=== Test 4 - object properties validation - doesn't invalidate other properties
+--- valid: true
+--- ^jsc
+--- json
+{"quux": []}
+
+
+=== Test 5 - object properties validation - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 6 - object properties validation - ignores other non-objects
+--- valid: true
+--- ^jsc
+--- json
+12
+
+
+=== Test 7 - properties, patternProperties, additionalProperties interaction - property validates property
+--- valid: true
+--- jsc
+{
+  "properties": {
+    "foo": {"type": "array", "maxItems": 3},
+    "bar": {"type": "array"}
+  },
+  "patternProperties": {"f.o": {"minItems": 2}},
+  "additionalProperties": {"type": "integer"}
+}
+--- json
+{"foo": [1, 2]}
+
+
+=== Test 8 - properties, patternProperties, additionalProperties interaction - property invalidates property
+--- valid: false
+--- ^jsc
+--- json
+{"foo": [1, 2, 3, 4]}
+
+
+=== Test 9 - properties, patternProperties, additionalProperties interaction - patternProperty invalidates property
+--- valid: false
+--- ^jsc
+--- json
+{"foo": []}
+
+
+=== Test 10 - properties, patternProperties, additionalProperties interaction - patternProperty validates nonproperty
+--- valid: true
+--- ^jsc
+--- json
+{"fxo": [1, 2]}
+
+
+=== Test 11 - properties, patternProperties, additionalProperties interaction - patternProperty invalidates nonproperty
+--- valid: false
+--- ^jsc
+--- json
+{"fxo": []}
+
+
+=== Test 12 - properties, patternProperties, additionalProperties interaction - additionalProperty ignores property
+--- valid: true
+--- ^jsc
+--- json
+{"bar": []}
+
+
+=== Test 13 - properties, patternProperties, additionalProperties interaction - additionalProperty validates others
+--- valid: true
+--- ^jsc
+--- json
+{"quux": 3}
+
+
+=== Test 14 - properties, patternProperties, additionalProperties interaction - additionalProperty invalidates others
+--- valid: false
+--- ^jsc
+--- json
+{"quux": "foo"}
+
+
+=== Test 15 - properties with boolean schema - no property present is valid
+--- valid: true
+--- jsc
+{"properties": {"foo": true, "bar": false}}
+--- json
+{}
+
+
+=== Test 16 - properties with boolean schema - only 'true' property present is valid
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1}
+
+
+=== Test 17 - properties with boolean schema - only 'false' property present is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"bar": 2}
+
+
+=== Test 18 - properties with boolean schema - both properties present is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2}
+
+
+=== Test 19 - properties with escaped characters - object with all numbers is valid
+--- valid: true
+--- jsc
+{
+  "properties": {
+    "foo\nbar": {"type": "number"},
+    "foo\"bar": {"type": "number"},
+    "foo\\bar": {"type": "number"},
+    "foo\rbar": {"type": "number"},
+    "foo\tbar": {"type": "number"},
+    "foo\fbar": {"type": "number"}
+  }
+}
+--- json
+{
+  "foo\nbar": 1,
+  "foo\"bar": 1,
+  "foo\\bar": 1,
+  "foo\rbar": 1,
+  "foo\tbar": 1,
+  "foo\fbar": 1
+}
+
+
+=== Test 20 - properties with escaped characters - object with strings is invalid
+--- valid: false
+--- ^jsc
+--- json
+{
+  "foo\nbar": "1",
+  "foo\"bar": "1",
+  "foo\\bar": "1",
+  "foo\rbar": "1",
+  "foo\tbar": "1",
+  "foo\fbar": "1"
+}
+
+
+# vim: ft=testml sw=2:

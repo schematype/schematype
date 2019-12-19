@@ -1,0 +1,183 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - const validation - same value is valid
+--- valid: true
+--- jsc
+{"const": 2}
+--- json
+2
+
+
+=== Test 2 - const validation - another value is invalid
+--- valid: false
+--- ^jsc
+--- json
+5
+
+
+=== Test 3 - const validation - another type is invalid
+--- valid: false
+--- ^jsc
+--- json
+"a"
+
+
+=== Test 4 - const with object - same object is valid
+--- valid: true
+--- jsc
+{"const": {"foo": "bar", "baz": "bax"}}
+--- json
+{"foo": "bar", "baz": "bax"}
+
+
+=== Test 5 - const with object - same object with different property order is valid
+--- valid: true
+--- ^jsc
+--- json
+{"baz": "bax", "foo": "bar"}
+
+
+=== Test 6 - const with object - another object is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "bar"}
+
+
+=== Test 7 - const with object - another type is invalid
+--- valid: false
+--- ^jsc
+--- json
+[1, 2]
+
+
+=== Test 8 - const with array - same array is valid
+--- valid: true
+--- jsc
+{"const": [{"foo": "bar"}]}
+--- json
+[{"foo": "bar"}]
+
+
+=== Test 9 - const with array - another array item is invalid
+--- valid: false
+--- ^jsc
+--- json
+[2]
+
+
+=== Test 10 - const with array - array with additional items is invalid
+--- valid: false
+--- ^jsc
+--- json
+[1, 2, 3]
+
+
+=== Test 11 - const with null - null is valid
+--- valid: true
+--- jsc
+{"const": null}
+--- json
+null
+
+
+=== Test 12 - const with null - not null is invalid
+--- valid: false
+--- ^jsc
+--- json
+0
+
+
+=== Test 13 - const with false does not match 0 - false is valid
+--- valid: true
+--- jsc
+{"const": false}
+--- json
+false
+
+
+=== Test 14 - const with false does not match 0 - integer zero is invalid
+--- valid: false
+--- ^jsc
+--- json
+0
+
+
+=== Test 15 - const with false does not match 0 - float zero is invalid
+--- valid: false
+--- ^jsc
+--- json
+0
+
+
+=== Test 16 - const with true does not match 1 - true is valid
+--- valid: true
+--- jsc
+{"const": true}
+--- json
+true
+
+
+=== Test 17 - const with true does not match 1 - integer one is invalid
+--- valid: false
+--- ^jsc
+--- json
+1
+
+
+=== Test 18 - const with true does not match 1 - float one is invalid
+--- valid: false
+--- ^jsc
+--- json
+1
+
+
+=== Test 19 - const with 0 does not match false - false is invalid
+--- valid: false
+--- jsc
+{"const": 0}
+--- json
+false
+
+
+=== Test 20 - const with 0 does not match false - integer zero is valid
+--- valid: true
+--- ^jsc
+--- json
+0
+
+
+=== Test 21 - const with 0 does not match false - float zero is valid
+--- valid: true
+--- ^jsc
+--- json
+0
+
+
+=== Test 22 - const with 1 does not match true - true is invalid
+--- valid: false
+--- jsc
+{"const": 1}
+--- json
+true
+
+
+=== Test 23 - const with 1 does not match true - integer one is valid
+--- valid: true
+--- ^jsc
+--- json
+1
+
+
+=== Test 24 - const with 1 does not match true - float one is valid
+--- valid: true
+--- ^jsc
+--- json
+1
+
+
+# vim: ft=testml sw=2:

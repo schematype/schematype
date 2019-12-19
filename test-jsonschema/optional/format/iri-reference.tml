@@ -1,0 +1,57 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of IRI References - a valid IRI
+--- valid: true
+--- jsc
+{"format": "iri-reference"}
+--- json
+"http://ƒøø.ßår/?∂éœ=πîx#πîüx"
+
+
+=== Test 2 - validation of IRI References - a valid protocol-relative IRI Reference
+--- valid: true
+--- ^jsc
+--- json
+"//ƒøø.ßår/?∂éœ=πîx#πîüx"
+
+
+=== Test 3 - validation of IRI References - a valid relative IRI Reference
+--- valid: true
+--- ^jsc
+--- json
+"/âππ"
+
+
+=== Test 4 - validation of IRI References - an invalid IRI Reference
+--- valid: false
+--- ^jsc
+--- json
+"\\\\WINDOWS\\filëßåré"
+
+
+=== Test 5 - validation of IRI References - a valid IRI Reference
+--- valid: true
+--- ^jsc
+--- json
+"âππ"
+
+
+=== Test 6 - validation of IRI References - a valid IRI fragment
+--- valid: true
+--- ^jsc
+--- json
+"#ƒrägmênt"
+
+
+=== Test 7 - validation of IRI References - an invalid IRI fragment
+--- valid: false
+--- ^jsc
+--- json
+"#ƒräg\\mênt"
+
+
+# vim: ft=testml sw=2:

@@ -1,0 +1,78 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - additionalItems as schema - additional items match schema
+--- valid: true
+--- jsc
+{
+  "items": [{}],
+  "additionalItems": {"type": "integer"}
+}
+--- json
+[null, 2, 3, 4]
+
+
+=== Test 2 - additionalItems as schema - additional items do not match schema
+--- valid: false
+--- ^jsc
+--- json
+[null, 2, 3, "foo"]
+
+
+=== Test 3 - items is schema, no additionalItems - all items match schema
+--- valid: true
+--- jsc
+{"items": {}, "additionalItems": false}
+--- json
+[1, 2, 3, 4, 5]
+
+
+=== Test 4 - array of items with no additionalItems - fewer number of items present
+--- valid: true
+--- jsc
+{"items": [{}, {}, {}], "additionalItems": false}
+--- json
+[1, 2]
+
+
+=== Test 5 - array of items with no additionalItems - equal number of items present
+--- valid: true
+--- ^jsc
+--- json
+[1, 2, 3]
+
+
+=== Test 6 - array of items with no additionalItems - additional items are not permitted
+--- valid: false
+--- ^jsc
+--- json
+[1, 2, 3, 4]
+
+
+=== Test 7 - additionalItems as false without items - items defaults to empty schema so everything is valid
+--- valid: true
+--- jsc
+{"additionalItems": false}
+--- json
+[1, 2, 3, 4, 5]
+
+
+=== Test 8 - additionalItems as false without items - ignores non-arrays
+--- valid: true
+--- ^jsc
+--- json
+{"foo": "bar"}
+
+
+=== Test 9 - additionalItems are allowed by default - only the first item is validated
+--- valid: true
+--- jsc
+{"items": [{"type": "integer"}]}
+--- json
+[1, "foo", false]
+
+
+# vim: ft=testml sw=2:

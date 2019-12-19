@@ -1,0 +1,49 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - invalid type for default - valid when property is specified
+--- valid: true
+--- jsc
+{
+  "properties": {
+    "foo": {"type": "integer", "default": []}
+  }
+}
+--- json
+{"foo": 13}
+
+
+=== Test 2 - invalid type for default - still valid when the invalid default is used
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 3 - invalid string value for default - valid when property is specified
+--- valid: true
+--- jsc
+{
+  "properties": {
+    "bar": {
+      "type": "string",
+      "minLength": 4,
+      "default": "bad"
+    }
+  }
+}
+--- json
+{"bar": "good"}
+
+
+=== Test 4 - invalid string value for default - still valid when the invalid default is used
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+# vim: ft=testml sw=2:

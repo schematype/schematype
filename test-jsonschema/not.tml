@@ -1,0 +1,102 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - not - allowed
+--- valid: true
+--- jsc
+{"not": {"type": "integer"}}
+--- json
+"foo"
+
+
+=== Test 2 - not - disallowed
+--- valid: false
+--- ^jsc
+--- json
+1
+
+
+=== Test 3 - not multiple types - valid
+--- valid: true
+--- jsc
+{"not": {"type": ["integer", "boolean"]}}
+--- json
+"foo"
+
+
+=== Test 4 - not multiple types - mismatch
+--- valid: false
+--- ^jsc
+--- json
+1
+
+
+=== Test 5 - not multiple types - other mismatch
+--- valid: false
+--- ^jsc
+--- json
+true
+
+
+=== Test 6 - not more complex schema - match
+--- valid: true
+--- jsc
+{
+  "not": {
+    "type": "object",
+    "properties": {"foo": {"type": "string"}}
+  }
+}
+--- json
+1
+
+
+=== Test 7 - not more complex schema - other match
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1}
+
+
+=== Test 8 - not more complex schema - mismatch
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "bar"}
+
+
+=== Test 9 - forbidden property - property present
+--- valid: false
+--- jsc
+{"properties": {"foo": {"not": {}}}}
+--- json
+{"foo": 1, "bar": 2}
+
+
+=== Test 10 - forbidden property - property absent
+--- valid: true
+--- ^jsc
+--- json
+{"bar": 1, "baz": 2}
+
+
+=== Test 11 - not with boolean schema true - any value is invalid
+--- valid: false
+--- jsc
+{"not": true}
+--- json
+"foo"
+
+
+=== Test 12 - not with boolean schema false - any value is valid
+--- valid: true
+--- jsc
+{"not": false}
+--- json
+"foo"
+
+
+# vim: ft=testml sw=2:

@@ -1,0 +1,36 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - maxItems validation - shorter is valid
+--- valid: true
+--- jsc
+{"maxItems": 2}
+--- json
+[1]
+
+
+=== Test 2 - maxItems validation - exact length is valid
+--- valid: true
+--- ^jsc
+--- json
+[1, 2]
+
+
+=== Test 3 - maxItems validation - too long is invalid
+--- valid: false
+--- ^jsc
+--- json
+[1, 2, 3]
+
+
+=== Test 4 - maxItems validation - ignores non-arrays
+--- valid: true
+--- ^jsc
+--- json
+"foobar"
+
+
+# vim: ft=testml sw=2:

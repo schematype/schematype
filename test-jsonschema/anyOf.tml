@@ -1,0 +1,155 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - anyOf - first anyOf valid
+--- valid: true
+--- jsc
+{"anyOf": [{"type": "integer"}, {"minimum": 2}]}
+--- json
+1
+
+
+=== Test 2 - anyOf - second anyOf valid
+--- valid: true
+--- ^jsc
+--- json
+2.5
+
+
+=== Test 3 - anyOf - both anyOf valid
+--- valid: true
+--- ^jsc
+--- json
+3
+
+
+=== Test 4 - anyOf - neither anyOf valid
+--- valid: false
+--- ^jsc
+--- json
+1.5
+
+
+=== Test 5 - anyOf with base schema - mismatch base schema
+--- valid: false
+--- jsc
+{
+  "type": "string",
+  "anyOf": [{"maxLength": 2}, {"minLength": 4}]
+}
+--- json
+3
+
+
+=== Test 6 - anyOf with base schema - one anyOf valid
+--- valid: true
+--- ^jsc
+--- json
+"foobar"
+
+
+=== Test 7 - anyOf with base schema - both anyOf invalid
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 8 - anyOf with boolean schemas, all true - any value is valid
+--- valid: true
+--- jsc
+{"anyOf": [true, true]}
+--- json
+"foo"
+
+
+=== Test 9 - anyOf with boolean schemas, some true - any value is valid
+--- valid: true
+--- jsc
+{"anyOf": [true, false]}
+--- json
+"foo"
+
+
+=== Test 10 - anyOf with boolean schemas, all false - any value is invalid
+--- valid: false
+--- jsc
+{"anyOf": [false, false]}
+--- json
+"foo"
+
+
+=== Test 11 - anyOf complex types - first anyOf valid (complex)
+--- valid: true
+--- jsc
+{
+  "anyOf": [
+    {
+      "properties": {"bar": {"type": "integer"}},
+      "required": ["bar"]
+    },
+    {
+      "properties": {"foo": {"type": "string"}},
+      "required": ["foo"]
+    }
+  ]
+}
+--- json
+{"bar": 2}
+
+
+=== Test 12 - anyOf complex types - second anyOf valid (complex)
+--- valid: true
+--- ^jsc
+--- json
+{"foo": "baz"}
+
+
+=== Test 13 - anyOf complex types - both anyOf valid (complex)
+--- valid: true
+--- ^jsc
+--- json
+{"foo": "baz", "bar": 2}
+
+
+=== Test 14 - anyOf complex types - neither anyOf valid (complex)
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 2, "bar": "quux"}
+
+
+=== Test 15 - anyOf with one empty schema - string is valid
+--- valid: true
+--- jsc
+{"anyOf": [{"type": "number"}, {}]}
+--- json
+"foo"
+
+
+=== Test 16 - anyOf with one empty schema - number is valid
+--- valid: true
+--- ^jsc
+--- json
+123
+
+
+=== Test 17 - nested anyOf, to check validation semantics - null is valid
+--- valid: true
+--- jsc
+{"anyOf": [{"anyOf": [{"type": "null"}]}]}
+--- json
+null
+
+
+=== Test 18 - nested anyOf, to check validation semantics - anything non-null is invalid
+--- valid: false
+--- ^jsc
+--- json
+123
+
+
+# vim: ft=testml sw=2:

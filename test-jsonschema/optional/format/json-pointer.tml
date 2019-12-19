@@ -1,0 +1,232 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of JSON-pointers (JSON String Representation) - a valid JSON-pointer
+--- valid: true
+--- jsc
+{"format": "json-pointer"}
+--- json
+"/foo/bar~0/baz~1/%a"
+
+
+=== Test 2 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (~ not escaped)
+--- valid: false
+--- ^jsc
+--- json
+"/foo/bar~"
+
+
+=== Test 3 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer with empty segment
+--- valid: true
+--- ^jsc
+--- json
+"/foo//bar"
+
+
+=== Test 4 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer with the last empty segment
+--- valid: true
+--- ^jsc
+--- json
+"/foo/bar/"
+
+
+=== Test 5 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #1
+--- valid: true
+--- ^jsc
+--- json
+""
+
+
+=== Test 6 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #2
+--- valid: true
+--- ^jsc
+--- json
+"/foo"
+
+
+=== Test 7 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #3
+--- valid: true
+--- ^jsc
+--- json
+"/foo/0"
+
+
+=== Test 8 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #4
+--- valid: true
+--- ^jsc
+--- json
+"/"
+
+
+=== Test 9 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #5
+--- valid: true
+--- ^jsc
+--- json
+"/a~1b"
+
+
+=== Test 10 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #6
+--- valid: true
+--- ^jsc
+--- json
+"/c%d"
+
+
+=== Test 11 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #7
+--- valid: true
+--- ^jsc
+--- json
+"/e^f"
+
+
+=== Test 12 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #8
+--- valid: true
+--- ^jsc
+--- json
+"/g|h"
+
+
+=== Test 13 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #9
+--- valid: true
+--- ^jsc
+--- json
+"/i\\j"
+
+
+=== Test 14 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #10
+--- valid: true
+--- ^jsc
+--- json
+"/k\"l"
+
+
+=== Test 15 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #11
+--- valid: true
+--- ^jsc
+--- json
+"/ "
+
+
+=== Test 16 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer as stated in RFC 6901 #12
+--- valid: true
+--- ^jsc
+--- json
+"/m~0n"
+
+
+=== Test 17 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer used adding to the last array position
+--- valid: true
+--- ^jsc
+--- json
+"/foo/-"
+
+
+=== Test 18 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer (- used as object member name)
+--- valid: true
+--- ^jsc
+--- json
+"/foo/-/bar"
+
+
+=== Test 19 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer (multiple escaped characters)
+--- valid: true
+--- ^jsc
+--- json
+"/~1~0~0~1~1"
+
+
+=== Test 20 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer (escaped with fraction part) #1
+--- valid: true
+--- ^jsc
+--- json
+"/~1.1"
+
+
+=== Test 21 - validation of JSON-pointers (JSON String Representation) - valid JSON-pointer (escaped with fraction part) #2
+--- valid: true
+--- ^jsc
+--- json
+"/~0.1"
+
+
+=== Test 22 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (URI Fragment Identifier) #1
+--- valid: false
+--- ^jsc
+--- json
+"#"
+
+
+=== Test 23 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (URI Fragment Identifier) #2
+--- valid: false
+--- ^jsc
+--- json
+"#/"
+
+
+=== Test 24 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (URI Fragment Identifier) #3
+--- valid: false
+--- ^jsc
+--- json
+"#a"
+
+
+=== Test 25 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (some escaped, but not all) #1
+--- valid: false
+--- ^jsc
+--- json
+"/~0~"
+
+
+=== Test 26 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (some escaped, but not all) #2
+--- valid: false
+--- ^jsc
+--- json
+"/~0/~"
+
+
+=== Test 27 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (wrong escape character) #1
+--- valid: false
+--- ^jsc
+--- json
+"/~2"
+
+
+=== Test 28 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (wrong escape character) #2
+--- valid: false
+--- ^jsc
+--- json
+"/~-1"
+
+
+=== Test 29 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (multiple characters not escaped)
+--- valid: false
+--- ^jsc
+--- json
+"/~~"
+
+
+=== Test 30 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (isn't empty nor starts with /) #1
+--- valid: false
+--- ^jsc
+--- json
+"a"
+
+
+=== Test 31 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (isn't empty nor starts with /) #2
+--- valid: false
+--- ^jsc
+--- json
+"0"
+
+
+=== Test 32 - validation of JSON-pointers (JSON String Representation) - not a valid JSON-pointer (isn't empty nor starts with /) #3
+--- valid: false
+--- ^jsc
+--- json
+"a/a"
+
+
+# vim: ft=testml sw=2:

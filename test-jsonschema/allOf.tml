@@ -1,0 +1,181 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - allOf - allOf
+--- valid: true
+--- jsc
+{
+  "allOf": [
+    {
+      "properties": {"bar": {"type": "integer"}},
+      "required": ["bar"]
+    },
+    {
+      "properties": {"foo": {"type": "string"}},
+      "required": ["foo"]
+    }
+  ]
+}
+--- json
+{"foo": "baz", "bar": 2}
+
+
+=== Test 2 - allOf - mismatch second
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "baz"}
+
+
+=== Test 3 - allOf - mismatch first
+--- valid: false
+--- ^jsc
+--- json
+{"bar": 2}
+
+
+=== Test 4 - allOf - wrong type
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "baz", "bar": "quux"}
+
+
+=== Test 5 - allOf with base schema - valid
+--- valid: true
+--- jsc
+{
+  "properties": {"bar": {"type": "integer"}},
+  "required": ["bar"],
+  "allOf": [
+    {
+      "properties": {"foo": {"type": "string"}},
+      "required": ["foo"]
+    },
+    {
+      "properties": {"baz": {"type": "null"}},
+      "required": ["baz"]
+    }
+  ]
+}
+--- json
+{"foo": "quux", "bar": 2, "baz": null}
+
+
+=== Test 6 - allOf with base schema - mismatch base schema
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "quux", "baz": null}
+
+
+=== Test 7 - allOf with base schema - mismatch first allOf
+--- valid: false
+--- ^jsc
+--- json
+{"bar": 2, "baz": null}
+
+
+=== Test 8 - allOf with base schema - mismatch second allOf
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "quux", "bar": 2}
+
+
+=== Test 9 - allOf with base schema - mismatch both
+--- valid: false
+--- ^jsc
+--- json
+{"bar": 2}
+
+
+=== Test 10 - allOf simple types - valid
+--- valid: true
+--- jsc
+{"allOf": [{"maximum": 30}, {"minimum": 20}]}
+--- json
+25
+
+
+=== Test 11 - allOf simple types - mismatch one
+--- valid: false
+--- ^jsc
+--- json
+35
+
+
+=== Test 12 - allOf with boolean schemas, all true - any value is valid
+--- valid: true
+--- jsc
+{"allOf": [true, true]}
+--- json
+"foo"
+
+
+=== Test 13 - allOf with boolean schemas, some false - any value is invalid
+--- valid: false
+--- jsc
+{"allOf": [true, false]}
+--- json
+"foo"
+
+
+=== Test 14 - allOf with boolean schemas, all false - any value is invalid
+--- valid: false
+--- jsc
+{"allOf": [false, false]}
+--- json
+"foo"
+
+
+=== Test 15 - allOf with one empty schema - any data is valid
+--- valid: true
+--- jsc
+{"allOf": [{}]}
+--- json
+1
+
+
+=== Test 16 - allOf with two empty schemas - any data is valid
+--- valid: true
+--- jsc
+{"allOf": [{}, {}]}
+--- json
+1
+
+
+=== Test 17 - allOf with the first empty schema - number is valid
+--- valid: true
+--- jsc
+{"allOf": [{}, {"type": "number"}]}
+--- json
+1
+
+
+=== Test 18 - allOf with the first empty schema - string is invalid
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 19 - allOf with the last empty schema - number is valid
+--- valid: true
+--- jsc
+{"allOf": [{"type": "number"}, {}]}
+--- json
+1
+
+
+=== Test 20 - allOf with the last empty schema - string is invalid
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+# vim: ft=testml sw=2:

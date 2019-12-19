@@ -1,0 +1,43 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - maxLength validation - shorter is valid
+--- valid: true
+--- jsc
+{"maxLength": 2}
+--- json
+"f"
+
+
+=== Test 2 - maxLength validation - exact length is valid
+--- valid: true
+--- ^jsc
+--- json
+"fo"
+
+
+=== Test 3 - maxLength validation - too long is invalid
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 4 - maxLength validation - ignores non-strings
+--- valid: true
+--- ^jsc
+--- json
+100
+
+
+=== Test 5 - maxLength validation - two supplementary Unicode code points is long enough
+--- valid: true
+--- ^jsc
+--- json
+"💩💩"
+
+
+# vim: ft=testml sw=2:

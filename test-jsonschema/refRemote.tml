@@ -1,0 +1,165 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - remote ref - remote ref valid
+--- valid: true
+--- jsc
+{"$ref": "http://localhost:1234/integer.json"}
+--- json
+1
+
+
+=== Test 2 - remote ref - remote ref invalid
+--- valid: false
+--- ^jsc
+--- json
+"a"
+
+
+=== Test 3 - fragment within remote ref - remote fragment valid
+--- valid: true
+--- jsc
+{
+  "$ref": "http://localhost:1234/subSchemas.json#/integer"
+}
+--- json
+1
+
+
+=== Test 4 - fragment within remote ref - remote fragment invalid
+--- valid: false
+--- ^jsc
+--- json
+"a"
+
+
+=== Test 5 - ref within remote ref - ref within ref valid
+--- valid: true
+--- jsc
+{
+  "$ref": "http://localhost:1234/subSchemas.json#/refToInteger"
+}
+--- json
+1
+
+
+=== Test 6 - ref within remote ref - ref within ref invalid
+--- valid: false
+--- ^jsc
+--- json
+"a"
+
+
+=== Test 7 - base URI change - base URI change ref valid
+--- valid: true
+--- jsc
+{
+  "$id": "http://localhost:1234/",
+  "items": {
+    "$id": "folder/",
+    "items": {"$ref": "folderInteger.json"}
+  }
+}
+--- json
+[[1]]
+
+
+=== Test 8 - base URI change - base URI change ref invalid
+--- valid: false
+--- ^jsc
+--- json
+[["a"]]
+
+
+=== Test 9 - base URI change - change folder - number is valid
+--- valid: true
+--- jsc
+{
+  "$id": "http://localhost:1234/scope_change_defs1.json",
+  "type": "object",
+  "properties": {"list": {"$ref": "#/$defs/baz"}},
+  "$defs": {
+    "baz": {
+      "$id": "folder/",
+      "type": "array",
+      "items": {"$ref": "folderInteger.json"}
+    }
+  }
+}
+--- json
+{"list": [1]}
+
+
+=== Test 10 - base URI change - change folder - string is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"list": ["a"]}
+
+
+=== Test 11 - base URI change - change folder in subschema - number is valid
+--- valid: true
+--- jsc
+{
+  "$id": "http://localhost:1234/scope_change_defs2.json",
+  "type": "object",
+  "properties": {
+    "list": {"$ref": "#/$defs/baz/$defs/bar"}
+  },
+  "$defs": {
+    "baz": {
+      "$id": "folder/",
+      "$defs": {
+        "bar": {
+          "type": "array",
+          "items": {"$ref": "folderInteger.json"}
+        }
+      }
+    }
+  }
+}
+--- json
+{"list": [1]}
+
+
+=== Test 12 - base URI change - change folder in subschema - string is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"list": ["a"]}
+
+
+=== Test 13 - root ref in remote ref - string is valid
+--- valid: true
+--- jsc
+{
+  "$id": "http://localhost:1234/object",
+  "type": "object",
+  "properties": {
+    "name": {
+      "$ref": "name-defs.json#/$defs/orNull"
+    }
+  }
+}
+--- json
+{"name": "foo"}
+
+
+=== Test 14 - root ref in remote ref - null is valid
+--- valid: true
+--- ^jsc
+--- json
+{"name": null}
+
+
+=== Test 15 - root ref in remote ref - object is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"name": {"name": null}}
+
+
+# vim: ft=testml sw=2:

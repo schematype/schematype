@@ -1,0 +1,131 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - additionalProperties being false does not allow other properties - no additional properties is valid
+--- valid: true
+--- jsc
+{
+  "properties": {"foo": {}, "bar": {}},
+  "patternProperties": {"^v": {}},
+  "additionalProperties": false
+}
+--- json
+{"foo": 1}
+
+
+=== Test 2 - additionalProperties being false does not allow other properties - an additional property is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2, "quux": "boom"}
+
+
+=== Test 3 - additionalProperties being false does not allow other properties - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[1, 2, 3]
+
+
+=== Test 4 - additionalProperties being false does not allow other properties - ignores strings
+--- valid: true
+--- ^jsc
+--- json
+"foobarbaz"
+
+
+=== Test 5 - additionalProperties being false does not allow other properties - ignores other non-objects
+--- valid: true
+--- ^jsc
+--- json
+12
+
+
+=== Test 6 - additionalProperties being false does not allow other properties - patternProperties are not additional properties
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1, "vroom": 2}
+
+
+=== Test 7 - non-ASCII pattern with additionalProperties - matching the pattern is valid
+--- valid: true
+--- jsc
+{
+  "patternProperties": {"^á": {}},
+  "additionalProperties": false
+}
+--- json
+{"ármányos": 2}
+
+
+=== Test 8 - non-ASCII pattern with additionalProperties - not matching the pattern is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"élmény": 2}
+
+
+=== Test 9 - additionalProperties allows a schema which should validate - no additional properties is valid
+--- valid: true
+--- jsc
+{
+  "properties": {"foo": {}, "bar": {}},
+  "additionalProperties": {"type": "boolean"}
+}
+--- json
+{"foo": 1}
+
+
+=== Test 10 - additionalProperties allows a schema which should validate - an additional valid property is valid
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2, "quux": true}
+
+
+=== Test 11 - additionalProperties allows a schema which should validate - an additional invalid property is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2, "quux": 12}
+
+
+=== Test 12 - additionalProperties can exist by itself - an additional valid property is valid
+--- valid: true
+--- jsc
+{"additionalProperties": {"type": "boolean"}}
+--- json
+{"foo": true}
+
+
+=== Test 13 - additionalProperties can exist by itself - an additional invalid property is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 1}
+
+
+=== Test 14 - additionalProperties are allowed by default - additional properties are allowed
+--- valid: true
+--- jsc
+{"properties": {"foo": {}, "bar": {}}}
+--- json
+{"foo": 1, "bar": 2, "quux": true}
+
+
+=== Test 15 - additionalProperties should not look in applicators - properties defined in allOf are not allowed
+--- valid: false
+--- jsc
+{
+  "allOf": [{"properties": {"foo": {}}}],
+  "additionalProperties": {"type": "boolean"}
+}
+--- json
+{"foo": 1, "bar": true}
+
+
+# vim: ft=testml sw=2:

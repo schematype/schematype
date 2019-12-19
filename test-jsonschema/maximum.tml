@@ -1,0 +1,36 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - maximum validation - below the maximum is valid
+--- valid: true
+--- jsc
+{"maximum": 3}
+--- json
+2.6
+
+
+=== Test 2 - maximum validation - boundary point is valid
+--- valid: true
+--- ^jsc
+--- json
+3
+
+
+=== Test 3 - maximum validation - above the maximum is invalid
+--- valid: false
+--- ^jsc
+--- json
+3.5
+
+
+=== Test 4 - maximum validation - ignores non-numbers
+--- valid: true
+--- ^jsc
+--- json
+"x"
+
+
+# vim: ft=testml sw=2:

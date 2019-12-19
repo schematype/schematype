@@ -1,0 +1,80 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - propertyNames validation - all property names valid
+--- valid: true
+--- jsc
+{"propertyNames": {"maxLength": 3}}
+--- json
+{"f": {}, "foo": {}}
+
+
+=== Test 2 - propertyNames validation - some property names invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": {}, "foobar": {}}
+
+
+=== Test 3 - propertyNames validation - object without properties is valid
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 4 - propertyNames validation - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[1, 2, 3, 4]
+
+
+=== Test 5 - propertyNames validation - ignores strings
+--- valid: true
+--- ^jsc
+--- json
+"foobar"
+
+
+=== Test 6 - propertyNames validation - ignores other non-objects
+--- valid: true
+--- ^jsc
+--- json
+12
+
+
+=== Test 7 - propertyNames with boolean schema true - object with any properties is valid
+--- valid: true
+--- jsc
+{"propertyNames": true}
+--- json
+{"foo": 1}
+
+
+=== Test 8 - propertyNames with boolean schema true - empty object is valid
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 9 - propertyNames with boolean schema false - object with any properties is invalid
+--- valid: false
+--- jsc
+{"propertyNames": false}
+--- json
+{"foo": 1}
+
+
+=== Test 10 - propertyNames with boolean schema false - empty object is valid
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+# vim: ft=testml sw=2:

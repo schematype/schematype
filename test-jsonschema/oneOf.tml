@@ -1,0 +1,223 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - oneOf - first oneOf valid
+--- valid: true
+--- jsc
+{"oneOf": [{"type": "integer"}, {"minimum": 2}]}
+--- json
+1
+
+
+=== Test 2 - oneOf - second oneOf valid
+--- valid: true
+--- ^jsc
+--- json
+2.5
+
+
+=== Test 3 - oneOf - both oneOf valid
+--- valid: false
+--- ^jsc
+--- json
+3
+
+
+=== Test 4 - oneOf - neither oneOf valid
+--- valid: false
+--- ^jsc
+--- json
+1.5
+
+
+=== Test 5 - oneOf with base schema - mismatch base schema
+--- valid: false
+--- jsc
+{
+  "type": "string",
+  "oneOf": [{"minLength": 2}, {"maxLength": 4}]
+}
+--- json
+3
+
+
+=== Test 6 - oneOf with base schema - one oneOf valid
+--- valid: true
+--- ^jsc
+--- json
+"foobar"
+
+
+=== Test 7 - oneOf with base schema - both oneOf valid
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 8 - oneOf with boolean schemas, all true - any value is invalid
+--- valid: false
+--- jsc
+{"oneOf": [true, true, true]}
+--- json
+"foo"
+
+
+=== Test 9 - oneOf with boolean schemas, one true - any value is valid
+--- valid: true
+--- jsc
+{"oneOf": [true, false, false]}
+--- json
+"foo"
+
+
+=== Test 10 - oneOf with boolean schemas, more than one true - any value is invalid
+--- valid: false
+--- jsc
+{"oneOf": [true, true, false]}
+--- json
+"foo"
+
+
+=== Test 11 - oneOf with boolean schemas, all false - any value is invalid
+--- valid: false
+--- jsc
+{"oneOf": [false, false, false]}
+--- json
+"foo"
+
+
+=== Test 12 - oneOf complex types - first oneOf valid (complex)
+--- valid: true
+--- jsc
+{
+  "oneOf": [
+    {
+      "properties": {"bar": {"type": "integer"}},
+      "required": ["bar"]
+    },
+    {
+      "properties": {"foo": {"type": "string"}},
+      "required": ["foo"]
+    }
+  ]
+}
+--- json
+{"bar": 2}
+
+
+=== Test 13 - oneOf complex types - second oneOf valid (complex)
+--- valid: true
+--- ^jsc
+--- json
+{"foo": "baz"}
+
+
+=== Test 14 - oneOf complex types - both oneOf valid (complex)
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "baz", "bar": 2}
+
+
+=== Test 15 - oneOf complex types - neither oneOf valid (complex)
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 2, "bar": "quux"}
+
+
+=== Test 16 - oneOf with empty schema - one valid - valid
+--- valid: true
+--- jsc
+{"oneOf": [{"type": "number"}, {}]}
+--- json
+"foo"
+
+
+=== Test 17 - oneOf with empty schema - both valid - invalid
+--- valid: false
+--- ^jsc
+--- json
+123
+
+
+=== Test 18 - oneOf with required - both invalid - invalid
+--- valid: false
+--- jsc
+{
+  "type": "object",
+  "oneOf": [
+    {"required": ["foo", "bar"]},
+    {"required": ["foo", "baz"]}
+  ]
+}
+--- json
+{"bar": 2}
+
+
+=== Test 19 - oneOf with required - first valid - valid
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2}
+
+
+=== Test 20 - oneOf with required - second valid - valid
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1, "baz": 3}
+
+
+=== Test 21 - oneOf with required - both valid - invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2, "baz": 3}
+
+
+=== Test 22 - oneOf with missing optional property - first oneOf valid
+--- valid: true
+--- jsc
+{
+  "oneOf": [
+    {
+      "properties": {"bar": true, "baz": true},
+      "required": ["bar"]
+    },
+    {
+      "properties": {"foo": true},
+      "required": ["foo"]
+    }
+  ]
+}
+--- json
+{"bar": 8}
+
+
+=== Test 23 - oneOf with missing optional property - second oneOf valid
+--- valid: true
+--- ^jsc
+--- json
+{"foo": "foo"}
+
+
+=== Test 24 - oneOf with missing optional property - both oneOf valid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "foo", "bar": 8}
+
+
+=== Test 25 - oneOf with missing optional property - neither oneOf valid
+--- valid: false
+--- ^jsc
+--- json
+{"baz": "quux"}
+
+
+# vim: ft=testml sw=2:

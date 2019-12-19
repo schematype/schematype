@@ -1,0 +1,22 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of regular expressions - a valid regular expression
+--- valid: true
+--- jsc
+{"format": "regex"}
+--- json
+"([abc])+\\s+$"
+
+
+=== Test 2 - validation of regular expressions - a regular expression with unclosed parens is invalid
+--- valid: false
+--- ^jsc
+--- json
+"^(abc]"
+
+
+# vim: ft=testml sw=2:

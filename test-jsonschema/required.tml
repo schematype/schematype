@@ -1,0 +1,93 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - required validation - present required property is valid
+--- valid: true
+--- jsc
+{
+  "properties": {"foo": {}, "bar": {}},
+  "required": ["foo"]
+}
+--- json
+{"foo": 1}
+
+
+=== Test 2 - required validation - non-present required property is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"bar": 1}
+
+
+=== Test 3 - required validation - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 4 - required validation - ignores strings
+--- valid: true
+--- ^jsc
+--- json
+""
+
+
+=== Test 5 - required validation - ignores other non-objects
+--- valid: true
+--- ^jsc
+--- json
+12
+
+
+=== Test 6 - required default validation - not required by default
+--- valid: true
+--- jsc
+{"properties": {"foo": {}}}
+--- json
+{}
+
+
+=== Test 7 - required with empty array - property not required
+--- valid: true
+--- jsc
+{"properties": {"foo": {}}, "required": []}
+--- json
+{}
+
+
+=== Test 8 - required with escaped characters - object with all properties present is valid
+--- valid: true
+--- jsc
+{
+  "required": [
+    "foo\nbar",
+    "foo\"bar",
+    "foo\\bar",
+    "foo\rbar",
+    "foo\tbar",
+    "foo\fbar"
+  ]
+}
+--- json
+{
+  "foo\nbar": 1,
+  "foo\"bar": 1,
+  "foo\\bar": 1,
+  "foo\rbar": 1,
+  "foo\tbar": 1,
+  "foo\fbar": 1
+}
+
+
+=== Test 9 - required with escaped characters - object with some properties missing is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo\nbar": "1", "foo\"bar": "1"}
+
+
+# vim: ft=testml sw=2:

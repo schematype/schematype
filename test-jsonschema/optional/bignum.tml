@@ -1,0 +1,79 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - integer - a bignum is an integer
+--- valid: true
+--- jsc
+{"type": "integer"}
+--- json
+1.2345678910111214e+52
+
+
+=== Test 2 - number - a bignum is a number
+--- valid: true
+--- jsc
+{"type": "number"}
+--- json
+9.824928374923492e+52
+
+
+=== Test 3 - integer - a negative bignum is an integer
+--- valid: true
+--- jsc
+{"type": "integer"}
+--- json
+-1.2345678910111214e+52
+
+
+=== Test 4 - number - a negative bignum is a number
+--- valid: true
+--- jsc
+{"type": "number"}
+--- json
+-9.824928374923492e+52
+
+
+=== Test 5 - string - a bignum is not a string
+--- valid: false
+--- jsc
+{"type": "string"}
+--- json
+9.824928374923492e+52
+
+
+=== Test 6 - integer comparison - comparison works for high numbers
+--- valid: true
+--- jsc
+{"maximum": 18446744073709552000}
+--- json
+18446744073709552000
+
+
+=== Test 7 - float comparison with high precision - comparison works for high numbers
+--- valid: false
+--- jsc
+{"exclusiveMaximum": 9.727837981879871e+26}
+--- json
+9.727837981879871e+26
+
+
+=== Test 8 - integer comparison - comparison works for very negative numbers
+--- valid: true
+--- jsc
+{"minimum": -18446744073709552000}
+--- json
+-18446744073709552000
+
+
+=== Test 9 - float comparison with high precision on negative numbers - comparison works for very negative numbers
+--- valid: false
+--- jsc
+{"exclusiveMinimum": -9.727837981879871e+26}
+--- json
+-9.727837981879871e+26
+
+
+# vim: ft=testml sw=2:

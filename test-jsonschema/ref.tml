@@ -1,0 +1,329 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - root pointer ref - match
+--- valid: true
+--- jsc
+{
+  "properties": {"foo": {"$ref": "#"}},
+  "additionalProperties": false
+}
+--- json
+{"foo": false}
+
+
+=== Test 2 - root pointer ref - recursive match
+--- valid: true
+--- ^jsc
+--- json
+{"foo": {"foo": false}}
+
+
+=== Test 3 - root pointer ref - mismatch
+--- valid: false
+--- ^jsc
+--- json
+{"bar": false}
+
+
+=== Test 4 - root pointer ref - recursive mismatch
+--- valid: false
+--- ^jsc
+--- json
+{"foo": {"bar": false}}
+
+
+=== Test 5 - relative pointer ref to object - match
+--- valid: true
+--- jsc
+{
+  "properties": {
+    "foo": {"type": "integer"},
+    "bar": {"$ref": "#/properties/foo"}
+  }
+}
+--- json
+{"bar": 3}
+
+
+=== Test 6 - relative pointer ref to object - mismatch
+--- valid: false
+--- ^jsc
+--- json
+{"bar": true}
+
+
+=== Test 7 - relative pointer ref to array - match array
+--- valid: true
+--- jsc
+{
+  "items": [
+    {"type": "integer"},
+    {"$ref": "#/items/0"}
+  ]
+}
+--- json
+[1, 2]
+
+
+=== Test 8 - relative pointer ref to array - mismatch array
+--- valid: false
+--- ^jsc
+--- json
+[1, "foo"]
+
+
+=== Test 9 - escaped pointer ref - slash invalid
+--- valid: false
+--- jsc
+{
+  "tilda~field": {"type": "integer"},
+  "slash/field": {"type": "integer"},
+  "percent%field": {"type": "integer"},
+  "properties": {
+    "tilda": {"$ref": "#/tilda~0field"},
+    "slash": {"$ref": "#/slash~1field"},
+    "percent": {"$ref": "#/percent%25field"}
+  }
+}
+--- json
+{"slash": "aoeu"}
+
+
+=== Test 10 - escaped pointer ref - tilda invalid
+--- valid: false
+--- ^jsc
+--- json
+{"tilda": "aoeu"}
+
+
+=== Test 11 - escaped pointer ref - percent invalid
+--- valid: false
+--- ^jsc
+--- json
+{"percent": "aoeu"}
+
+
+=== Test 12 - escaped pointer ref - slash valid
+--- valid: true
+--- ^jsc
+--- json
+{"slash": 123}
+
+
+=== Test 13 - escaped pointer ref - tilda valid
+--- valid: true
+--- ^jsc
+--- json
+{"tilda": 123}
+
+
+=== Test 14 - escaped pointer ref - percent valid
+--- valid: true
+--- ^jsc
+--- json
+{"percent": 123}
+
+
+=== Test 15 - nested refs - nested ref valid
+--- valid: true
+--- jsc
+{
+  "$defs": {
+    "a": {"type": "integer"},
+    "b": {"$ref": "#/$defs/a"},
+    "c": {"$ref": "#/$defs/b"}
+  },
+  "$ref": "#/$defs/c"
+}
+--- json
+5
+
+
+=== Test 16 - nested refs - nested ref invalid
+--- valid: false
+--- ^jsc
+--- json
+"a"
+
+
+=== Test 17 - ref overrides any sibling keywords - ref valid
+--- valid: true
+--- jsc
+{
+  "$defs": {"reffed": {"type": "array"}},
+  "properties": {
+    "foo": {
+      "$ref": "#/$defs/reffed",
+      "maxItems": 2
+    }
+  }
+}
+--- json
+{"foo": []}
+
+
+=== Test 18 - ref overrides any sibling keywords - ref valid, maxItems ignored
+--- valid: true
+--- ^jsc
+--- json
+{"foo": [1, 2, 3]}
+
+
+=== Test 19 - ref overrides any sibling keywords - ref invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "string"}
+
+
+=== Test 20 - remote ref, containing refs itself - remote ref valid
+--- valid: true
+--- jsc
+{
+  "$ref": "https://json-schema.org/draft/2019-09/schema"
+}
+--- json
+{"minLength": 1}
+
+
+=== Test 21 - remote ref, containing refs itself - remote ref invalid
+--- valid: false
+--- ^jsc
+--- json
+{"minLength": -1}
+
+
+=== Test 22 - property named $ref that is not a reference - property named $ref valid
+--- valid: true
+--- jsc
+{"properties": {"$ref": {"type": "string"}}}
+--- json
+{"$ref": "a"}
+
+
+=== Test 23 - property named $ref that is not a reference - property named $ref invalid
+--- valid: false
+--- ^jsc
+--- json
+{"$ref": 2}
+
+
+=== Test 24 - $ref to boolean schema true - any value is valid
+--- valid: true
+--- jsc
+{"$ref": "#/$defs/bool", "$defs": {"bool": true}}
+--- json
+"foo"
+
+
+=== Test 25 - $ref to boolean schema false - any value is invalid
+--- valid: false
+--- jsc
+{"$ref": "#/$defs/bool", "$defs": {"bool": false}}
+--- json
+"foo"
+
+
+=== Test 26 - Recursive references between schemas - valid tree
+--- valid: true
+--- jsc
+{
+  "$id": "http://localhost:1234/tree",
+  "description": "tree of nodes",
+  "type": "object",
+  "properties": {
+    "meta": {"type": "string"},
+    "nodes": {
+      "type": "array",
+      "items": {"$ref": "node"}
+    }
+  },
+  "required": ["meta", "nodes"],
+  "$defs": {
+    "node": {
+      "$id": "http://localhost:1234/node",
+      "description": "node",
+      "type": "object",
+      "properties": {
+        "value": {"type": "number"},
+        "subtree": {"$ref": "tree"}
+      },
+      "required": ["value"]
+    }
+  }
+}
+--- json
+{
+  "meta": "root",
+  "nodes": [
+    {
+      "value": 1,
+      "subtree": {
+        "meta": "child",
+        "nodes": [{"value": 1.1}, {"value": 1.2}]
+      }
+    },
+    {
+      "value": 2,
+      "subtree": {
+        "meta": "child",
+        "nodes": [{"value": 2.1}, {"value": 2.2}]
+      }
+    }
+  ]
+}
+
+
+=== Test 27 - Recursive references between schemas - invalid tree
+--- valid: false
+--- ^jsc
+--- json
+{
+  "meta": "root",
+  "nodes": [
+    {
+      "value": 1,
+      "subtree": {
+        "meta": "child",
+        "nodes": [
+          {"value": "string is invalid"},
+          {"value": 1.2}
+        ]
+      }
+    },
+    {
+      "value": 2,
+      "subtree": {
+        "meta": "child",
+        "nodes": [{"value": 2.1}, {"value": 2.2}]
+      }
+    }
+  ]
+}
+
+
+=== Test 28 - refs with quote - object with numbers is valid
+--- valid: true
+--- jsc
+{
+  "properties": {
+    "foo\"bar": {"$ref": "#/$defs/foo%22bar"}
+  },
+  "$defs": {"foo\"bar": {"type": "number"}}
+}
+--- json
+{"foo\"bar": 1}
+
+
+=== Test 29 - refs with quote - object with strings is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo\"bar": "1"}
+
+
+# vim: ft=testml sw=2:

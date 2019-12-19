@@ -1,0 +1,43 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of host names - a valid host name
+--- valid: true
+--- jsc
+{"format": "hostname"}
+--- json
+"www.example.com"
+
+
+=== Test 2 - validation of host names - a valid punycoded IDN hostname
+--- valid: true
+--- ^jsc
+--- json
+"xn--4gbwdl.xn--wgbh1c"
+
+
+=== Test 3 - validation of host names - a host name starting with an illegal character
+--- valid: false
+--- ^jsc
+--- json
+"-a-host-name-that-starts-with--"
+
+
+=== Test 4 - validation of host names - a host name containing illegal characters
+--- valid: false
+--- ^jsc
+--- json
+"not_a_valid_host_name"
+
+
+=== Test 5 - validation of host names - a host name with a component too long
+--- valid: false
+--- ^jsc
+--- json
+"a-vvvvvvvvvvvvvvvveeeeeeeeeeeeeeeerrrrrrrrrrrrrrrryyyyyyyyyyyyyyyy-long-host-name-component"
+
+
+# vim: ft=testml sw=2:

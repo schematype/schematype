@@ -1,0 +1,156 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - ignore if without then or else - valid when valid against lone if
+--- valid: true
+--- jsc
+{"if": {"const": 0}}
+--- json
+0
+
+
+=== Test 2 - ignore if without then or else - valid when invalid against lone if
+--- valid: true
+--- ^jsc
+--- json
+"hello"
+
+
+=== Test 3 - ignore then without if - valid when valid against lone then
+--- valid: true
+--- jsc
+{"then": {"const": 0}}
+--- json
+0
+
+
+=== Test 4 - ignore then without if - valid when invalid against lone then
+--- valid: true
+--- ^jsc
+--- json
+"hello"
+
+
+=== Test 5 - ignore else without if - valid when valid against lone else
+--- valid: true
+--- jsc
+{"else": {"const": 0}}
+--- json
+0
+
+
+=== Test 6 - ignore else without if - valid when invalid against lone else
+--- valid: true
+--- ^jsc
+--- json
+"hello"
+
+
+=== Test 7 - if and then without else - valid through then
+--- valid: true
+--- jsc
+{
+  "if": {"exclusiveMaximum": 0},
+  "then": {"minimum": -10}
+}
+--- json
+-1
+
+
+=== Test 8 - if and then without else - invalid through then
+--- valid: false
+--- ^jsc
+--- json
+-100
+
+
+=== Test 9 - if and then without else - valid when if test fails
+--- valid: true
+--- ^jsc
+--- json
+3
+
+
+=== Test 10 - if and else without then - valid when if test passes
+--- valid: true
+--- jsc
+{
+  "if": {"exclusiveMaximum": 0},
+  "else": {"multipleOf": 2}
+}
+--- json
+-1
+
+
+=== Test 11 - if and else without then - valid through else
+--- valid: true
+--- ^jsc
+--- json
+4
+
+
+=== Test 12 - if and else without then - invalid through else
+--- valid: false
+--- ^jsc
+--- json
+3
+
+
+=== Test 13 - validate against correct branch, then vs else - valid through then
+--- valid: true
+--- jsc
+{
+  "if": {"exclusiveMaximum": 0},
+  "then": {"minimum": -10},
+  "else": {"multipleOf": 2}
+}
+--- json
+-1
+
+
+=== Test 14 - validate against correct branch, then vs else - invalid through then
+--- valid: false
+--- ^jsc
+--- json
+-100
+
+
+=== Test 15 - validate against correct branch, then vs else - valid through else
+--- valid: true
+--- ^jsc
+--- json
+4
+
+
+=== Test 16 - validate against correct branch, then vs else - invalid through else
+--- valid: false
+--- ^jsc
+--- json
+3
+
+
+=== Test 17 - non-interference across combined schemas - valid, but would have been invalid through then
+--- valid: true
+--- jsc
+{
+  "allOf": [
+    {"if": {"exclusiveMaximum": 0}},
+    {"then": {"minimum": -10}},
+    {"else": {"multipleOf": 2}}
+  ]
+}
+--- json
+-100
+
+
+=== Test 18 - non-interference across combined schemas - valid, but would have been invalid through else
+--- valid: true
+--- ^jsc
+--- json
+3
+
+
+# vim: ft=testml sw=2:

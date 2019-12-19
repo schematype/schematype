@@ -1,0 +1,135 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - boolean schema 'true' - number is valid
+--- valid: true
+--- jsc
+true
+--- json
+1
+
+
+=== Test 2 - boolean schema 'true' - string is valid
+--- valid: true
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 3 - boolean schema 'true' - boolean true is valid
+--- valid: true
+--- ^jsc
+--- json
+true
+
+
+=== Test 4 - boolean schema 'true' - boolean false is valid
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 5 - boolean schema 'true' - null is valid
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 6 - boolean schema 'true' - object is valid
+--- valid: true
+--- ^jsc
+--- json
+{"foo": "bar"}
+
+
+=== Test 7 - boolean schema 'true' - empty object is valid
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 8 - boolean schema 'true' - array is valid
+--- valid: true
+--- ^jsc
+--- json
+["foo"]
+
+
+=== Test 9 - boolean schema 'true' - empty array is valid
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 10 - boolean schema 'false' - number is invalid
+--- valid: false
+--- jsc
+false
+--- json
+1
+
+
+=== Test 11 - boolean schema 'false' - string is invalid
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 12 - boolean schema 'false' - boolean true is invalid
+--- valid: false
+--- ^jsc
+--- json
+true
+
+
+=== Test 13 - boolean schema 'false' - boolean false is invalid
+--- valid: false
+--- ^jsc
+--- json
+false
+
+
+=== Test 14 - boolean schema 'false' - null is invalid
+--- valid: false
+--- ^jsc
+--- json
+null
+
+
+=== Test 15 - boolean schema 'false' - object is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "bar"}
+
+
+=== Test 16 - boolean schema 'false' - empty object is invalid
+--- valid: false
+--- ^jsc
+--- json
+{}
+
+
+=== Test 17 - boolean schema 'false' - array is invalid
+--- valid: false
+--- ^jsc
+--- json
+["foo"]
+
+
+=== Test 18 - boolean schema 'false' - empty array is invalid
+--- valid: false
+--- ^jsc
+--- json
+[]
+
+
+# vim: ft=testml sw=2:

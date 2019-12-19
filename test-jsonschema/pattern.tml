@@ -1,0 +1,37 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - pattern validation - a matching pattern is valid
+--- valid: true
+--- jsc
+{"pattern": "^a*$"}
+--- json
+"aaa"
+
+
+=== Test 2 - pattern validation - a non-matching pattern is invalid
+--- valid: false
+--- ^jsc
+--- json
+"abc"
+
+
+=== Test 3 - pattern validation - ignores non-strings
+--- valid: true
+--- ^jsc
+--- json
+true
+
+
+=== Test 4 - pattern is not anchored - matches a substring
+--- valid: true
+--- jsc
+{"pattern": "a+"}
+--- json
+"xxaayy"
+
+
+# vim: ft=testml sw=2:

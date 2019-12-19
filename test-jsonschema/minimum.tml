@@ -1,0 +1,72 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - minimum validation - above the minimum is valid
+--- valid: true
+--- jsc
+{"minimum": 1.1}
+--- json
+2.6
+
+
+=== Test 2 - minimum validation - boundary point is valid
+--- valid: true
+--- ^jsc
+--- json
+1.1
+
+
+=== Test 3 - minimum validation - below the minimum is invalid
+--- valid: false
+--- ^jsc
+--- json
+0.6
+
+
+=== Test 4 - minimum validation - ignores non-numbers
+--- valid: true
+--- ^jsc
+--- json
+"x"
+
+
+=== Test 5 - minimum validation with signed integer - negative above the minimum is valid
+--- valid: true
+--- jsc
+{"minimum": -2}
+--- json
+-1
+
+
+=== Test 6 - minimum validation with signed integer - positive above the minimum is valid
+--- valid: true
+--- ^jsc
+--- json
+0
+
+
+=== Test 7 - minimum validation with signed integer - boundary point is valid
+--- valid: true
+--- ^jsc
+--- json
+-2
+
+
+=== Test 8 - minimum validation with signed integer - below the minimum is invalid
+--- valid: false
+--- ^jsc
+--- json
+-3
+
+
+=== Test 9 - minimum validation with signed integer - ignores non-numbers
+--- valid: true
+--- ^jsc
+--- json
+"x"
+
+
+# vim: ft=testml sw=2:

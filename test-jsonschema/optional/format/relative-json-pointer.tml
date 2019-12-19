@@ -1,0 +1,43 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of Relative JSON Pointers (RJP) - a valid upwards RJP
+--- valid: true
+--- jsc
+{"format": "relative-json-pointer"}
+--- json
+"1"
+
+
+=== Test 2 - validation of Relative JSON Pointers (RJP) - a valid downwards RJP
+--- valid: true
+--- ^jsc
+--- json
+"0/foo/bar"
+
+
+=== Test 3 - validation of Relative JSON Pointers (RJP) - a valid up and then down RJP, with array index
+--- valid: true
+--- ^jsc
+--- json
+"2/0/baz/1/zip"
+
+
+=== Test 4 - validation of Relative JSON Pointers (RJP) - a valid RJP taking the member or index name
+--- valid: true
+--- ^jsc
+--- json
+"0#"
+
+
+=== Test 5 - validation of Relative JSON Pointers (RJP) - an invalid RJP that is a valid JSON Pointer
+--- valid: false
+--- ^jsc
+--- json
+"/foo/bar"
+
+
+# vim: ft=testml sw=2:

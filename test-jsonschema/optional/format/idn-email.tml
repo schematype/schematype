@@ -1,0 +1,22 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of an internationalized e-mail addresses - a valid idn e-mail (example@example.test in Hangul)
+--- valid: true
+--- jsc
+{"format": "idn-email"}
+--- json
+"실례@실례.테스트"
+
+
+=== Test 2 - validation of an internationalized e-mail addresses - an invalid idn e-mail address
+--- valid: false
+--- ^jsc
+--- json
+"2962"
+
+
+# vim: ft=testml sw=2:

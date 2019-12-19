@@ -1,0 +1,57 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of URI References - a valid URI
+--- valid: true
+--- jsc
+{"format": "uri-reference"}
+--- json
+"http://foo.bar/?baz=qux#quux"
+
+
+=== Test 2 - validation of URI References - a valid protocol-relative URI Reference
+--- valid: true
+--- ^jsc
+--- json
+"//foo.bar/?baz=qux#quux"
+
+
+=== Test 3 - validation of URI References - a valid relative URI Reference
+--- valid: true
+--- ^jsc
+--- json
+"/abc"
+
+
+=== Test 4 - validation of URI References - an invalid URI Reference
+--- valid: false
+--- ^jsc
+--- json
+"\\\\WINDOWS\\fileshare"
+
+
+=== Test 5 - validation of URI References - a valid URI Reference
+--- valid: true
+--- ^jsc
+--- json
+"abc"
+
+
+=== Test 6 - validation of URI References - a valid URI fragment
+--- valid: true
+--- ^jsc
+--- json
+"#fragment"
+
+
+=== Test 7 - validation of URI References - an invalid URI fragment
+--- valid: false
+--- ^jsc
+--- json
+"#frag\\ment"
+
+
+# vim: ft=testml sw=2:

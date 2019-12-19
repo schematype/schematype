@@ -1,0 +1,29 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of time strings - a valid time string
+--- valid: true
+--- jsc
+{"format": "time"}
+--- json
+"08:30:06.283185Z"
+
+
+=== Test 2 - validation of time strings - an invalid time string
+--- valid: false
+--- ^jsc
+--- json
+"08:30:06 PST"
+
+
+=== Test 3 - validation of time strings - only RFC3339 not all of ISO 8601 are valid
+--- valid: false
+--- ^jsc
+--- json
+"01:01:01,1111"
+
+
+# vim: ft=testml sw=2:

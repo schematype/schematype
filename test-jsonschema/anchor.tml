@@ -1,0 +1,83 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - Location-independent identifier - match
+--- valid: true
+--- jsc
+{
+  "allOf": [{"$ref": "#foo"}],
+  "$defs": {
+    "A": {"$anchor": "foo", "type": "integer"}
+  }
+}
+--- json
+1
+
+
+=== Test 2 - Location-independent identifier - mismatch
+--- valid: false
+--- ^jsc
+--- json
+"a"
+
+
+=== Test 3 - Location-independent identifier with absolute URI - match
+--- valid: true
+--- jsc
+{
+  "allOf": [
+    {"$ref": "http://localhost:1234/bar#foo"}
+  ],
+  "$defs": {
+    "A": {
+      "$id": "http://localhost:1234/bar",
+      "$anchor": "foo",
+      "type": "integer"
+    }
+  }
+}
+--- json
+1
+
+
+=== Test 4 - Location-independent identifier with absolute URI - mismatch
+--- valid: false
+--- ^jsc
+--- json
+"a"
+
+
+=== Test 5 - Location-independent identifier with base URI change in subschema - match
+--- valid: true
+--- jsc
+{
+  "$id": "http://localhost:1234/root",
+  "allOf": [
+    {
+      "$ref": "http://localhost:1234/nested.json#foo"
+    }
+  ],
+  "$defs": {
+    "A": {
+      "$id": "nested.json",
+      "$defs": {
+        "B": {"$anchor": "foo", "type": "integer"}
+      }
+    }
+  }
+}
+--- json
+1
+
+
+=== Test 6 - Location-independent identifier with base URI change in subschema - mismatch
+--- valid: false
+--- ^jsc
+--- json
+"a"
+
+
+# vim: ft=testml sw=2:

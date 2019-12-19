@@ -1,0 +1,564 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - integer type matches integers - an integer is an integer
+--- valid: true
+--- jsc
+{"type": "integer"}
+--- json
+1
+
+
+=== Test 2 - integer type matches integers - a float is not an integer
+--- valid: false
+--- ^jsc
+--- json
+1.1
+
+
+=== Test 3 - integer type matches integers - a string is not an integer
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 4 - integer type matches integers - a string is still not an integer, even if it looks like one
+--- valid: false
+--- ^jsc
+--- json
+"1"
+
+
+=== Test 5 - integer type matches integers - an object is not an integer
+--- valid: false
+--- ^jsc
+--- json
+{}
+
+
+=== Test 6 - integer type matches integers - an array is not an integer
+--- valid: false
+--- ^jsc
+--- json
+[]
+
+
+=== Test 7 - integer type matches integers - a boolean is not an integer
+--- valid: false
+--- ^jsc
+--- json
+true
+
+
+=== Test 8 - integer type matches integers - null is not an integer
+--- valid: false
+--- ^jsc
+--- json
+null
+
+
+=== Test 9 - number type matches numbers - an integer is a number
+--- valid: true
+--- jsc
+{"type": "number"}
+--- json
+1
+
+
+=== Test 10 - number type matches numbers - a float is a number
+--- valid: true
+--- ^jsc
+--- json
+1.1
+
+
+=== Test 11 - number type matches numbers - a string is not a number
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 12 - number type matches numbers - a string is still not a number, even if it looks like one
+--- valid: false
+--- ^jsc
+--- json
+"1"
+
+
+=== Test 13 - number type matches numbers - an object is not a number
+--- valid: false
+--- ^jsc
+--- json
+{}
+
+
+=== Test 14 - number type matches numbers - an array is not a number
+--- valid: false
+--- ^jsc
+--- json
+[]
+
+
+=== Test 15 - number type matches numbers - a boolean is not a number
+--- valid: false
+--- ^jsc
+--- json
+true
+
+
+=== Test 16 - number type matches numbers - null is not a number
+--- valid: false
+--- ^jsc
+--- json
+null
+
+
+=== Test 17 - string type matches strings - 1 is not a string
+--- valid: false
+--- jsc
+{"type": "string"}
+--- json
+1
+
+
+=== Test 18 - string type matches strings - a float is not a string
+--- valid: false
+--- ^jsc
+--- json
+1.1
+
+
+=== Test 19 - string type matches strings - a string is a string
+--- valid: true
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 20 - string type matches strings - a string is still a string, even if it looks like a number
+--- valid: true
+--- ^jsc
+--- json
+"1"
+
+
+=== Test 21 - string type matches strings - an empty string is still a string
+--- valid: true
+--- ^jsc
+--- json
+""
+
+
+=== Test 22 - string type matches strings - an object is not a string
+--- valid: false
+--- ^jsc
+--- json
+{}
+
+
+=== Test 23 - string type matches strings - an array is not a string
+--- valid: false
+--- ^jsc
+--- json
+[]
+
+
+=== Test 24 - string type matches strings - a boolean is not a string
+--- valid: false
+--- ^jsc
+--- json
+true
+
+
+=== Test 25 - string type matches strings - null is not a string
+--- valid: false
+--- ^jsc
+--- json
+null
+
+
+=== Test 26 - object type matches objects - an integer is not an object
+--- valid: false
+--- jsc
+{"type": "object"}
+--- json
+1
+
+
+=== Test 27 - object type matches objects - a float is not an object
+--- valid: false
+--- ^jsc
+--- json
+1.1
+
+
+=== Test 28 - object type matches objects - a string is not an object
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 29 - object type matches objects - an object is an object
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+=== Test 30 - object type matches objects - an array is not an object
+--- valid: false
+--- ^jsc
+--- json
+[]
+
+
+=== Test 31 - object type matches objects - a boolean is not an object
+--- valid: false
+--- ^jsc
+--- json
+true
+
+
+=== Test 32 - object type matches objects - null is not an object
+--- valid: false
+--- ^jsc
+--- json
+null
+
+
+=== Test 33 - array type matches arrays - an integer is not an array
+--- valid: false
+--- jsc
+{"type": "array"}
+--- json
+1
+
+
+=== Test 34 - array type matches arrays - a float is not an array
+--- valid: false
+--- ^jsc
+--- json
+1.1
+
+
+=== Test 35 - array type matches arrays - a string is not an array
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 36 - array type matches arrays - an object is not an array
+--- valid: false
+--- ^jsc
+--- json
+{}
+
+
+=== Test 37 - array type matches arrays - an array is an array
+--- valid: true
+--- ^jsc
+--- json
+[]
+
+
+=== Test 38 - array type matches arrays - a boolean is not an array
+--- valid: false
+--- ^jsc
+--- json
+true
+
+
+=== Test 39 - array type matches arrays - null is not an array
+--- valid: false
+--- ^jsc
+--- json
+null
+
+
+=== Test 40 - boolean type matches booleans - an integer is not a boolean
+--- valid: false
+--- jsc
+{"type": "boolean"}
+--- json
+1
+
+
+=== Test 41 - boolean type matches booleans - zero is not a boolean
+--- valid: false
+--- ^jsc
+--- json
+0
+
+
+=== Test 42 - boolean type matches booleans - a float is not a boolean
+--- valid: false
+--- ^jsc
+--- json
+1.1
+
+
+=== Test 43 - boolean type matches booleans - a string is not a boolean
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 44 - boolean type matches booleans - an empty string is not a boolean
+--- valid: false
+--- ^jsc
+--- json
+""
+
+
+=== Test 45 - boolean type matches booleans - an object is not a boolean
+--- valid: false
+--- ^jsc
+--- json
+{}
+
+
+=== Test 46 - boolean type matches booleans - an array is not a boolean
+--- valid: false
+--- ^jsc
+--- json
+[]
+
+
+=== Test 47 - boolean type matches booleans - true is a boolean
+--- valid: true
+--- ^jsc
+--- json
+true
+
+
+=== Test 48 - boolean type matches booleans - false is a boolean
+--- valid: true
+--- ^jsc
+--- json
+false
+
+
+=== Test 49 - boolean type matches booleans - null is not a boolean
+--- valid: false
+--- ^jsc
+--- json
+null
+
+
+=== Test 50 - null type matches only the null object - an integer is not null
+--- valid: false
+--- jsc
+{"type": "null"}
+--- json
+1
+
+
+=== Test 51 - null type matches only the null object - a float is not null
+--- valid: false
+--- ^jsc
+--- json
+1.1
+
+
+=== Test 52 - null type matches only the null object - zero is not null
+--- valid: false
+--- ^jsc
+--- json
+0
+
+
+=== Test 53 - null type matches only the null object - a string is not null
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 54 - null type matches only the null object - an empty string is not null
+--- valid: false
+--- ^jsc
+--- json
+""
+
+
+=== Test 55 - null type matches only the null object - an object is not null
+--- valid: false
+--- ^jsc
+--- json
+{}
+
+
+=== Test 56 - null type matches only the null object - an array is not null
+--- valid: false
+--- ^jsc
+--- json
+[]
+
+
+=== Test 57 - null type matches only the null object - true is not null
+--- valid: false
+--- ^jsc
+--- json
+true
+
+
+=== Test 58 - null type matches only the null object - false is not null
+--- valid: false
+--- ^jsc
+--- json
+false
+
+
+=== Test 59 - null type matches only the null object - null is null
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 60 - multiple types can be specified in an array - an integer is valid
+--- valid: true
+--- jsc
+{"type": ["integer", "string"]}
+--- json
+1
+
+
+=== Test 61 - multiple types can be specified in an array - a string is valid
+--- valid: true
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 62 - multiple types can be specified in an array - a float is invalid
+--- valid: false
+--- ^jsc
+--- json
+1.1
+
+
+=== Test 63 - multiple types can be specified in an array - an object is invalid
+--- valid: false
+--- ^jsc
+--- json
+{}
+
+
+=== Test 64 - multiple types can be specified in an array - an array is invalid
+--- valid: false
+--- ^jsc
+--- json
+[]
+
+
+=== Test 65 - multiple types can be specified in an array - a boolean is invalid
+--- valid: false
+--- ^jsc
+--- json
+true
+
+
+=== Test 66 - multiple types can be specified in an array - null is invalid
+--- valid: false
+--- ^jsc
+--- json
+null
+
+
+=== Test 67 - type as array with one item - string is valid
+--- valid: true
+--- jsc
+{"type": ["string"]}
+--- json
+"foo"
+
+
+=== Test 68 - type as array with one item - number is invalid
+--- valid: false
+--- ^jsc
+--- json
+123
+
+
+=== Test 69 - type: array or object - array is valid
+--- valid: true
+--- jsc
+{"type": ["array", "object"]}
+--- json
+[1, 2, 3]
+
+
+=== Test 70 - type: array or object - object is valid
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 123}
+
+
+=== Test 71 - type: array or object - number is invalid
+--- valid: false
+--- ^jsc
+--- json
+123
+
+
+=== Test 72 - type: array or object - string is invalid
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 73 - type: array or object - null is invalid
+--- valid: false
+--- ^jsc
+--- json
+null
+
+
+=== Test 74 - type: array, object or null - array is valid
+--- valid: true
+--- jsc
+{"type": ["array", "object", "null"]}
+--- json
+[1, 2, 3]
+
+
+=== Test 75 - type: array, object or null - object is valid
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 123}
+
+
+=== Test 76 - type: array, object or null - null is valid
+--- valid: true
+--- ^jsc
+--- json
+null
+
+
+=== Test 77 - type: array, object or null - number is invalid
+--- valid: false
+--- ^jsc
+--- json
+123
+
+
+=== Test 78 - type: array, object or null - string is invalid
+--- valid: false
+--- ^jsc
+--- json
+"foo"
+
+
+# vim: ft=testml sw=2:

@@ -1,0 +1,172 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - patternProperties validates properties matching a regex - a single valid match is valid
+--- valid: true
+--- jsc
+{
+  "patternProperties": {
+    "f.*o": {"type": "integer"}
+  }
+}
+--- json
+{"foo": 1}
+
+
+=== Test 2 - patternProperties validates properties matching a regex - multiple valid matches is valid
+--- valid: true
+--- ^jsc
+--- json
+{"foo": 1, "foooooo": 2}
+
+
+=== Test 3 - patternProperties validates properties matching a regex - a single invalid match is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "bar", "fooooo": 2}
+
+
+=== Test 4 - patternProperties validates properties matching a regex - multiple invalid matches is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": "bar", "foooooo": "baz"}
+
+
+=== Test 5 - patternProperties validates properties matching a regex - ignores arrays
+--- valid: true
+--- ^jsc
+--- json
+["foo"]
+
+
+=== Test 6 - patternProperties validates properties matching a regex - ignores strings
+--- valid: true
+--- ^jsc
+--- json
+"foo"
+
+
+=== Test 7 - patternProperties validates properties matching a regex - ignores other non-objects
+--- valid: true
+--- ^jsc
+--- json
+12
+
+
+=== Test 8 - multiple simultaneous patternProperties are validated - a single valid match is valid
+--- valid: true
+--- jsc
+{
+  "patternProperties": {
+    "a*": {"type": "integer"},
+    "aaa*": {"maximum": 20}
+  }
+}
+--- json
+{"a": 21}
+
+
+=== Test 9 - multiple simultaneous patternProperties are validated - a simultaneous match is valid
+--- valid: true
+--- ^jsc
+--- json
+{"aaaa": 18}
+
+
+=== Test 10 - multiple simultaneous patternProperties are validated - multiple matches is valid
+--- valid: true
+--- ^jsc
+--- json
+{"a": 21, "aaaa": 18}
+
+
+=== Test 11 - multiple simultaneous patternProperties are validated - an invalid due to one is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"a": "bar"}
+
+
+=== Test 12 - multiple simultaneous patternProperties are validated - an invalid due to the other is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"aaaa": 31}
+
+
+=== Test 13 - multiple simultaneous patternProperties are validated - an invalid due to both is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"aaa": "foo", "aaaa": 31}
+
+
+=== Test 14 - regexes are not anchored by default and are case sensitive - non recognized members are ignored
+--- valid: true
+--- jsc
+{
+  "patternProperties": {
+    "[0-9]{2,}": {"type": "boolean"},
+    "X_": {"type": "string"}
+  }
+}
+--- json
+{"answer 1": "42"}
+
+
+=== Test 15 - regexes are not anchored by default and are case sensitive - recognized members are accounted for
+--- valid: false
+--- ^jsc
+--- json
+{"a31b": null}
+
+
+=== Test 16 - regexes are not anchored by default and are case sensitive - regexes are case sensitive
+--- valid: true
+--- ^jsc
+--- json
+{"a_x_3": 3}
+
+
+=== Test 17 - regexes are not anchored by default and are case sensitive - regexes are case sensitive, 2
+--- valid: false
+--- ^jsc
+--- json
+{"a_X_3": 3}
+
+
+=== Test 18 - patternProperties with boolean schemas - object with property matching schema true is valid
+--- valid: true
+--- jsc
+{"patternProperties": {"f.*": true, "b.*": false}}
+--- json
+{"foo": 1}
+
+
+=== Test 19 - patternProperties with boolean schemas - object with property matching schema false is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"bar": 2}
+
+
+=== Test 20 - patternProperties with boolean schemas - object with both properties is invalid
+--- valid: false
+--- ^jsc
+--- json
+{"foo": 1, "bar": 2}
+
+
+=== Test 21 - patternProperties with boolean schemas - empty object is valid
+--- valid: true
+--- ^jsc
+--- json
+{}
+
+
+# vim: ft=testml sw=2:

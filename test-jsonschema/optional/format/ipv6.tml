@@ -1,0 +1,36 @@
+#!/usr/bin/env testml
+
+
+*jsc.validate(*json) == *valid
+
+
+=== Test 1 - validation of IPv6 addresses - a valid IPv6 address
+--- valid: true
+--- jsc
+{"format": "ipv6"}
+--- json
+"::1"
+
+
+=== Test 2 - validation of IPv6 addresses - an IPv6 address with out-of-range values
+--- valid: false
+--- ^jsc
+--- json
+"12345::"
+
+
+=== Test 3 - validation of IPv6 addresses - an IPv6 address with too many components
+--- valid: false
+--- ^jsc
+--- json
+"1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1"
+
+
+=== Test 4 - validation of IPv6 addresses - an IPv6 address containing illegal characters
+--- valid: false
+--- ^jsc
+--- json
+"::laptop"
+
+
+# vim: ft=testml sw=2:
