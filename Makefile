@@ -32,7 +32,7 @@ test: build $(TESTML_RUNNER) test/testml-bridge.js
 build: dep-node $(NODE_MODULES) $(JS_FILES)
 
 clean:
-	rm -fr build/ test/testml-bridge.js test/.testml/ $(TEST_GENERATOR)/.testml/
+	rm -fr build/ test/testml-bridge.js test/.testml/ $(TEST_GENERATOR)/.testml/ $(JSONSCHEMA_TEST_SUITE)
 
 #------------------------------------------------------------------------------
 JSONSCHEMA_TEST_SUITE := JSON-Schema-Test-Suite
