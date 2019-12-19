@@ -94,7 +94,7 @@ Then try `make test`, which will run all the test suites.
 * `doc` - Documentation and man pages
 * `docker` - Support for testing in clean Docker environment
 * `example` - Various SchemaType examples
-* `generator-jsonschema` - Generate JSONSchema from SchemaType stp
+* `jsonschema` - Generate JSONSchema from SchemaType stp
 * `linker` - SchemaType linker tool
 * `node_modules` - NodeJS dependencies
 * `note` - Notes about the SchemaType project

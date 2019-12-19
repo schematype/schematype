@@ -5,7 +5,7 @@ WORK_BRANCHES := \
     doc \
     docker \
     example \
-    generator-jsonschema \
+    jsonschema \
     linker \
     node_modules \
     note \
