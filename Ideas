@@ -1,6 +1,10 @@
 # Transform plugins
 - JSC to STP
 - STP to JSC
+- STP to JQ (validator and/or transformer)
+
+# Converters
+- stp --transform --from=json --to=yaml
 
 # Compiler and Linker
 - Audit trail of build artifacts
