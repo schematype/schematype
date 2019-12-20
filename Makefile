@@ -1,8 +1,8 @@
 SHELL := bash
 ROOT := $(shell cd .. && pwd)
 
-GENERATOR := $(ROOT)/generator-jsonschema
-BUILD := $(GENERATOR)/build
+JSONSCHEMA := $(ROOT)/generator-jsonschema
+BUILD := $(JSONSCHEMA)/build
 NODE_MODULES := $(ROOT)/node_modules
 TESTML := $(ROOT)/.testml
 
@@ -14,7 +14,7 @@ TESTML_RUNNER := $(TESTML)/src/node/lib/testml/run/tap.js
 
 export PATH := $(NODE_MODULES)/.bin:$(PATH)
 export TESTML_RUN := node-tap
-export NODE_PATH := $(GENERATOR)/build/lib:$(NODE_MODULES)
+export NODE_PATH := $(JSONSCHEMA)/build/lib:$(NODE_MODULES)
 
 test := test/*.tml
 j := 1
@@ -32,7 +32,8 @@ test: build $(TESTML_RUNNER) test/testml-bridge.js
 build: dep-node $(NODE_MODULES) $(JS_FILES)
 
 clean:
-	rm -fr build/ test/testml-bridge.js test/.testml/ $(TEST_GENERATOR)/.testml/ $(JSONSCHEMA_TEST_SUITE)
+	rm -fr build/ test/testml-bridge.js test-*/.testml/ \
+	    $(JSONSCHEMA_TEST_SUITE) */__pycache__/ */*.pyc
 
 #------------------------------------------------------------------------------
 JSONSCHEMA_TEST_SUITE := JSON-Schema-Test-Suite
@@ -43,8 +44,10 @@ JSONSCHEMA_TESTML_FILES = $(JSONSCHEMA_TEST_FILES:$(JSONSCHEMA_TEST_DIR)/%.json=
 
 .PHONY: test-jsonschema
 test-jsonschema:
-	@ls -l test-jsonschema
-	# (source $(TESTML)/.rc && prove -v -j$(j) $@)
+	(source $(TESTML)/.rc && prove -v -j$(j) $@)
+
+test-jsonschema-python:
+	(export TESTML_RUN=python-tap; source $(TESTML)/.rc && prove -v -j$(j) test-jsonschema/*.tml)
 
 $(JSONSCHEMA_TEST_SUITE):
 	git clone $(JSONSCHEMA_TEST_SUITE_URL) $@

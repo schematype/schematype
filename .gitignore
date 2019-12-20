@@ -1,4 +1,6 @@
 /build/
 /test/testml-bridge.js
-/test/.testml/
+.testml/
 /JSON-Schema-Test-Suite/
+__pycache__/
+*.pyc
