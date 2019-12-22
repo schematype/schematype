@@ -153,11 +153,15 @@ push:
 	    ( \
 	      echo "=== $$d"; \
 	      cd $$d; \
+	      [[ $$(git rev-parse HEAD) != $$(git rev-parse origin/$$d) ]] || exit 0; \
 	      git push; \
 	    ); \
 	done
-	@echo "=== $$(git rev-parse --abbrev-ref HEAD)"
-	@git push
+	@( \
+	  echo "=== $$(git rev-parse --abbrev-ref HEAD)"; \
+	  [[ $$(git rev-parse HEAD) != $$(git rev-parse origin/$$(git rev-parse --abbrev-ref HEAD)) ]] || exit 0; \
+	  git push; \
+	)
 
 diff:
 	@for d in $(WORK_BRANCHES); do \
