@@ -1,2 +1,4 @@
 /test/.testml/
 /test/cache/
+*.stc
+*.stx
